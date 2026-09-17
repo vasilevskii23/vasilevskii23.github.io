@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>МЕДООК — Капля</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Dongle:wght@400;700&family=Jua&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --sky-top: #c8e4f5;
+  --sky-mid: #f3e0c8;
+  --sky-bot: #f7d9b0;
+  --sand: #efd6a8;
+  --sand-dark: #e0c28a;
+  --honey: #f0b43a;
+  --honey-dark: #d49220;
+  --fur: #4a4a52;
+  --fur-light: #6a6a74;
+  --belly: #f3ebe0;
+  --bee: #f5d76e;
+  --ink: #3a342c;
+  --soft: #fff8ee;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: #2a241c;
+  color: var(--ink);
+  font-family: "Dongle", "Jua", sans-serif;
+  overflow: hidden;
+}
+
+.stage-wrap {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background:
+    radial-gradient(ellipse at 30% 20%, #3d3428 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, #1a1612 0%, #2a241c 60%);
+}
+
+.stage {
+  position: relative;
+  width: min(960px, 100vw - 24px);
+  aspect-ratio: 16 / 9;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.45),
+    0 0 0 3px rgba(255,248,238,.08);
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 48%, var(--sky-bot) 70%, var(--sand) 70%, var(--sand-dark) 100%);
+  cursor: pointer;
+  user-select: none;
+}
+
+.sky-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(2px);
+  opacity: .55;
+  animation: floaty 8s ease-in-out infinite;
+}
+.sky-blob.a { width: 140px; height: 70px; background: #fff; top: 8%; left: 12%; }
+.sky-blob.b { width: 90px; height: 46px; background: #fff; top: 14%; right: 18%; animation-delay: -3s; }
+.sky-blob.c { width: 60px; height: 30px; background: #fff; top: 6%; right: 38%; animation-delay: -5s; opacity: .35; }
+
+@keyframes floaty {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(12px); }
+}
+
+.ground-line {
+  position: absolute;
+  left: 0; right: 0; top: 70%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(180,140,80,.25), transparent);
+}
+
+.hill {
+  position: absolute;
+  bottom: 28%;
+  width: 220px; height: 70px;
+  background: #e8c992;
+  border-radius: 50% 50% 0 0;
+  opacity: .55;
+}
+.hill.left { left: -40px; }
+.hill.right { right: -30px; width: 260px; height: 90px; bottom: 26%; background: #e2c086; }
+
+/* TITLE / OVERLAYS */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.overlay.show { opacity: 1; }
+
+.title-card {
+  text-align: center;
+  background: rgba(255,248,238,.88);
+  backdrop-filter: blur(6px);
+  padding: 28px 48px;
+  border-radius: 24px;
+  box-shadow: 0 12px 40px rgba(90,60,20,.12);
+  transform: scale(.96);
+  transition: transform .5s cubic-bezier(.2,.8,.2,1);
+}
+.overlay.show .title-card { transform: scale(1); }
+
+.title-card h1 {
+  font-family: "Jua", sans-serif;
+  font-size: clamp(42px, 8vw, 72px);
+  letter-spacing: .04em;
+  color: #3d3428;
+  line-height: 1;
+}
+.title-card .sub {
+  font-size: clamp(22px, 4vw, 32px);
+  color: #8a7355;
+  margin-top: 2px;
+}
+.title-card .ep {
+  margin-top: 10px;
+  font-size: clamp(20px, 3.5vw, 28px);
+  color: var(--honey-dark);
+}
+
+.end-card .badge {
+  display: inline-grid;
+  place-items: center;
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: var(--honey);
+  color: #fff;
+  font-family: "Jua", sans-serif;
+  font-size: 28px;
+  margin-bottom: 10px;
+  box-shadow: 0 8px 0 var(--honey-dark);
+}
+
+/* START UI */
+.start-ui {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  background: rgba(42,36,28,.35);
+  backdrop-filter: blur(2px);
+  transition: opacity .35s ease, visibility .35s;
+}
+.start-ui.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.play-btn {
+  appearance: none;
+  border: none;
+  background: var(--soft);
+  color: var(--ink);
+  font-family: "Jua", sans-serif;
+  font-size: 34px;
+  padding: 18px 42px 14px;
+  border-radius: 999px;
+  box-shadow: 0 10px 0 #d9c8a8, 0 18px 40px rgba(0,0,0,.25);
+  cursor: pointer;
+  transition: transform .15s ease;
+}
+.play-btn:hover { transform: translateY(-2px); }
+.play-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 #d9c8a8, 0 8px 20px rgba(0,0,0,.2); }
+.hint {
+  position: absolute;
+  bottom: 18px;
+  left: 0; right: 0;
+  text-align: center;
+  color: rgba(255,248,238,.85);
+  font-size: 22px;
+  pointer-events: none;
+}
+
+/* CHARACTERS */
+.world {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+}
+
+.badger {
+  position: absolute;
+  left: 18%;
+  bottom: 18%;
+  width: 140px;
+  height: 110px;
+  transform-origin: 50% 90%;
+  transition: left 1.2s cubic-bezier(.4,.1,.2,1), bottom .6s ease;
+  z-index: 6;
+}
+
+.badger .body {
+  position: absolute;
+  left: 10px; top: 28px;
+  width: 110px; height: 72px;
+  background: linear-gradient(180deg, var(--fur) 55%, var(--belly) 55%);
+  border-radius: 48% 48% 42% 42%;
+  box-shadow: inset 0 -8px 0 rgba(0,0,0,.08);
+}
+
+.badger .head {
+  position: absolute;
+  left: 78px; top: 8px;
+  width: 58px; height: 52px;
+  background: var(--fur);
+  border-radius: 46% 50% 48% 48%;
+  z-index: 2;
+}
+.badger .snout {
+  position: absolute;
+  right: -6px; top: 18px;
+  width: 28px; height: 22px;
+  background: var(--belly);
+  border-radius: 40% 55% 50% 45%;
+}
+.badger .nose {
+  position: absolute;
+  right: -2px; top: 22px;
+  width: 12px; height: 10px;
+  background: #2c2c32;
+  border-radius: 50%;
+  z-index: 3;
+}
+.badger .ear {
+  position: absolute;
+  width: 16px; height: 16px;
+  background: var(--fur-light);
+  border-radius: 50%;
+  top: 0;
+}
+.badger .ear.l { left: 6px; }
+.badger .ear.r { right: 4px; }
+.badger .eye {
+  position: absolute;
+  width: 8px; height: 8px;
+  background: #1a1a1e;
+  border-radius: 50%;
+  top: 18px;
+  left: 18px;
+  z-index: 3;
+  transition: transform .2s;
+}
+.badger .eye::after {
+  content: "";
+  position: absolute;
+  width: 3px; height: 3px;
+  background: #fff;
+  border-radius: 50%;
+  top: 1px; left: 1px;
+}
+.badger .brow {
+  position: absolute;
+  width: 14px; height: 3px;
+  background: #2a2a30;
+  border-radius: 2px;
+  top: 12px; left: 14px;
+  z-index: 4;
+  transform-origin: center;
+}
+.badger .leg {
+  position: absolute;
+  width: 18px; height: 22px;
+  background: var(--fur);
+  border-radius: 40% 40% 30% 30%;
+  bottom: -6px;
+}
+.badger .leg.fl { left: 78px; }
+.badger .leg.fr { left: 98px; }
+.badger .leg.bl { left: 22px; }
+.badger .leg.br { left: 42px; }
+.badger .tail {
+  position: absolute;
+  left: -8px; top: 42px;
+  width: 28px; height: 18px;
+  background: var(--fur-light);
+  border-radius: 50%;
+}
+.badger .tag {
+  position: absolute;
+  left: 28px; top: 48px;
+  width: 28px; height: 22px;
+  background: #f7c948;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  font-family: "Jua", sans-serif;
+  font-size: 13px;
+  color: #5a4010;
+  z-index: 4;
+  box-shadow: 0 2px 0 #c9a030;
+  transform: rotate(-8deg);
+}
+
+.badger.sleep .eye { transform: scaleY(.15); }
+.badger.sleep .brow { opacity: 0; }
+.badger.awake .eye { transform: scaleY(1); }
+.badger.sneak { animation: sneak-bob .45s ease-in-out infinite; }
+.badger.happy .brow { transform: translateY(-2px) rotate(-8deg); }
+.badger.sticky .body::after {
+  content: "";
+  position: absolute;
+  inset: 8px 20px auto auto;
+  width: 24px; height: 18px;
+  background: var(--honey);
+  border-radius: 50%;
+  opacity: .85;
+}
+.badger.faceplant .head { transform: rotate(25deg) translate(6px, 8px); }
+.badger.faceplant .body { transform: rotate(12deg); }
+
+@keyframes sneak-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-4px) rotate(2deg); }
+}
+
+.badger.waddle { animation: waddle .35s ease-in-out infinite; }
+@keyframes waddle {
+  0%, 100% { transform: rotate(-4deg) translateY(0); }
+  50% { transform: rotate(4deg) translateY(-3px); }
+}
+
+.badger.bounce { animation: bounce .5s ease; }
+@keyframes bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-28px) scale(1.05, .95); }
+  70% { transform: translateY(4px) scale(.98, 1.04); }
+}
+
+/* HIVE */
+.hive {
+  position: absolute;
+  right: 16%;
+  bottom: 26%;
+  width: 78px;
+  height: 92px;
+  z-index: 4;
+  transform-origin: 50% 100%;
+  transition: transform .3s ease;
+}
+.hive .comb {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 20%, #f6d978, transparent 40%),
+    linear-gradient(180deg, #f0c44a, #d49220);
+  border-radius: 42% 42% 38% 38%;
+  box-shadow:
+    inset 0 -10px 0 rgba(0,0,0,.08),
+    0 8px 0 rgba(180,120,30,.2);
+}
+.hive .ring {
+  position: absolute;
+  left: 8px; right: 8px;
+  height: 10px;
+  background: rgba(160,100,20,.18);
+  border-radius: 50%;
+}
+.hive .ring.r1 { top: 28%; }
+.hive .ring.r2 { top: 48%; }
+.hive .ring.r3 { top: 68%; }
+.hive .drip {
+  position: absolute;
+  width: 10px; height: 16px;
+  background: var(--honey);
+  border-radius: 40% 40% 50% 50%;
+  left: 34px; bottom: -8px;
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top;
+}
+.hive.drip .drip { opacity: 1; animation: drip 1s ease forwards; }
+@keyframes drip {
+  0% { transform: scaleY(0) translateY(0); }
+  60% { transform: scaleY(1) translateY(8px); }
+  100% { transform: scaleY(1) translateY(18px); opacity: .9; }
+}
+.hive.shake { animation: shake .4s ease; }
+@keyframes shake {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
+.hive.splash .comb::after {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  background: radial-gradient(circle, rgba(240,180,58,.7) 0%, transparent 60%);
+  animation: splash .6s ease-out forwards;
+}
+@keyframes splash {
+  from { transform: scale(.4); opacity: 1; }
+  to { transform: scale(1.6); opacity: 0; }
+}
+
+/* BEE */
+.bee {
+  position: absolute;
+  right: 28%;
+  bottom: 42%;
+  width: 36px;
+  height: 36px;
+  opacity: 0;
+  transform: scale(.5);
+  transition: opacity .4s, transform .4s;
+  z-index: 7;
+}
+.bee.show { opacity: 1; transform: scale(1); animation: buzz 1.2s ease-in-out infinite; }
+.bee .ball {
+  width: 28px; height: 28px;
+  background: linear-gradient(180deg, #ffe28a, var(--bee));
+  border-radius: 50%;
+  position: relative;
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,.08);
+}
+.bee .ball::before {
+  content: "";
+  position: absolute;
+  left: 6px; right: 6px; top: 11px;
+  height: 5px;
+  background: #3a342c;
+  border-radius: 2px;
+}
+.bee .wing {
+  position: absolute;
+  width: 14px; height: 10px;
+  background: rgba(255,255,255,.75);
+  border-radius: 50%;
+  top: -2px;
+  animation: wing .12s linear infinite;
+}
+.bee .wing.l { left: -4px; }
+.bee .wing.r { right: 2px; }
+.bee .eye {
+  position: absolute;
+  width: 4px; height: 4px;
+  background: #1a1a1e;
+  border-radius: 50%;
+  top: 8px; left: 8px;
+}
+@keyframes buzz {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-10px) rotate(4deg); }
+}
+@keyframes wing {
+  from { transform: scaleY(1); }
+  to { transform: scaleY(.5); }
+}
+
+/* HONEY SPLAT ON FACE */
+.splat {
+  position: absolute;
+  right: -4px; top: 14px;
+  width: 22px; height: 18px;
+  background: var(--honey);
+  border-radius: 50% 40% 55% 45%;
+  opacity: 0;
+  z-index: 5;
+  transform: scale(0);
+}
+.splat.show {
+  opacity: 1;
+  transform: scale(1);
+  transition: transform .25s cubic-bezier(.2,1.4,.3,1);
+}
+
+/* SOUND BUBBLES */
+.sfx {
+  position: absolute;
+  font-family: "Jua", sans-serif;
+  font-size: 26px;
+  color: #7a6040;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 15;
+  text-shadow: 0 2px 0 rgba(255,248,238,.8);
+}
+.sfx.pop {
+  animation: sfx-pop .9s ease forwards;
+}
+@keyframes sfx-pop {
+  0% { opacity: 0; transform: translateY(8px) scale(.8); }
+  20% { opacity: 1; transform: translateY(0) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-24px) scale(1); }
+}
+
+/* HEARTS / STARS */
+.spark {
+  position: absolute;
+  font-size: 22px;
+  opacity: 0;
+  z-index: 12;
+  pointer-events: none;
+}
+.spark.show { animation: spark 1s ease forwards; }
+@keyframes spark {
+  0% { opacity: 0; transform: translateY(0) scale(.5); }
+  30% { opacity: 1; transform: translateY(-12px) scale(1.2); }
+  100% { opacity: 0; transform: translateY(-36px) scale(.8); }
+}
+
+.progress {
+  position: absolute;
+  left: 16px; right: 16px; bottom: 10px;
+  height: 4px;
+  background: rgba(255,248,238,.35);
+  border-radius: 4px;
+  overflow: hidden;
+  z-index: 25;
+  opacity: 0;
+  transition: opacity .3s;
+}
+.progress.show { opacity: 1; }
+.progress > i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--honey), #fff3c0);
+  border-radius: 4px;
+  transition: width .1s linear;
+}
+
+.caption {
+  position: absolute;
+  left: 0; right: 0; bottom: 22px;
+  text-align: center;
+  font-size: 26px;
+  color: rgba(58,52,44,.55);
+  z-index: 10;
+  opacity: 0;
+  transition: opacity .35s;
+  pointer-events: none;
+}
+.caption.show { opacity: 1; }
+
+@media (max-width: 640px) {
+  .badger { width: 110px; height: 90px; }
+  .badger .body { width: 86px; height: 56px; }
+  .badger .head { width: 46px; height: 42px; left: 60px; }
+  .hive { width: 58px; height: 70px; }
+  .play-btn { font-size: 28px; padding: 14px 32px 10px; }
+}
+</style>
+</head>
+<body>
+<div class="stage-wrap">
+  <div class="stage" id="stage" role="button" aria-label="Смотреть мультик МЕДООК">
+    <div class="sky-blob a"></div>
+    <div class="sky-blob b"></div>
+    <div class="sky-blob c"></div>
+    <div class="hill left"></div>
+    <div class="hill right"></div>
+    <div class="ground-line"></div>
+
+    <div class="world">
+      <div class="hive" id="hive">
+        <div class="comb">
+          <div class="ring r1"></div>
+          <div class="ring r2"></div>
+          <div class="ring r3"></div>
+        </div>
+        <div class="drip"></div>
+      </div>
+
+      <div class="bee" id="bee">
+        <div class="wing l"></div>
+        <div class="wing r"></div>
+        <div class="ball"><div class="eye"></div></div>
+      </div>
+
+      <div class="badger sleep" id="badger">
+        <div class="tail"></div>
+        <div class="leg bl"></div>
+        <div class="leg br"></div>
+        <div class="body"></div>
+        <div class="tag">07</div>
+        <div class="leg fl"></div>
+        <div class="leg fr"></div>
+        <div class="head">
+          <div class="ear l"></div>
+          <div class="ear r"></div>
+          <div class="brow"></div>
+          <div class="eye"></div>
+          <div class="snout"></div>
+          <div class="nose"></div>
+          <div class="splat" id="splat"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="titleOverlay">
+      <div class="title-card">
+        <h1>МЕДООК</h1>
+        <div class="sub">HONEYLOOK</div>
+        <div class="ep">серия 1 · «Капля»</div>
+      </div>
+    </div>
+
+    <div class="overlay end-card" id="endOverlay">
+      <div class="title-card">
+        <div class="badge">07</div>
+        <h1 style="font-size:clamp(28px,6vw,48px)">конец… пока</h1>
+        <div class="sub">ещё капля будет</div>
+      </div>
+    </div>
+
+    <div class="caption" id="caption"></div>
+    <div class="progress" id="progress"><i id="bar"></i></div>
+
+    <div class="start-ui" id="startUi">
+      <button class="play-btn" id="playBtn" type="button">▶ смотреть</button>
+      <div class="hint">короткий смешной шорт · 0+ · без слов</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const stage = document.getElementById("stage");
+  const startUi = document.getElementById("startUi");
+  const playBtn = document.getElementById("playBtn");
+  const badger = document.getElementById("badger");
+  const hive = document.getElementById("hive");
+  const bee = document.getElementById("bee");
+  const splat = document.getElementById("splat");
+  const titleOverlay = document.getElementById("titleOverlay");
+  const endOverlay = document.getElementById("endOverlay");
+  const caption = document.getElementById("caption");
+  const progress = document.getElementById("progress");
+  const bar = document.getElementById("bar");
+
+  const TOTAL = 90000;
+  let timers = [];
+  let playing = false;
+  let startedAt = 0;
+  let raf = 0;
+  let audioCtx = null;
+
+  function clearTimers() {
+    timers.forEach(clearTimeout);
+    timers = [];
+    cancelAnimationFrame(raf);
+  }
+
+  function at(ms, fn) {
+    timers.push(setTimeout(fn, ms));
+  }
+
+  function sfx(text, x, y) {
+    const el = document.createElement("div");
+    el.className = "sfx pop";
+    el.textContent = text;
+    el.style.left = x;
+    el.style.top = y;
+    stage.appendChild(el);
+    setTimeout(() => el.remove(), 1000);
+  }
+
+  function spark(emoji, x, y) {
+    const el = document.createElement("div");
+    el.className = "spark show";
+    el.textContent = emoji;
+    el.style.left = x;
+    el.style.top = y;
+    stage.appendChild(el);
+    setTimeout(() => el.remove(), 1100);
+  }
+
+  function setCaption(text) {
+    if (!text) {
+      caption.classList.remove("show");
+      caption.textContent = "";
+      return;
+    }
+    caption.textContent = text;
+    caption.classList.add("show");
+  }
+
+  function tone(freq, dur = 0.08, type = "sine", gain = 0.04) {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type;
+      o.frequency.value = freq;
+      g.gain.value = gain;
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start();
+      o.stop(audioCtx.currentTime + dur);
+    } catch (_) {}
+  }
+
+  function resetScene() {
+    badger.className = "badger sleep";
+    badger.style.left = "18%";
+    badger.style.bottom = "18%";
+    hive.className = "hive";
+    bee.className = "bee";
+    bee.style.right = "28%";
+    bee.style.bottom = "42%";
+    splat.className = "splat";
+    titleOverlay.classList.remove("show");
+    endOverlay.classList.remove("show");
+    setCaption("");
+    bar.style.width = "0%";
+  }
+
+  function tick() {
+    if (!playing) return;
+    const p = Math.min(1, (Date.now() - startedAt) / TOTAL);
+    bar.style.width = (p * 100) + "%";
+    if (p < 1) raf = requestAnimationFrame(tick);
+  }
+
+  function play() {
+    if (playing) return;
+    playing = true;
+    clearTimers();
+    resetScene();
+    startUi.classList.add("hide");
+    progress.classList.add("show");
+    startedAt = Date.now();
+    tick();
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) {}
+
+    // 0–3s title
+    titleOverlay.classList.add("show");
+    tone(392, 0.15, "triangle", 0.03);
+    at(200, () => tone(523, 0.2, "triangle", 0.03));
+
+    at(2800, () => {
+      titleOverlay.classList.remove("show");
+      setCaption("раннее утро в заповеднике…");
+    });
+
+    // wake
+    at(4500, () => {
+      badger.classList.remove("sleep");
+      badger.classList.add("awake");
+      sfx("хмпф", "28%", "48%");
+      tone(180, 0.1, "square", 0.025);
+      setCaption("");
+    });
+
+    at(6000, () => {
+      sfx("нюх-нюх", "32%", "42%");
+      tone(440, 0.06, "sine", 0.02);
+      at(200, () => tone(480, 0.06, "sine", 0.02));
+    });
+
+    // notice hive
+    at(8000, () => {
+      setCaption("а это что?");
+      spark("!", "72%", "40%");
+      tone(660, 0.1, "triangle", 0.03);
+    });
+
+    // sneak closer
+    at(10000, () => {
+      setCaption("");
+      badger.classList.add("sneak");
+      badger.style.left = "38%";
+      sfx("тик…", "40%", "55%");
+    });
+    at(13000, () => {
+      badger.style.left = "52%";
+      sfx("так…", "54%", "52%");
+      tone(220, 0.05, "square", 0.02);
+    });
+    at(16000, () => {
+      badger.style.left = "62%";
+      badger.classList.remove("sneak");
+      badger.classList.add("waddle");
+    });
+
+    // poke
+    at(18500, () => {
+      badger.classList.remove("waddle");
+      badger.classList.add("bounce");
+      hive.classList.add("shake");
+      sfx("тык!", "70%", "45%");
+      tone(300, 0.08, "square", 0.03);
+    });
+
+    // honey face
+    at(20000, () => {
+      badger.classList.remove("bounce");
+      badger.classList.add("faceplant");
+      hive.classList.add("drip");
+      splat.classList.add("show");
+      sfx("шлёп", "68%", "40%");
+      tone(140, 0.15, "sawtooth", 0.025);
+      setCaption("мёд!");
+    });
+
+    at(23000, () => {
+      badger.classList.remove("faceplant");
+      badger.classList.add("happy");
+      spark("✨", "66%", "38%");
+      spark("✨", "74%", "44%");
+      sfx("ммм~", "64%", "36%");
+      tone(523, 0.12, "sine", 0.03);
+      at(150, () => tone(659, 0.15, "sine", 0.03));
+      setCaption("");
+    });
+
+    // bee appears
+    at(27000, () => {
+      bee.classList.add("show");
+      sfx("жжж", "72%", "35%");
+      tone(800, 0.05, "square", 0.015);
+      at(80, () => tone(900, 0.05, "square", 0.015));
+      setCaption("сосед по мёду");
+    });
+
+    // stare
+    at(31000, () => {
+      setCaption("…");
+      sfx("👀", "58%", "34%");
+    });
+
+    at(35000, () => {
+      setCaption("");
+      sfx("хм.", "60%", "40%");
+      sfx("жж?", "74%", "36%");
+      tone(200, 0.08, "triangle", 0.025);
+    });
+
+    // both rush — collide
+    at(38000, () => {
+      badger.classList.remove("happy");
+      badger.classList.add("waddle");
+      badger.style.left = "68%";
+      bee.style.right = "22%";
+      bee.style.bottom = "30%";
+      setCaption("мой!");
+    });
+
+    at(40500, () => {
+      badger.classList.remove("waddle");
+      badger.classList.add("bounce", "sticky");
+      hive.classList.remove("drip");
+      hive.classList.add("shake", "splash");
+      bee.style.right = "18%";
+      bee.style.bottom = "28%";
+      sfx("БУМФ!", "70%", "32%");
+      tone(110, 0.2, "sawtooth", 0.04);
+      spark("💧", "68%", "30%");
+      spark("💧", "74%", "36%");
+      spark("💧", "64%", "40%");
+      setCaption("");
+    });
+
+    at(44000, () => {
+      badger.classList.remove("bounce");
+      hive.classList.remove("shake", "splash");
+      sfx("липко…", "62%", "42%");
+      setCaption("оба в мёде");
+    });
+
+    // share
+    at(48000, () => {
+      setCaption("");
+      badger.classList.add("happy");
+      badger.style.left = "58%";
+      bee.style.right = "26%";
+      bee.style.bottom = "34%";
+      spark("💛", "66%", "36%");
+      sfx("капля", "64%", "40%");
+      tone(392, 0.1, "sine", 0.03);
+      at(120, () => tone(523, 0.12, "sine", 0.03));
+      at(240, () => tone(659, 0.18, "sine", 0.03));
+    });
+
+    at(53000, () => {
+      setCaption("поровну — справедливо");
+      sfx("👍", "56%", "38%");
+      sfx("🐝", "72%", "34%");
+    });
+
+    at(58000, () => {
+      setCaption("");
+      badger.classList.add("waddle");
+      badger.style.left = "40%";
+      bee.style.right = "40%";
+      bee.style.bottom = "48%";
+    });
+
+    at(64000, () => {
+      badger.classList.remove("waddle");
+      setCaption("до завтра, №07");
+      tone(523, 0.1, "triangle", 0.025);
+      at(150, () => tone(392, 0.2, "triangle", 0.025));
+    });
+
+    // end
+    at(70000, () => {
+      setCaption("");
+      endOverlay.classList.add("show");
+      tone(330, 0.15, "triangle", 0.03);
+      at(180, () => tone(494, 0.15, "triangle", 0.03));
+      at(360, () => tone(659, 0.25, "triangle", 0.03));
+    });
+
+    at(TOTAL, () => {
+      playing = false;
+      progress.classList.remove("show");
+      startUi.classList.remove("hide");
+      playBtn.textContent = "▶ ещё раз";
+    });
+  }
+
+  playBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    play();
+  });
+  stage.addEventListener("click", () => {
+    if (!playing && startUi.classList.contains("hide") === false) play();
+  });
+})();
+</script>
+</body>
+</html>
