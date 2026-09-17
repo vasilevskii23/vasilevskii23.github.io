@@ -199,9 +199,9 @@ html, body {
 .badger {
   position: absolute;
   left: 18%;
-  bottom: 18%;
-  width: 140px;
-  height: 110px;
+  bottom: 16%;
+  width: 168px;
+  height: 128px;
   transform-origin: 50% 90%;
   transition: left 1.2s cubic-bezier(.4,.1,.2,1), bottom .6s ease;
   z-index: 6;
@@ -209,52 +209,52 @@ html, body {
 
 .badger .body {
   position: absolute;
-  left: 10px; top: 28px;
-  width: 110px; height: 72px;
-  background: linear-gradient(180deg, var(--fur) 55%, var(--belly) 55%);
-  border-radius: 48% 48% 42% 42%;
+  left: 12px; top: 34px;
+  width: 128px; height: 82px;
+  background: linear-gradient(180deg, var(--belly) 42%, var(--fur) 42%);
+  border-radius: 50% 50% 44% 44%;
   box-shadow: inset 0 -8px 0 rgba(0,0,0,.08);
 }
 
 .badger .head {
   position: absolute;
-  left: 78px; top: 8px;
-  width: 58px; height: 52px;
-  background: var(--fur);
-  border-radius: 46% 50% 48% 48%;
+  left: 92px; top: 6px;
+  width: 68px; height: 60px;
+  background: linear-gradient(180deg, var(--belly) 45%, var(--fur) 45%);
+  border-radius: 48% 52% 48% 48%;
   z-index: 2;
 }
 .badger .snout {
   position: absolute;
-  right: -6px; top: 18px;
-  width: 28px; height: 22px;
+  right: -8px; top: 22px;
+  width: 32px; height: 24px;
   background: var(--belly);
   border-radius: 40% 55% 50% 45%;
 }
 .badger .nose {
   position: absolute;
-  right: -2px; top: 22px;
-  width: 12px; height: 10px;
+  right: -2px; top: 26px;
+  width: 14px; height: 11px;
   background: #2c2c32;
   border-radius: 50%;
   z-index: 3;
 }
 .badger .ear {
   position: absolute;
-  width: 16px; height: 16px;
+  width: 18px; height: 18px;
   background: var(--fur-light);
   border-radius: 50%;
-  top: 0;
+  top: -2px;
 }
-.badger .ear.l { left: 6px; }
-.badger .ear.r { right: 4px; }
+.badger .ear.l { left: 8px; }
+.badger .ear.r { right: 6px; }
 .badger .eye {
   position: absolute;
-  width: 8px; height: 8px;
+  width: 10px; height: 10px;
   background: #1a1a1e;
   border-radius: 50%;
-  top: 18px;
-  left: 18px;
+  top: 20px;
+  left: 20px;
   z-index: 3;
   transition: transform .2s;
 }
@@ -264,45 +264,45 @@ html, body {
   width: 3px; height: 3px;
   background: #fff;
   border-radius: 50%;
-  top: 1px; left: 1px;
+  top: 1px; left: 2px;
 }
 .badger .brow {
   position: absolute;
-  width: 14px; height: 3px;
+  width: 16px; height: 3px;
   background: #2a2a30;
   border-radius: 2px;
-  top: 12px; left: 14px;
+  top: 14px; left: 16px;
   z-index: 4;
   transform-origin: center;
 }
 .badger .leg {
   position: absolute;
-  width: 18px; height: 22px;
+  width: 20px; height: 24px;
   background: var(--fur);
   border-radius: 40% 40% 30% 30%;
   bottom: -6px;
 }
-.badger .leg.fl { left: 78px; }
-.badger .leg.fr { left: 98px; }
-.badger .leg.bl { left: 22px; }
-.badger .leg.br { left: 42px; }
+.badger .leg.fl { left: 92px; }
+.badger .leg.fr { left: 116px; }
+.badger .leg.bl { left: 28px; }
+.badger .leg.br { left: 52px; }
 .badger .tail {
   position: absolute;
-  left: -8px; top: 42px;
-  width: 28px; height: 18px;
+  left: -10px; top: 48px;
+  width: 32px; height: 20px;
   background: var(--fur-light);
   border-radius: 50%;
 }
 .badger .tag {
   position: absolute;
-  left: 28px; top: 48px;
-  width: 28px; height: 22px;
+  left: 34px; top: 56px;
+  width: 32px; height: 24px;
   background: #f7c948;
-  border-radius: 4px;
+  border-radius: 5px;
   display: grid;
   place-items: center;
   font-family: "Jua", sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   color: #5a4010;
   z-index: 4;
   box-shadow: 0 2px 0 #c9a030;
@@ -347,10 +347,10 @@ html, body {
 /* HIVE */
 .hive {
   position: absolute;
-  right: 16%;
-  bottom: 26%;
-  width: 78px;
-  height: 92px;
+  right: 14%;
+  bottom: 24%;
+  width: 92px;
+  height: 108px;
   z-index: 4;
   transform-origin: 50% 100%;
   transition: transform .3s ease;
@@ -551,9 +551,11 @@ html, body {
 .caption.show { opacity: 1; }
 
 @media (max-width: 640px) {
-  .badger { width: 110px; height: 90px; }
-  .badger .body { width: 86px; height: 56px; }
-  .badger .head { width: 46px; height: 42px; left: 60px; }
+  .badger { width: 128px; height: 100px; }
+  .badger .body { width: 98px; height: 64px; left: 8px; top: 28px; }
+  .badger .head { width: 52px; height: 46px; left: 70px; }
+  .badger .leg.fl { left: 70px; }
+  .badger .leg.fr { left: 90px; }
   .hive { width: 58px; height: 70px; }
   .play-btn { font-size: 28px; padding: 14px 32px 10px; }
 }
@@ -923,6 +925,8 @@ html, body {
     at(TOTAL, () => {
       playing = false;
       progress.classList.remove("show");
+      endOverlay.classList.remove("show");
+      setCaption("");
       startUi.classList.remove("hide");
       playBtn.textContent = "▶ ещё раз";
     });
