@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>МЕДООК 07 — персонаж и раскадровка</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Dongle:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #1e1a14;
+  --card: #2a241c;
+  --soft: #fff8ee;
+  --honey: #f0b43a;
+  --muted: #a89070;
+  --ink: #3a342c;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Dongle", "Jua", sans-serif;
+  background:
+    radial-gradient(ellipse at 20% 0%, #3a3024 0%, transparent 50%),
+    var(--bg);
+  color: var(--soft);
+  min-height: 100vh;
+  padding: 28px 18px 60px;
+}
+.wrap { max-width: 1100px; margin: 0 auto; }
+header { margin-bottom: 28px; }
+.badge {
+  display: inline-block;
+  background: var(--honey);
+  color: #3a2a10;
+  font-family: "Jua", sans-serif;
+  font-size: 18px;
+  padding: 4px 12px 2px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+h1 {
+  font-family: "Jua", sans-serif;
+  font-size: clamp(36px, 7vw, 56px);
+  line-height: 1;
+  letter-spacing: .02em;
+}
+.lead {
+  font-size: 26px;
+  color: var(--muted);
+  margin-top: 6px;
+  max-width: 40ch;
+}
+.nav {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-top: 16px;
+}
+.nav a {
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--soft);
+  font-family: "Jua", sans-serif;
+  font-size: 20px;
+  padding: 8px 16px 6px;
+  border-radius: 999px;
+}
+.nav a.ghost {
+  background: transparent;
+  color: var(--soft);
+  border: 1px solid rgba(255,248,238,.25);
+}
+
+section { margin-top: 36px; }
+section h2 {
+  font-family: "Jua", sans-serif;
+  font-size: 28px;
+  margin-bottom: 12px;
+  color: var(--honey);
+}
+.card {
+  background: var(--card);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255,248,238,.08);
+  box-shadow: 0 20px 50px rgba(0,0,0,.35);
+}
+.card img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.note {
+  font-size: 22px;
+  color: var(--muted);
+  padding: 14px 16px 16px;
+  line-height: 1.25;
+}
+.grid {
+  display: grid;
+  gap: 18px;
+}
+@media (min-width: 800px) {
+  .grid.two { grid-template-columns: 1fr 1fr; }
+}
+.chips {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 10px;
+}
+.chip {
+  font-size: 18px;
+  background: rgba(240,180,58,.15);
+  color: #f5d78a;
+  padding: 4px 12px 2px;
+  border-radius: 999px;
+}
+.poses {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.pose {
+  background: rgba(255,248,238,.06);
+  border-radius: 12px;
+  padding: 12px 10px 10px;
+  text-align: center;
+}
+.pose b {
+  display: block;
+  font-family: "Jua", sans-serif;
+  font-size: 18px;
+  color: var(--honey);
+}
+.pose span { font-size: 20px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="badge">стиль SEALOOK · 0+</div>
+    <h1>МЕДООК №07</h1>
+    <p class="lead">Смешной медоед-клякса: огромные глаза, крошечные зрачки, бирка 07, без слов — только гэги.</p>
+    <div class="nav">
+      <a href="index.html">▶ смотреть шорт</a>
+      <a class="ghost" href="SCENARIO.md">сценарий</a>
+      <a class="ghost" href="#sheet">персонаж</a>
+      <a class="ghost" href="#boards">раскадровка</a>
+    </div>
+    <div class="chips">
+      <span class="chip">blob-тело</span>
+      <span class="chip">глаза-тарелки</span>
+      <span class="chip">серебристая «шапка»</span>
+      <span class="chip">бирка 07</span>
+      <span class="chip">blep</span>
+    </div>
+  </header>
+
+  <section id="sheet">
+    <h2>Лист персонажа</h2>
+    <div class="card">
+      <img src="art/medoed_character_sheet.png" alt="Лист персонажа МЕДООК 07 — фас, профиль, спина"/>
+      <p class="note">Фас / профиль / спина. Паттерн медоеда + морда «Тюленьков»: белые кругляши глаз, крошечные зелёные зрачки, мягкий матовый 3D.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Позы для серии «Капля»</h2>
+    <div class="poses">
+      <div class="pose"><b>1</b><span>Взгляд</span></div>
+      <div class="pose"><b>2</b><span>Стелс</span></div>
+      <div class="pose"><b>3</b><span>Мёд на морде</span></div>
+      <div class="pose"><b>4</b><span>Блеп / гордый</span></div>
+      <div class="pose"><b>5</b><span>Сосед-пчёлка</span></div>
+      <div class="pose"><b>6</b><span>Бумф!</span></div>
+      <div class="pose"><b>7</b><span>Поровну</span></div>
+      <div class="pose"><b>8</b><span>Сон-клубок</span></div>
+    </div>
+  </section>
+
+  <section id="boards">
+    <h2>Раскадровка</h2>
+    <div class="grid">
+      <div class="card">
+        <img src="art/medoed_storyboard_1.png" alt="Раскадровка 1–4: взгляд, стелс, мёд, блеп"/>
+        <p class="note">Кадры 1–4: взгляд в камеру → стелс к улью → морда в мёде → сытый блеп.</p>
+      </div>
+      <div class="card">
+        <img src="art/medoed_storyboard_2.png" alt="Раскадровка 5–8: сосед, бумф, поровну, сон"/>
+        <p class="note">Кадры 5–8: дуэль взглядов с пчёлкой → бумф → делят каплю → сон клубком.</p>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>
