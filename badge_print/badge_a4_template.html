@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<title>Шаблон бейджей A4 — Гимназия 171 ECLAIR</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 210mm; height: 297mm; background: #fff; font-family: Arial, Helvetica, sans-serif; }
+  .page { width: 210mm; height: 297mm; padding: 14mm 12mm 12mm; position: relative; }
+  .header { text-align: center; margin-bottom: 8mm; }
+  .header h1 { font-size: 11pt; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+  .header p { font-size: 8pt; color: #555; margin-top: 2mm; }
+  .grid {
+    display: grid;
+    grid-template-columns: 90mm 90mm;
+    grid-template-rows: 55mm 55mm 55mm;
+    column-gap: 6mm; row-gap: 8mm; justify-content: center;
+  }
+  .badge {
+    width: 90mm; height: 55mm;
+    border: 0.3mm dashed #999;
+    overflow: hidden; background: #081237; position: relative; padding: 0;
+  }
+  .badge img {
+    width: 90mm; height: 55mm;
+    object-fit: cover; object-position: center;
+    display: block;
+  }
+  .footer { position: absolute; bottom: 8mm; left: 12mm; right: 12mm; text-align: center; font-size: 7.5pt; color: #777; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <h1>Шаблон бейджей · Гимназия 171 · ECLAIR</h1>
+      <p>Формат листа A4 · размер бейджа 90 × 55 мм · 6 шт. · логотип на всю ширину · пунктир — линия реза</p>
+    </div>
+    <div class="grid">
+      <div class="badge"><img src="logo_badge_fill.jpg" alt="ECLAIR"/></div>
+      <div class="badge"><img src="logo_badge_fill.jpg" alt="ECLAIR"/></div>
+      <div class="badge"><img src="logo_badge_fill.jpg" alt="ECLAIR"/></div>
+      <div class="badge"><img src="logo_badge_fill.jpg" alt="ECLAIR"/></div>
+      <div class="badge"><img src="logo_badge_fill.jpg" alt="ECLAIR"/></div>
+      <div class="badge"><img src="logo_badge_fill.jpg" alt="ECLAIR"/></div>
+    </div>
+    <div class="footer">Распечатать в масштабе 100% · без полей принтера «минимальные» / «без полей»</div>
+  </div>
+</body>
+</html>
