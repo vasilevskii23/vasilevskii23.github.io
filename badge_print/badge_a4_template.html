@@ -19,12 +19,14 @@
   }
   .badge {
     width: 90mm; height: 55mm;
-    border: 0.3mm dashed #999;
-    overflow: hidden; background: #081237; position: relative; padding: 0;
+    border: 0.3mm dashed #999; border-radius: 1.5mm;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; background: #fff; padding: 1.5mm;
   }
   .badge img {
-    width: 90mm; height: 55mm;
-    object-fit: cover; object-position: center;
+    max-width: 100%; max-height: 100%;
+    width: auto; height: auto;
+    object-fit: contain;
     display: block;
   }
   .footer { position: absolute; bottom: 8mm; left: 12mm; right: 12mm; text-align: center; font-size: 7.5pt; color: #777; }
@@ -35,15 +37,15 @@
   <div class="page">
     <div class="header">
       <h1>Шаблон бейджей · Гимназия 171 · ECLAIR</h1>
-      <p>Формат листа A4 · размер бейджа 90 × 55 мм · 6 шт. · логотип на всю ширину · пунктир — линия реза</p>
+      <p>Формат листа A4 · размер бейджа 90 × 55 мм · 6 шт. · логотип целиком · пунктир — линия реза</p>
     </div>
     <div class="grid">
-      <div class="badge"><img src="logo_badge_fill.jpg" alt="ECLAIR"/></div>
-      <div class="badge"><img src="logo_badge_fill.jpg" alt="ECLAIR"/></div>
-      <div class="badge"><img src="logo_badge_fill.jpg" alt="ECLAIR"/></div>
-      <div class="badge"><img src="logo_badge_fill.jpg" alt="ECLAIR"/></div>
-      <div class="badge"><img src="logo_badge_fill.jpg" alt="ECLAIR"/></div>
-      <div class="badge"><img src="logo_badge_fill.jpg" alt="ECLAIR"/></div>
+      <div class="badge"><img src="logo_trimmed.png" alt="ECLAIR"/></div>
+      <div class="badge"><img src="logo_trimmed.png" alt="ECLAIR"/></div>
+      <div class="badge"><img src="logo_trimmed.png" alt="ECLAIR"/></div>
+      <div class="badge"><img src="logo_trimmed.png" alt="ECLAIR"/></div>
+      <div class="badge"><img src="logo_trimmed.png" alt="ECLAIR"/></div>
+      <div class="badge"><img src="logo_trimmed.png" alt="ECLAIR"/></div>
     </div>
     <div class="footer">Распечатать в масштабе 100% · без полей принтера «минимальные» / «без полей»</div>
   </div>
