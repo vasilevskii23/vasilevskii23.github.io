@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>3D план загородного дома</title>
+  <link rel="icon" href="favicon.png" type="image/png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet" />
@@ -239,7 +240,7 @@
         <p>Фрагмент по обмерному чертежу: стены, проёмы, печь и размеры комнат в метрах.</p>
       </div>
       <div class="panel controls">
-        <label>Крыша <input id="toggle-roof" type="checkbox" checked /></label>
+        <label>Крыша <input id="toggle-roof" type="checkbox" /></label>
         <label>Подписи <input id="toggle-labels" type="checkbox" checked /></label>
         <label>Размеры <input id="toggle-dims" type="checkbox" checked /></label>
         <label>Мебель <input id="toggle-furniture" type="checkbox" checked /></label>
@@ -256,7 +257,7 @@
         <button type="button" data-view="side">С торца</button>
       </div>
       <div class="rooms" id="room-list"></div>
-      <p class="hint">Тяните мышью для вращения · колесо — масштаб · ПКМ — панорама. Правая часть плана на исходном чертеже обрезана.</p>
+      <p class="hint">Тяните мышью для вращения · колесо — масштаб · ПКМ — панорама. Правая часть плана на исходном чертеже обрезана. <a href="floor-plan.jpg" target="_blank" rel="noopener" style="color:#c8e6d4">Исходный чертёж</a></p>
     </div>
 
     <div class="panel badge">Высота потолка 2,70 м · наружные стены 0,38 м</div>
@@ -430,8 +431,10 @@
 
     const grid = new THREE.GridHelper(20, 20, 0x4a5a48, 0x303a32);
     grid.position.y = 0.001;
-    grid.material.transparent = true;
-    grid.material.opacity = 0.35;
+    for (const mat of [].concat(grid.material)) {
+      mat.transparent = true;
+      mat.opacity = 0.35;
+    }
     scene.add(grid);
 
     const house = new THREE.Group();
@@ -785,6 +788,7 @@
       }
     }
     buildRoof();
+    roofGroup.visible = false;
 
     // Labels
     function addLabel(text, x, y, z, className = 'room-label') {
@@ -854,25 +858,40 @@
       list.appendChild(row);
     }
 
-    // Camera presets
+    // Camera presets with smooth tween
+    const viewTargets = {
+      iso: { pos: new THREE.Vector3(12, 10, 12), target: new THREE.Vector3(3.4, 0.5, 4.2) },
+      top: { pos: new THREE.Vector3(3.4, 18, 4.3), target: new THREE.Vector3(3.4, 0, 4.2) },
+      front: { pos: new THREE.Vector3(3.4, 3.2, -10), target: new THREE.Vector3(3.4, 1.2, 4) },
+      side: { pos: new THREE.Vector3(-10, 4, 4.2), target: new THREE.Vector3(3, 1.2, 4.2) },
+    };
+    let camAnim = null;
+
     function setView(name) {
-      const views = {
-        iso: { pos: [12, 10, 12], target: [3.4, 0.5, 4.2] },
-        top: { pos: [3.4, 18, 4.3], target: [3.4, 0, 4.2] },
-        front: { pos: [3.4, 3.2, -10], target: [3.4, 1.2, 4] },
-        side: { pos: [-10, 4, 4.2], target: [3, 1.2, 4.2] },
+      const v = viewTargets[name] || viewTargets.iso;
+      camAnim = {
+        fromPos: camera.position.clone(),
+        toPos: v.pos.clone(),
+        fromTarget: controls.target.clone(),
+        toTarget: v.target.clone(),
+        t0: performance.now(),
+        dur: 700,
       };
-      const v = views[name] || views.iso;
-      camera.position.set(...v.pos);
-      controls.target.set(...v.target);
-      controls.update();
     }
-    setView('iso');
+    camera.position.copy(viewTargets.iso.pos);
+    controls.target.copy(viewTargets.iso.target);
+    controls.update();
 
     document.querySelectorAll('[data-view]').forEach((btn) => {
-      btn.addEventListener('click', () => setView(btn.dataset.view));
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        setView(btn.dataset.view);
+      });
     });
-    document.getElementById('btn-reset').addEventListener('click', () => setView('iso'));
+    document.getElementById('btn-reset').addEventListener('click', (e) => {
+      e.preventDefault();
+      setView('iso');
+    });
 
     document.getElementById('toggle-roof').addEventListener('change', (e) => {
       roofGroup.visible = e.target.checked;
@@ -898,17 +917,20 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // Soft intro motion
-    let t0 = performance.now();
+    function easeInOut(t) {
+      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    }
+
     function animate(now) {
       requestAnimationFrame(animate);
-      const t = (now - t0) / 1000;
-      if (t < 2.2) {
-        const k = 1 - Math.pow(1 - Math.min(t / 2.2, 1), 3);
-        camera.position.lerp(new THREE.Vector3(12, 10, 12), 0.04 * k);
+      if (camAnim) {
+        const u = Math.min(1, (now - camAnim.t0) / camAnim.dur);
+        const e = easeInOut(u);
+        camera.position.lerpVectors(camAnim.fromPos, camAnim.toPos, e);
+        controls.target.lerpVectors(camAnim.fromTarget, camAnim.toTarget, e);
+        if (u >= 1) camAnim = null;
       }
       controls.update();
-      // gentle chimney glow pulse
       furnitureGroup.traverse((obj) => {
         if (obj.isPointLight) obj.intensity = 0.45 + Math.sin(now * 0.004) * 0.12;
       });
