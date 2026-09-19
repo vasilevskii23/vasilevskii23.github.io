@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Квартира — Арт-деко 2026</title>
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --white: #f7f4ef;
+      --beige: #d9cbb8;
+      --olive: #55634a;
+      --olive-deep: #3d4736;
+      --black: #121410;
+      --ink: #1c1b17;
+      --muted: #6e685c;
+      --line: rgba(18, 20, 16, 0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: Outfit, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 500px at 0% 0%, rgba(85, 99, 74, 0.12), transparent 60%),
+        radial-gradient(800px 480px at 100% 20%, rgba(217, 203, 184, 0.55), transparent 55%),
+        linear-gradient(180deg, #f3efe8 0%, #ebe4d8 45%, #e2d8c8 100%);
+      min-height: 100%;
+    }
+    .wrap {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 28px 0 80px;
+    }
+    header.hero {
+      display: grid;
+      gap: 18px;
+      padding: 28px 0 36px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 36px;
+    }
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav a {
+      color: var(--olive-deep);
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .palette { display: flex; gap: 8px; }
+    .swatch { width: 22px; height: 22px; border: 1px solid rgba(18, 20, 16, 0.2); }
+    .swatch.white { background: #f7f4ef; }
+    .swatch.beige { background: #d9cbb8; }
+    .swatch.olive { background: #55634a; }
+    .swatch.black { background: #121410; }
+    h1 {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      max-width: 14ch;
+      color: var(--black);
+    }
+    .lede {
+      max-width: 48ch;
+      font-size: 1.05rem;
+      line-height: 1.55;
+      color: var(--muted);
+      font-weight: 300;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--olive-deep);
+    }
+    .plan-ref {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 42px;
+    }
+    .plan-ref img {
+      width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+    .gallery { display: grid; gap: 42px; }
+    figure.shot { display: grid; gap: 14px; }
+    figure.shot img {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #ddd5c8;
+      box-shadow: 0 24px 60px rgba(18, 20, 16, 0.14);
+    }
+    figcaption { display: grid; gap: 6px; padding: 0 2px; }
+    figcaption .room {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+      color: var(--black);
+    }
+    figcaption .dims {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--olive);
+      font-weight: 500;
+    }
+    figcaption .note {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.45;
+      max-width: 62ch;
+    }
+    footer {
+      margin-top: 56px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    footer a { color: var(--olive-deep); }
+    @media (max-width: 720px) {
+      .wrap { width: calc(100% - 28px); }
+      h1 { max-width: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="nav">
+        <a href="artdeco.html">← Дом · арт-деко</a>
+        <div class="palette" aria-label="Палитра">
+          <span class="swatch white"></span>
+          <span class="swatch beige"></span>
+          <span class="swatch olive"></span>
+          <span class="swatch black"></span>
+        </div>
+      </div>
+      <h1>Квартира · Арт-деко 2026</h1>
+      <p class="lede">Премиальный ремонт по вашей планировке с мебелью: белый, бежевый, оливковый и чёрные акценты.</p>
+      <div class="meta">
+        <span>Open-plan</span>
+        <span>Premium interior</span>
+        <span>7 кадров</span>
+      </div>
+    </header>
+
+    <div class="plan-ref">
+      <div class="dims" style="letter-spacing:0.1em;text-transform:uppercase;color:var(--olive);font-size:0.78rem;font-weight:500">Исходная планировка</div>
+      <img src="apartment-plan.jpg" alt="Планировка квартиры" />
+    </div>
+
+    <section class="gallery">
+      <figure class="shot">
+        <img src="visuals-apt/apt-artdeco-openplan.png" alt="Open-plan гостиная — кухня" loading="eager" />
+        <figcaption>
+          <div class="room">Open-plan · общий вид</div>
+          <div class="dims">Гостиная → столовая → кухня</div>
+          <p class="note">Единое пространство: L-диван, круглый обеденный стол, L-кухня в одном стиле.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="visuals-apt/apt-artdeco-living.png" alt="Гостиная" loading="lazy" />
+        <figcaption>
+          <div class="room">Гостиная</div>
+          <div class="dims">L-диван · зона отдыха</div>
+          <p class="note">Оливковый бархатный диван, чёрный столик, геометрический пол, панорамный свет.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="visuals-apt/apt-artdeco-kitchen.png" alt="Кухня и столовая" loading="lazy" />
+        <figcaption>
+          <div class="room">Кухня и столовая</div>
+          <div class="dims">L-кухня 600 мм · стол на 4</div>
+          <p class="note">Флейтированные фасады, оливковый акцент, чёрный камень, Deco-подвесы.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="visuals-apt/apt-artdeco-bedroom.png" alt="Спальня" loading="lazy" />
+        <figcaption>
+          <div class="room">Спальня</div>
+          <div class="dims">Кровать 1800 мм</div>
+          <p class="note">Канальное изголовье, оливковый текстиль, чёрные тумбы и бра.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="visuals-apt/apt-artdeco-study.png" alt="Кабинет / гостевая" loading="lazy" />
+        <figcaption>
+          <div class="room">Кабинет / гостевая</div>
+          <div class="dims">Кровать 1200 мм · рабочее место</div>
+          <p class="note">Скошенная стена, кушетка, стол у окна, оливковый шкаф с каннелюрами.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="visuals-apt/apt-artdeco-hall.png" alt="Прихожая" loading="lazy" />
+        <figcaption>
+          <div class="room">Прихожая</div>
+          <div class="dims">Вход · гардероб</div>
+          <p class="note">Оливковые флейтированные шкафы, мрамор с чёрной обводкой, бра.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="visuals-apt/apt-artdeco-bath.png" alt="Санузел" loading="lazy" />
+        <figcaption>
+          <div class="room">Санузел</div>
+          <div class="dims">Раковина Ø450 · зона МС</div>
+          <p class="note">Белый мрамор, оливковая тумба, матовый чёрный смеситель, круглое зеркало.</p>
+        </figcaption>
+      </figure>
+    </section>
+
+    <footer>
+      <span>Палитра: белый · бежевый · оливковый · чёрный</span>
+      <a href="apartment-plan.jpg" target="_blank" rel="noopener">Планировка</a>
+    </footer>
+  </div>
+</body>
+</html>
