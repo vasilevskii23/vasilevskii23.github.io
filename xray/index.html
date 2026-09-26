@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>/xray</title>
+<style>
+  :root { --bg:#07090c; --text:#e8eef4; --muted:#8a96a4; --accent:#78d2ff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { min-height:100vh; background:radial-gradient(1200px 600px at 50% -10%, #122033, var(--bg)); color:var(--text); font-family:ui-sans-serif,system-ui,sans-serif; }
+  main { max-width:1100px; margin:0 auto; padding:28px 16px 48px; }
+  h1 { font-size:clamp(28px,5vw,44px); letter-spacing:.04em; font-weight:700; }
+  h1 span { color:var(--accent); }
+  p { margin-top:8px; color:var(--muted); max-width:42rem; line-height:1.45; }
+  .grid { margin-top:28px; display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); }
+  figure { background:#0c1118; border:1px solid #1b2430; border-radius:14px; overflow:hidden; }
+  figure img { display:block; width:100%; height:auto; }
+  figcaption { padding:10px 12px 14px; font-size:13px; color:var(--muted); }
+  figcaption strong { display:block; color:var(--text); margin-bottom:2px; }
+  .hero { margin-top:22px; border-radius:16px; overflow:hidden; border:1px solid #1b2430; }
+  .hero img { width:100%; display:block; }
+</style>
+</head>
+<body>
+<main>
+  <h1><span>/xray</span></h1>
+  <p>Рентген-эффект по портрету: скелетная анатомия в той же позе — рука закрывает глаз, кольцо как радионепрозрачный артефакт.</p>
+  <div class="hero"><img src="xray-composite.png" alt="INPUT | Overlay | Film"/></div>
+  <div class="grid">
+    <figure><img src="source-preview.jpg" alt="Input"/><figcaption><strong>INPUT</strong>Исходный портрет</figcaption></figure>
+    <figure><img src="xray-overlay.png" alt="Overlay"/><figcaption><strong>Overlay</strong>Фото + скелет</figcaption></figure>
+    <figure><img src="xray-film.png" alt="Film"/><figcaption><strong>Film</strong>Чистый рентген-кадр</figcaption></figure>
+  </div>
+</main>
+</body>
+</html>
