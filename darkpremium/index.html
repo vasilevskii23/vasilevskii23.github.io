@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>/darkpremium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="palette.css"/>
+<style>
+:root {
+  --dp-void: #0B0A09;
+  --dp-charcoal: #1C1B19;
+  --dp-slate: #3A3732;
+  --dp-kraft: #B8956C;
+  --dp-paper: #D4BC9A;
+  --dp-rim: #F4F1EC;
+  --dp-muted: #8A8178;
+  --dp-line: rgba(244,241,236,0.10);
+  --dp-glow: rgba(184,149,108,0.18);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  min-height: 100vh;
+  background: var(--dp-void);
+  color: var(--dp-rim);
+  font-family: Manrope, sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* grain atmosphere */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hero {
+  position: relative;
+  min-height: 100dvh;
+  min-height: 100vh;
+  display: grid;
+  align-items: end;
+  isolation: isolate;
+}
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+.hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 45%;
+  animation: heroIn 1.4s cubic-bezier(.22,1,.36,1) both;
+}
+.hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(11,10,9,0.15) 0%, rgba(11,10,9,0.25) 40%, rgba(11,10,9,0.92) 100%),
+    radial-gradient(ellipse 80% 55% at 50% 35%, transparent 0%, rgba(11,10,9,0.45) 100%);
+}
+.hero-copy {
+  width: min(720px, calc(100% - 40px));
+  margin: 0 auto 10vh;
+  padding: 0 4px;
+  animation: rise 1s 0.25s cubic-bezier(.22,1,.36,1) both;
+}
+.brand {
+  font-family: Syne, sans-serif;
+  font-weight: 800;
+  font-size: clamp(42px, 10vw, 88px);
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  color: var(--dp-rim);
+}
+.brand em {
+  font-style: normal;
+  color: var(--dp-kraft);
+}
+.lede {
+  margin-top: 18px;
+  max-width: 28rem;
+  color: var(--dp-muted);
+  font-size: clamp(15px, 2.4vw, 17px);
+  font-weight: 500;
+}
+.cta-row {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.btn {
+  appearance: none;
+  border: 1px solid var(--dp-line);
+  background: rgba(28,27,25,0.7);
+  color: var(--dp-rim);
+  font-family: Manrope, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  transition: border-color .2s, background .2s, transform .2s;
+}
+.btn:hover { border-color: rgba(184,149,108,0.55); background: rgba(184,149,108,0.12); transform: translateY(-1px); }
+.btn-primary {
+  background: var(--dp-kraft);
+  color: var(--dp-void);
+  border-color: transparent;
+}
+.btn-primary:hover { background: var(--dp-paper); border-color: transparent; }
+
+main { width: min(1100px, calc(100% - 40px)); margin: 0 auto; padding: 72px 0 96px; }
+
+.section { margin-top: 72px; }
+.section:first-child { margin-top: 0; }
+.kicker {
+  font-family: Syne, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dp-kraft);
+  font-weight: 700;
+  margin-bottom: 10px;
+  animation: fade 0.8s ease both;
+}
+h2 {
+  font-family: Syne, sans-serif;
+  font-weight: 700;
+  font-size: clamp(26px, 4vw, 36px);
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+.section p.support {
+  color: var(--dp-muted);
+  max-width: 36rem;
+  margin-bottom: 28px;
+}
+
+.compare {
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--dp-line);
+  box-shadow: 0 0 0 1px rgba(184,149,108,0.04), 0 30px 80px rgba(0,0,0,0.45);
+}
+.compare img { display: block; width: 100%; height: auto; }
+
+.grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+figure {
+  background: var(--dp-charcoal);
+  border: 1px solid var(--dp-line);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: border-color .25s, transform .35s cubic-bezier(.22,1,.36,1);
+}
+figure:hover { border-color: rgba(184,149,108,0.35); transform: translateY(-3px); }
+figure img { display: block; width: 100%; height: auto; aspect-ratio: 3/4; object-fit: cover; }
+figure.square img { aspect-ratio: 1; }
+figcaption { padding: 12px 14px 16px; }
+figcaption strong {
+  display: block;
+  font-family: Syne, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+figcaption span { color: var(--dp-muted); font-size: 13px; }
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+@media (max-width: 700px) {
+  .swatches { grid-template-columns: repeat(3, 1fr); }
+}
+.swatch {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--dp-line);
+  background: var(--dp-charcoal);
+}
+.swatch-chip { height: 72px; }
+.swatch-meta { padding: 10px 12px 12px; }
+.swatch-meta strong {
+  display: block;
+  font-family: Syne, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+}
+.swatch-meta code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: var(--dp-muted);
+}
+
+.tokens {
+  margin-top: 18px;
+  background: var(--dp-charcoal);
+  border: 1px solid var(--dp-line);
+  border-radius: 16px;
+  padding: 16px 18px;
+  overflow-x: auto;
+}
+.tokens pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  color: var(--dp-paper);
+  line-height: 1.65;
+  white-space: pre;
+}
+
+footer {
+  border-top: 1px solid var(--dp-line);
+  padding: 28px 0 48px;
+  color: var(--dp-muted);
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+footer a { color: var(--dp-kraft); text-decoration: none; }
+
+@keyframes heroIn {
+  from { transform: scale(1.06); opacity: 0.4; filter: brightness(0.6); }
+  to { transform: scale(1); opacity: 1; filter: brightness(1); }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-media">
+      <img src="darkpremium-editorial.jpg" alt="Kraft paper cup on charcoal — dark premium editorial"/>
+    </div>
+    <div class="hero-copy">
+      <div class="brand">/<em>darkpremium</em></div>
+      <p class="lede">Тёмный премиум-грейд по кадру с крафт-стаканом: угольный void, тёплая бумага, белый ободок — спокойная коммерческая атмосфера.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#treatments">Смотреть кадры</a>
+        <a class="btn" href="#palette">Палитра</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="compare">
+      <div class="kicker">Before / After</div>
+      <h2>Исходник → Dark Premium</h2>
+      <p class="support">Приглушённый цвет, тёплый крафт, vignette и зерно — без «фиолетового dark UI».</p>
+      <div class="compare">
+        <img src="darkpremium-compare.jpg" alt="Сравнение INPUT и Dark Premium"/>
+      </div>
+    </section>
+
+    <section class="section" id="treatments">
+      <div class="kicker">Treatments</div>
+      <h2>Три версии кадра</h2>
+      <p class="support">Грейд исходника, студийный crop и editorial / detail — для сторис, обложек и moodboard.</p>
+      <div class="grid">
+        <figure>
+          <img src="darkpremium-grade-web.jpg" alt="Color grade"/>
+          <figcaption>
+            <strong>Grade</strong>
+            <span>Исходная сцена, премиум-цвет</span>
+          </figcaption>
+        </figure>
+        <figure>
+          <img src="darkpremium-studio.jpg" alt="Studio crop"/>
+          <figcaption>
+            <strong>Studio</strong>
+            <span>Плотный crop, почти void</span>
+          </figcaption>
+        </figure>
+        <figure>
+          <img src="darkpremium-editorial.jpg" alt="Editorial product"/>
+          <figcaption>
+            <strong>Editorial</strong>
+            <span>Изоляция на charcoal</span>
+          </figcaption>
+        </figure>
+        <figure class="square">
+          <img src="darkpremium-detail.jpg" alt="Rim detail"/>
+          <figcaption>
+            <strong>Detail</strong>
+            <span>Ободок, шов, фактура бумаги</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="palette">
+      <div class="kicker">Tokens</div>
+      <h2>Палитра Dark Premium</h2>
+      <p class="support">Шесть токенов с кадра: void → kraft → rim. Готовый CSS в <code>palette.css</code>.</p>
+      <div class="swatches" aria-label="Color swatches">
+        <div class="swatch"><div class="swatch-chip" style="background:#0B0A09"></div><div class="swatch-meta"><strong>void</strong><code>#0B0A09</code></div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#1C1B19"></div><div class="swatch-meta"><strong>charcoal</strong><code>#1C1B19</code></div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#3A3732"></div><div class="swatch-meta"><strong>slate</strong><code>#3A3732</code></div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#B8956C"></div><div class="swatch-meta"><strong>kraft</strong><code>#B8956C</code></div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#D4BC9A"></div><div class="swatch-meta"><strong>paper</strong><code>#D4BC9A</code></div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#F4F1EC"></div><div class="swatch-meta"><strong>rim</strong><code>#F4F1EC</code></div></div>
+      </div>
+      <div class="tokens">
+        <pre>/* darkpremium/palette.css */
+--dp-void: #0B0A09;
+--dp-charcoal: #1C1B19;
+--dp-slate: #3A3732;
+--dp-kraft: #B8956C;
+--dp-paper: #D4BC9A;
+--dp-rim: #F4F1EC;</pre>
+      </div>
+      <p style="margin-top:18px">
+        <img src="palette-swatches.jpg" alt="Palette strip" style="width:100%;border-radius:14px;border:1px solid var(--dp-line)"/>
+      </p>
+    </section>
+
+    <footer>
+      <span>/darkpremium · kraft cup still</span>
+      <a href="../index.html">← АКТЕРИЩЕ</a>
+    </footer>
+  </main>
+</body>
+</html>

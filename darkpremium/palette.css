@@ -1,0 +1,12 @@
+/* Dark Premium — extracted from kraft cup still */
+:root {
+  --dp-void: #0B0A09;
+  --dp-charcoal: #1C1B19;
+  --dp-slate: #3A3732;
+  --dp-kraft: #B8956C;
+  --dp-paper: #D4BC9A;
+  --dp-rim: #F4F1EC;
+  --dp-muted: #8A8178;
+  --dp-line: rgba(244,241,236,0.10);
+  --dp-glow: rgba(184,149,108,0.18);
+}
