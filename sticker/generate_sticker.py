@@ -92,16 +92,16 @@ def draw_sticker(size: int = SIZE, shadow: bool = True) -> Image.Image:
 
     # Layout inspired by Yandex «Хорошее место» stack:
     # mark → light label → bold title → footer mark (QR)
-    logo_size = int(size * 0.22)
+    logo_size = int(size * 0.44)  # 2× relative to previous 0.22
     logo = prep_logo(logo_size)
     logo_x = (size - logo_size) // 2
-    logo_y = int(size * 0.12)
+    logo_y = int(size * 0.08)
     sticker.alpha_composite(logo, (logo_x, logo_y))
 
     draw = ImageDraw.Draw(sticker)
-    we_font = load_font(FONT_TEXT, int(size * 0.042), 500)
-    brand_font = load_font(FONT_DISPLAY, int(size * 0.078), 800)
-    url_font = load_font(FONT_TEXT, int(size * 0.028), 500)
+    we_font = load_font(FONT_TEXT, int(size * 0.038), 500)
+    brand_font = load_font(FONT_DISPLAY, int(size * 0.068), 800)
+    url_font = load_font(FONT_TEXT, int(size * 0.026), 500)
 
     we = "МЫ В"
     brand = "КРУЖИМ"
@@ -112,22 +112,22 @@ def draw_sticker(size: int = SIZE, shadow: bool = True) -> Image.Image:
     we_w = we_bbox[2] - we_bbox[0]
     brand_w = brand_bbox[2] - brand_bbox[0]
 
-    text_top = logo_y + logo_size + int(size * 0.035)
+    text_top = logo_y + logo_size + int(size * 0.012)
     draw.text(((size - we_w) / 2, text_top), we, fill=INK, font=we_font)
 
-    brand_y = text_top + int(size * 0.048)
+    brand_y = text_top + int(size * 0.042)
     draw.text(((size - brand_w) / 2, brand_y), brand, fill=ORANGE, font=brand_font)
 
     # QR in lower third (replaces year block on Yandex stickers)
-    qr_inner = int(size * 0.22)
+    qr_inner = int(size * 0.18)
     qr = prep_qr(qr_inner)
     qr_x = (size - qr.size[0]) // 2
-    qr_y = brand_y + int(size * 0.105)
+    qr_y = brand_y + int(size * 0.072)
     sticker.alpha_composite(qr, (qr_x, qr_y))
 
     url_bbox = draw.textbbox((0, 0), url, font=url_font)
     url_w = url_bbox[2] - url_bbox[0]
-    url_y = qr_y + qr.size[1] + int(size * 0.018)
+    url_y = qr_y + qr.size[1] + int(size * 0.012)
     draw.text(((size - url_w) / 2, url_y), url, fill=BLUE_DEEP, font=url_font)
 
     if not shadow:
