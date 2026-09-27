@@ -17,6 +17,8 @@ OUT_STICKER = ROOT / "sticker.png"
 OUT_TRANSPARENT = ROOT / "sticker_transparent.png"
 OUT_DOOR = ROOT / "door_preview.png"
 OUT_PRINT = ROOT / "sticker_print_300dpi.png"
+OUT_DARK = ROOT / "sticker_dark.png"
+OUT_DARK_PRINT = ROOT / "sticker_dark_transparent.png"
 
 # Brand tokens from kruzhim.ru
 BLUE_DEEP = (26, 58, 143, 255)      # --bd #1A3A8F
@@ -25,6 +27,8 @@ ORANGE = (244, 98, 31, 255)         # --or #F4621F
 RED_ORANGE = (224, 52, 26, 255)     # --ro #E0341A
 INK = (13, 31, 92, 255)             # --ink #0D1F5C
 WHITE = (255, 255, 255, 255)
+LIGHT = (245, 248, 255, 255)        # text on dark / transparent variants
+SKY = (95, 179, 255, 255)           # --bs #5FB3FF
 
 SIZE = 2000
 
@@ -75,17 +79,28 @@ def prep_qr(target: int) -> Image.Image:
     return canvas
 
 
-def draw_sticker(size: int = SIZE, shadow: bool = True) -> Image.Image:
-    sticker = Image.new("RGBA", (size, size), WHITE)
-    sticker.putalpha(circle_mask(size))
+def draw_sticker(
+    size: int = SIZE,
+    shadow: bool = True,
+    *,
+    dark: bool = False,
+    transparent: bool = False,
+) -> Image.Image:
+    """Circle sticker. dark+transparent → no plate, light text for dark surfaces."""
+    if transparent:
+        sticker = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    else:
+        sticker = Image.new("RGBA", (size, size), WHITE)
+        sticker.putalpha(circle_mask(size))
 
-    # Thin brand ring (blue) — subtle edge like a premium badge
+    # Edge ring: brand blue on light; soft light ring on dark transparent
     ring = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     rd = ImageDraw.Draw(ring)
     stroke = max(4, size // 120)
+    ring_color = (255, 255, 255, 200) if dark and transparent else BLUE_MID
     rd.ellipse(
         (stroke, stroke, size - stroke - 1, size - stroke - 1),
-        outline=BLUE_MID,
+        outline=ring_color,
         width=stroke,
     )
     sticker.alpha_composite(ring)
@@ -107,6 +122,9 @@ def draw_sticker(size: int = SIZE, shadow: bool = True) -> Image.Image:
     brand = "КРУЖИМ"
     url = "kruzhim.ru"
 
+    we_color = LIGHT if dark else INK
+    url_color = SKY if dark else BLUE_DEEP
+
     we_bbox = draw.textbbox((0, 0), we, font=we_font)
     brand_bbox = draw.textbbox((0, 0), brand, font=brand_font)
     we_w = we_bbox[2] - we_bbox[0]
@@ -114,7 +132,7 @@ def draw_sticker(size: int = SIZE, shadow: bool = True) -> Image.Image:
     brand_h = brand_bbox[3] - brand_bbox[1]
 
     text_top = logo_y + logo_size + int(size * 0.01)
-    draw.text(((size - we_w) / 2, text_top), we, fill=INK, font=we_font)
+    draw.text(((size - we_w) / 2, text_top), we, fill=we_color, font=we_font)
 
     brand_y = text_top + int(size * 0.04)
     draw.text(((size - brand_w) / 2, brand_y), brand, fill=ORANGE, font=brand_font)
@@ -129,15 +147,24 @@ def draw_sticker(size: int = SIZE, shadow: bool = True) -> Image.Image:
     url_bbox = draw.textbbox((0, 0), url, font=url_font)
     url_w = url_bbox[2] - url_bbox[0]
     url_y = qr_y + qr.size[1] + int(size * 0.014)
-    draw.text(((size - url_w) / 2, url_y), url, fill=BLUE_DEEP, font=url_font)
+    draw.text(((size - url_w) / 2, url_y), url, fill=url_color, font=url_font)
 
     if not shadow:
         return sticker
 
-    stage = Image.new("RGBA", (size + 120, size + 120), (240, 245, 255, 255))
+    stage_bg = (18, 24, 40, 255) if dark else (240, 245, 255, 255)
+    stage = Image.new("RGBA", (size + 120, size + 120), stage_bg)
+    # Checker hint for transparency on dark preview
+    if transparent and dark:
+        chk = ImageDraw.Draw(stage)
+        cell = 28
+        for yy in range(0, stage.size[1], cell):
+            for xx in range(0, stage.size[0], cell):
+                if (xx // cell + yy // cell) % 2 == 0:
+                    chk.rectangle((xx, yy, xx + cell, yy + cell), fill=(28, 36, 56, 255))
     shadow_layer = Image.new("RGBA", stage.size, (0, 0, 0, 0))
-    shadow_blob = Image.new("RGBA", (size, size), (13, 31, 92, 70))
-    shadow_blob.putalpha(circle_mask(size).point(lambda p: int(p * 0.35) if p else 0))
+    shadow_blob = Image.new("RGBA", (size, size), (0, 0, 0, 90))
+    shadow_blob.putalpha(circle_mask(size).point(lambda p: int(p * 0.4) if p else 0))
     shadow_layer.paste(shadow_blob, (70, 78), shadow_blob)
     shadow_layer = shadow_layer.filter(ImageFilter.GaussianBlur(28))
     stage.alpha_composite(shadow_layer)
@@ -201,10 +228,16 @@ def main() -> None:
     door = draw_door_preview(transparent)
     door.save(OUT_DOOR, "PNG")
 
+    dark_print = draw_sticker(SIZE, shadow=False, dark=True, transparent=True)
+    dark_print.save(OUT_DARK_PRINT, "PNG")
+    draw_sticker(SIZE, shadow=True, dark=True, transparent=True).save(OUT_DARK, "PNG")
+
     print(f"Wrote {OUT_STICKER}")
     print(f"Wrote {OUT_TRANSPARENT}")
     print(f"Wrote {OUT_PRINT}")
     print(f"Wrote {OUT_DOOR}")
+    print(f"Wrote {OUT_DARK}")
+    print(f"Wrote {OUT_DARK_PRINT}")
 
 
 if __name__ == "__main__":

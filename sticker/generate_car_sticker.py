@@ -13,8 +13,10 @@ from generate_sticker import (
     FONT_DISPLAY,
     FONT_TEXT,
     INK,
+    LIGHT,
     ORANGE,
     ROOT,
+    SKY,
     WHITE,
     circle_mask,
     draw_sticker,
@@ -28,6 +30,11 @@ OUT_CIRCLE_PRINT = ROOT / "car_sticker_print.png"
 OUT_HORIZONTAL = ROOT / "car_sticker_horizontal.png"
 OUT_HORIZONTAL_PRINT = ROOT / "car_sticker_horizontal_print.png"
 OUT_PREVIEW = ROOT / "car_preview.png"
+OUT_CIRCLE_DARK = ROOT / "car_sticker_dark.png"
+OUT_CIRCLE_DARK_PRINT = ROOT / "car_sticker_dark_transparent.png"
+OUT_HORIZONTAL_DARK = ROOT / "car_sticker_horizontal_dark.png"
+OUT_HORIZONTAL_DARK_PRINT = ROOT / "car_sticker_horizontal_dark_transparent.png"
+OUT_PREVIEW_DARK = ROOT / "car_preview_dark.png"
 
 
 def with_stage(sticker: Image.Image, pad: int = 80, bg=(240, 245, 255, 255)) -> Image.Image:
@@ -45,22 +52,32 @@ def with_stage(sticker: Image.Image, pad: int = 80, bg=(240, 245, 255, 255)) -> 
     return stage
 
 
-def draw_horizontal_car_sticker(width: int = 2800, height: int = 900) -> Image.Image:
+def draw_horizontal_car_sticker(
+    width: int = 2800,
+    height: int = 900,
+    *,
+    dark: bool = False,
+    transparent: bool = False,
+) -> Image.Image:
     """Bumper / rear-window friendly layout: logo | copy | QR."""
-    sticker = Image.new("RGBA", (width, height), WHITE)
     radius = height // 2  # stadium / pill shape — common car-window cut
-    mask = Image.new("L", (width, height), 0)
-    ImageDraw.Draw(mask).rounded_rectangle((0, 0, width - 1, height - 1), radius=radius, fill=255)
-    sticker.putalpha(mask)
+    if transparent:
+        sticker = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    else:
+        sticker = Image.new("RGBA", (width, height), WHITE)
+        mask = Image.new("L", (width, height), 0)
+        ImageDraw.Draw(mask).rounded_rectangle((0, 0, width - 1, height - 1), radius=radius, fill=255)
+        sticker.putalpha(mask)
 
-    # Brand outline
+    # Brand outline (skip filled plate on transparent; keep thin contour)
     outline = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     od = ImageDraw.Draw(outline)
     stroke = max(4, height // 45)
+    outline_color = (255, 255, 255, 200) if dark and transparent else BLUE_MID
     od.rounded_rectangle(
         (stroke, stroke, width - stroke - 1, height - stroke - 1),
         radius=radius - stroke,
-        outline=BLUE_MID,
+        outline=outline_color,
         width=stroke,
     )
     sticker.alpha_composite(outline)
@@ -108,11 +125,13 @@ def draw_horizontal_car_sticker(width: int = 2800, height: int = 900) -> Image.I
     block_h = we_h + gap1 + brand_h + gap2 + url_h
     y = (height - block_h) // 2 - int(height * 0.015)
 
-    draw.text((text_left, y), we, fill=INK, font=we_font)
+    we_color = LIGHT if dark else INK
+    url_color = SKY if dark else BLUE_DEEP
+    draw.text((text_left, y), we, fill=we_color, font=we_font)
     y2 = y + we_h + gap1
     draw.text((text_left, y2), brand, fill=ORANGE, font=brand_font)
     y3 = y2 + brand_h + gap2
-    draw.text((text_left, y3), url, fill=BLUE_DEEP, font=url_font)
+    draw.text((text_left, y3), url, fill=url_color, font=url_font)
 
     sticker.alpha_composite(qr, (qr_x, qr_y))
 
@@ -123,22 +142,44 @@ def draw_horizontal_car_sticker(width: int = 2800, height: int = 900) -> Image.I
     return sticker
 
 
-def draw_car_preview(circle: Image.Image, horizontal: Image.Image) -> Image.Image:
+def dark_stage(sticker: Image.Image, pad: int = 80) -> Image.Image:
+    """Preview transparent sticker on dark checkerboard."""
+    w, h = sticker.size
+    stage = Image.new("RGBA", (w + pad * 2, h + pad * 2), (18, 24, 40, 255))
+    chk = ImageDraw.Draw(stage)
+    cell = 32
+    for yy in range(0, stage.size[1], cell):
+        for xx in range(0, stage.size[0], cell):
+            if (xx // cell + yy // cell) % 2 == 0:
+                chk.rectangle((xx, yy, xx + cell, yy + cell), fill=(28, 36, 56, 255))
+    stage.alpha_composite(sticker, (pad, pad))
+    return stage
+
+
+def draw_car_preview(
+    circle: Image.Image,
+    horizontal: Image.Image,
+    *,
+    dark: bool = False,
+) -> Image.Image:
     """Simple side/rear car mockup with both sticker placements."""
     W, H = 1600, 1000
-    stage = Image.new("RGBA", (W, H), (230, 236, 245, 255))
+    stage = Image.new(
+        "RGBA",
+        (W, H),
+        (16, 20, 32, 255) if dark else (230, 236, 245, 255),
+    )
 
     # Asphalt strip
     d = ImageDraw.Draw(stage)
-    d.rectangle((0, int(H * 0.72), W, H), fill=(55, 62, 72, 255))
-    d.rectangle((0, int(H * 0.72), W, int(H * 0.74)), fill=(90, 96, 104, 255))
+    d.rectangle((0, int(H * 0.72), W, H), fill=(40, 44, 52, 255) if dark else (55, 62, 72, 255))
+    d.rectangle((0, int(H * 0.72), W, int(H * 0.74)), fill=(70, 76, 86, 255))
 
     # Car body silhouette (compact hatchback-ish)
     car = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     cd = ImageDraw.Draw(car)
-    body = (220, 38, 48, 255)
-    dark = (140, 22, 30, 255)
-    glass = (120, 160, 190, 210)
+    body = (28, 32, 42, 255) if dark else (220, 38, 48, 255)
+    glass = (70, 90, 120, 220) if dark else (120, 160, 190, 210)
 
     # Main body
     cd.rounded_rectangle((180, 420, 1420, 720), radius=48, fill=body)
@@ -153,17 +194,17 @@ def draw_car_preview(circle: Image.Image, horizontal: Image.Image) -> Image.Imag
         fill=glass,
     )
     # Window divider
-    cd.line([(760, 280), (760, 410)], fill=(90, 120, 145, 255), width=6)
+    cd.line([(760, 280), (760, 410)], fill=(50, 70, 95, 255), width=6)
     # Wheels
     for cx in (420, 1180):
-        cd.ellipse((cx - 70, 660, cx + 70, 800), fill=(30, 30, 34, 255))
-        cd.ellipse((cx - 38, 692, cx + 38, 768), fill=(90, 90, 98, 255))
+        cd.ellipse((cx - 70, 660, cx + 70, 800), fill=(20, 20, 24, 255))
+        cd.ellipse((cx - 38, 692, cx + 38, 768), fill=(70, 70, 78, 255))
     # Headlight / taillight accents
     cd.rounded_rectangle((190, 500, 250, 560), radius=12, fill=(255, 220, 120, 230))
     cd.rounded_rectangle((1350, 500, 1410, 560), radius=12, fill=ORANGE)
     # Shadow under car
     sh = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    ImageDraw.Draw(sh).ellipse((260, 760, 1340, 820), fill=(0, 0, 0, 60))
+    ImageDraw.Draw(sh).ellipse((260, 760, 1340, 820), fill=(0, 0, 0, 80))
     sh = sh.filter(ImageFilter.GaussianBlur(10))
     stage.alpha_composite(sh)
     stage.alpha_composite(car)
@@ -182,8 +223,12 @@ def draw_car_preview(circle: Image.Image, horizontal: Image.Image) -> Image.Imag
     label_font = load_font(FONT_TEXT, 28, 600)
     title_font = load_font(FONT_DISPLAY, 36, 700)
     d2 = ImageDraw.Draw(stage)
-    d2.text((60, 48), "НАКЛЕЙКА НА МАШИНУ", fill=INK, font=title_font)
-    d2.text((60, 100), "круг на стекло  ·  горизонталь на кузов", fill=BLUE_DEEP, font=label_font)
+    if dark:
+        d2.text((60, 48), "ТЁМНЫЙ · ПРОЗРАЧНЫЙ", fill=LIGHT, font=title_font)
+        d2.text((60, 100), "без белой подложки  ·  на тёмный кузов", fill=SKY, font=label_font)
+    else:
+        d2.text((60, 48), "НАКЛЕЙКА НА МАШИНУ", fill=INK, font=title_font)
+        d2.text((60, 100), "круг на стекло  ·  горизонталь на кузов", fill=BLUE_DEEP, font=label_font)
 
     return stage
 
@@ -202,11 +247,27 @@ def main() -> None:
     preview = draw_car_preview(circle_print, horizontal_print)
     preview.save(OUT_PREVIEW, "PNG")
 
+    # Dark + transparent (for dark cars / glass, contour cut)
+    circle_dark = draw_sticker(2126, shadow=False, dark=True, transparent=True)
+    circle_dark.save(OUT_CIRCLE_DARK_PRINT, "PNG")
+    dark_stage(circle_dark).save(OUT_CIRCLE_DARK, "PNG")
+
+    horizontal_dark = draw_horizontal_car_sticker(2800, 900, dark=True, transparent=True)
+    horizontal_dark.save(OUT_HORIZONTAL_DARK_PRINT, "PNG")
+    dark_stage(horizontal_dark, pad=70).save(OUT_HORIZONTAL_DARK, "PNG")
+
+    draw_car_preview(circle_dark, horizontal_dark, dark=True).save(OUT_PREVIEW_DARK, "PNG")
+
     print(f"Wrote {OUT_CIRCLE}")
     print(f"Wrote {OUT_CIRCLE_PRINT}")
     print(f"Wrote {OUT_HORIZONTAL}")
     print(f"Wrote {OUT_HORIZONTAL_PRINT}")
     print(f"Wrote {OUT_PREVIEW}")
+    print(f"Wrote {OUT_CIRCLE_DARK}")
+    print(f"Wrote {OUT_CIRCLE_DARK_PRINT}")
+    print(f"Wrote {OUT_HORIZONTAL_DARK}")
+    print(f"Wrote {OUT_HORIZONTAL_DARK_PRINT}")
+    print(f"Wrote {OUT_PREVIEW_DARK}")
 
 
 if __name__ == "__main__":
