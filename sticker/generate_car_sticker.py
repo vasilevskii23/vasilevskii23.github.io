@@ -45,7 +45,7 @@ def with_stage(sticker: Image.Image, pad: int = 80, bg=(240, 245, 255, 255)) -> 
     return stage
 
 
-def draw_horizontal_car_sticker(width: int = 2400, height: int = 900) -> Image.Image:
+def draw_horizontal_car_sticker(width: int = 2800, height: int = 900) -> Image.Image:
     """Bumper / rear-window friendly layout: logo | copy | QR."""
     sticker = Image.new("RGBA", (width, height), WHITE)
     radius = height // 2  # stadium / pill shape — common car-window cut
@@ -66,30 +66,47 @@ def draw_horizontal_car_sticker(width: int = 2400, height: int = 900) -> Image.I
     sticker.alpha_composite(outline)
 
     # Left: large logo
-    logo_size = int(height * 0.72)
+    logo_size = int(height * 0.68)
     logo = prep_logo(logo_size)
-    logo_x = int(width * 0.06)
+    logo_x = int(width * 0.045)
     logo_y = (height - logo_size) // 2
     sticker.alpha_composite(logo, (logo_x, logo_y))
 
-    # Center: МЫ В / КРУЖИМ / url
-    draw = ImageDraw.Draw(sticker)
-    we_font = load_font(FONT_TEXT, int(height * 0.12), 500)
-    brand_font = load_font(FONT_DISPLAY, int(height * 0.22), 800)
-    url_font = load_font(FONT_TEXT, int(height * 0.08), 500)
+    # Right: QR first, so we can size the title to fit the gap
+    qr_inner = int(height * 0.38)
+    qr = prep_qr(qr_inner)
+    qr_x = width - qr.size[0] - int(width * 0.05)
+    qr_y = (height - qr.size[1]) // 2
 
+    # Center: МЫ В / КРУЖИМ / url — brand must fully fit before QR
+    draw = ImageDraw.Draw(sticker)
     we, brand, url = "МЫ В", "КРУЖИМ", "kruzhim.ru"
-    text_left = logo_x + logo_size + int(width * 0.04)
+    text_left = logo_x + logo_size + int(width * 0.035)
+    text_right = qr_x - int(width * 0.03)
+    max_brand_w = text_right - text_left
+
+    brand_size = int(height * 0.20)
+    brand_font = load_font(FONT_DISPLAY, brand_size, 800)
+    while brand_size > 40:
+        bb = draw.textbbox((0, 0), brand, font=brand_font)
+        if bb[2] - bb[0] <= max_brand_w:
+            break
+        brand_size -= 4
+        brand_font = load_font(FONT_DISPLAY, brand_size, 800)
+
+    we_font = load_font(FONT_TEXT, max(28, int(brand_size * 0.48)), 500)
+    url_font = load_font(FONT_TEXT, max(24, int(brand_size * 0.36)), 500)
 
     we_bbox = draw.textbbox((0, 0), we, font=we_font)
     brand_bbox = draw.textbbox((0, 0), brand, font=brand_font)
     url_bbox = draw.textbbox((0, 0), url, font=url_font)
     we_h = we_bbox[3] - we_bbox[1]
     brand_h = brand_bbox[3] - brand_bbox[1]
+    brand_w = brand_bbox[2] - brand_bbox[0]
     url_h = url_bbox[3] - url_bbox[1]
-    gap1, gap2 = int(height * 0.04), int(height * 0.05)
+    gap1, gap2 = int(height * 0.035), int(height * 0.045)
     block_h = we_h + gap1 + brand_h + gap2 + url_h
-    y = (height - block_h) // 2 - int(height * 0.02)
+    y = (height - block_h) // 2 - int(height * 0.015)
 
     draw.text((text_left, y), we, fill=INK, font=we_font)
     y2 = y + we_h + gap1
@@ -97,12 +114,11 @@ def draw_horizontal_car_sticker(width: int = 2400, height: int = 900) -> Image.I
     y3 = y2 + brand_h + gap2
     draw.text((text_left, y3), url, fill=BLUE_DEEP, font=url_font)
 
-    # Right: QR
-    qr_inner = int(height * 0.42)
-    qr = prep_qr(qr_inner)
-    qr_x = width - qr.size[0] - int(width * 0.07)
-    qr_y = (height - qr.size[1]) // 2
     sticker.alpha_composite(qr, (qr_x, qr_y))
+
+    # Safety: assert full brand visible (debug aid if layout regresses)
+    if brand_w > max_brand_w:
+        raise RuntimeError(f"Brand text still overflows: {brand_w} > {max_brand_w}")
 
     return sticker
 
@@ -179,7 +195,7 @@ def main() -> None:
     with_stage(circle_print).save(OUT_CIRCLE, "PNG")
 
     # Horizontal bumper / rear glass
-    horizontal_print = draw_horizontal_car_sticker(2400, 900)
+    horizontal_print = draw_horizontal_car_sticker(2800, 900)
     horizontal_print.save(OUT_HORIZONTAL_PRINT, "PNG")
     with_stage(horizontal_print, pad=70).save(OUT_HORIZONTAL, "PNG")
 

@@ -92,16 +92,16 @@ def draw_sticker(size: int = SIZE, shadow: bool = True) -> Image.Image:
 
     # Layout inspired by Yandex «Хорошее место» stack:
     # mark → light label → bold title → footer mark (QR)
-    logo_size = int(size * 0.44)  # 2× relative to previous 0.22
+    logo_size = int(size * 0.40)  # large logo, room for full title + QR
     logo = prep_logo(logo_size)
     logo_x = (size - logo_size) // 2
-    logo_y = int(size * 0.08)
+    logo_y = int(size * 0.07)
     sticker.alpha_composite(logo, (logo_x, logo_y))
 
     draw = ImageDraw.Draw(sticker)
-    we_font = load_font(FONT_TEXT, int(size * 0.038), 500)
-    brand_font = load_font(FONT_DISPLAY, int(size * 0.068), 800)
-    url_font = load_font(FONT_TEXT, int(size * 0.026), 500)
+    we_font = load_font(FONT_TEXT, int(size * 0.036), 500)
+    brand_font = load_font(FONT_DISPLAY, int(size * 0.062), 800)
+    url_font = load_font(FONT_TEXT, int(size * 0.024), 500)
 
     we = "МЫ В"
     brand = "КРУЖИМ"
@@ -111,23 +111,24 @@ def draw_sticker(size: int = SIZE, shadow: bool = True) -> Image.Image:
     brand_bbox = draw.textbbox((0, 0), brand, font=brand_font)
     we_w = we_bbox[2] - we_bbox[0]
     brand_w = brand_bbox[2] - brand_bbox[0]
+    brand_h = brand_bbox[3] - brand_bbox[1]
 
-    text_top = logo_y + logo_size + int(size * 0.012)
+    text_top = logo_y + logo_size + int(size * 0.01)
     draw.text(((size - we_w) / 2, text_top), we, fill=INK, font=we_font)
 
-    brand_y = text_top + int(size * 0.042)
+    brand_y = text_top + int(size * 0.04)
     draw.text(((size - brand_w) / 2, brand_y), brand, fill=ORANGE, font=brand_font)
 
-    # QR in lower third (replaces year block on Yandex stickers)
-    qr_inner = int(size * 0.18)
+    # QR below full title with clear gap (no overlap with letter bottoms)
+    qr_inner = int(size * 0.16)
     qr = prep_qr(qr_inner)
     qr_x = (size - qr.size[0]) // 2
-    qr_y = brand_y + int(size * 0.072)
+    qr_y = brand_y + brand_h + int(size * 0.055)
     sticker.alpha_composite(qr, (qr_x, qr_y))
 
     url_bbox = draw.textbbox((0, 0), url, font=url_font)
     url_w = url_bbox[2] - url_bbox[0]
-    url_y = qr_y + qr.size[1] + int(size * 0.012)
+    url_y = qr_y + qr.size[1] + int(size * 0.014)
     draw.text(((size - url_w) / 2, url_y), url, fill=BLUE_DEEP, font=url_font)
 
     if not shadow:
