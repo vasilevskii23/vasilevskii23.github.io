@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Наклейка на машину — КРУЖИМ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@500;600&family=Unbounded:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bd: #1A3A8F;
+    --bm: #2968D4;
+    --or: #F4621F;
+    --ink: #0D1F5C;
+    --bg: #F0F5FF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100%;
+    background: var(--bg);
+    font-family: "Golos Text", system-ui, sans-serif;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    padding: 40px 20px 64px;
+  }
+  h1 {
+    font-family: "Unbounded", sans-serif;
+    font-size: clamp(18px, 4vw, 28px);
+    font-weight: 800;
+    text-align: center;
+  }
+  .sub {
+    color: var(--bm);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .grid {
+    width: min(960px, 100%);
+    display: grid;
+    gap: 28px;
+  }
+  figure {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 12px 36px rgba(26, 58, 143, 0.1);
+  }
+  figure img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+  }
+  figcaption {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--bd);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <p class="sub">Макет для авто · из дверного стикера</p>
+  <h1>МЫ В КРУЖИМ — наклейка на машину</h1>
+  <div class="grid">
+    <figure>
+      <img src="car_preview.png" alt="Превью наклейки на машине"/>
+      <figcaption>Превью: круг на стекло · горизонталь на кузов</figcaption>
+    </figure>
+    <figure>
+      <img src="car_sticker.png" alt="Круглая наклейка на авто"/>
+      <figcaption>Круг на боковое/заднее стекло (как дверной макет)</figcaption>
+    </figure>
+    <figure>
+      <img src="car_sticker_horizontal.png" alt="Горизонтальная наклейка на авто"/>
+      <figcaption>Горизонталь на бампер или заднее стекло</figcaption>
+    </figure>
+    <figure>
+      <img src="car_preview_dark.png" alt="Тёмный прозрачный вариант на машине"/>
+      <figcaption>Тёмный вариант · прозрачный фон</figcaption>
+    </figure>
+    <figure>
+      <img src="car_sticker_dark.png" alt="Круглая тёмная наклейка"/>
+      <figcaption>Круг dark + transparent (превью на шахматке)</figcaption>
+    </figure>
+    <figure>
+      <img src="car_sticker_horizontal_dark.png" alt="Горизонтальная тёмная наклейка"/>
+      <figcaption>Горизонталь dark + transparent</figcaption>
+    </figure>
+  </div>
+</body>
+</html>
