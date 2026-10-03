@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>КРУЖИМ — Brand Positioning 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --navy: #0d1f5c;
+  --navy-2: #12307a;
+  --blue: #1c4299;
+  --blue-mid: #2a5bc4;
+  --blue-soft: #7995cc;
+  --bg: #f0f5ff;
+  --bg-2: #e8efff;
+  --card: #ffffff;
+  --muted: #4a5f8f;
+  --line: rgba(13, 31, 92, 0.1);
+  --orange: #e87a2e;
+  --amber: #d4923f;
+  --green: #16a24a;
+  --white: #ffffff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: Manrope, system-ui, sans-serif;
+  background: #0a1638;
+  color: var(--navy);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+.deck { width: 100vw; height: 100dvh; height: 100vh; position: relative; }
+.slide {
+  position: absolute; inset: 0;
+  display: none;
+  padding: clamp(22px, 3.2vw, 40px) clamp(28px, 4.5vw, 56px) clamp(48px, 5vh, 64px);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .4s ease, transform .45s cubic-bezier(.22,1,.36,1);
+  overflow: hidden;
+}
+.slide.active { display: flex; flex-direction: column; opacity: 1; transform: none; }
+.slide.cover {
+  background:
+    radial-gradient(900px 500px at 100% 0%, rgba(232,122,46,.28), transparent 55%),
+    radial-gradient(700px 420px at 0% 100%, rgba(80,120,255,.25), transparent 50%),
+    linear-gradient(155deg, #0c1a52 0%, #163894 48%, #2a5bc4 100%);
+  color: var(--white);
+}
+.slide.light {
+  background: linear-gradient(180deg, #f4f7ff 0%, #eaf0ff 100%);
+}
+.logo-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: clamp(12px, 2vh, 22px); flex-shrink: 0;
+}
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; letter-spacing: .04em; font-size: clamp(15px, 1.4vw, 18px);
+}
+.logo img { width: 28px; height: 28px; display: block; }
+.slide.cover .logo { color: var(--white); }
+.slide.light .logo { color: var(--navy); }
+.sec {
+  font-size: 12px; font-weight: 700; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--blue-soft);
+}
+.slide.cover .sec { color: rgba(255,255,255,.7); }
+.content { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.foot {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: auto; padding-top: 10px; flex-shrink: 0;
+  font-size: 12px; color: var(--blue-soft); letter-spacing: .02em;
+}
+.slide.cover .foot { color: rgba(255,255,255,.45); }
+h1 {
+  font-size: clamp(26px, 3.4vw, 40px); font-weight: 800; line-height: 1.15;
+  letter-spacing: -.02em; color: var(--navy); margin-bottom: 8px;
+}
+.lede { font-size: clamp(14px, 1.25vw, 17px); line-height: 1.5; color: var(--muted); max-width: 60ch; }
+
+/* COVER */
+.cover-wrap { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 22px; max-width: 920px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.75); }
+.cover-title {
+  font-size: clamp(30px, 4.4vw, 52px); font-weight: 800; line-height: 1.15; letter-spacing: -.02em;
+}
+.cover-title .line1 { color: #dce6ff; }
+.cover-title .line2 {
+  display: inline-block; margin-top: 8px; color: var(--orange);
+  border: 2px solid rgba(232,122,46,.85); border-radius: 10px; padding: 6px 14px 8px;
+}
+.cover-desc { font-size: clamp(15px, 1.4vw, 18px); line-height: 1.55; color: rgba(255,255,255,.78); max-width: 46ch; }
+.pill {
+  display: inline-flex; align-self: flex-start; margin-top: 6px;
+  padding: 10px 16px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.28); color: rgba(255,255,255,.9);
+  font-size: 14px; font-weight: 600;
+}
+
+/* Territory */
+.badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(42,91,196,.1); color: var(--blue); font-weight: 700;
+  font-size: 13px; padding: 6px 12px; border-radius: 999px; margin: 8px 0 14px;
+}
+.pos-box {
+  background: linear-gradient(145deg, #0f2468, #1c4299 70%, #2454b5);
+  color: #fff; border-radius: 18px; padding: clamp(16px, 2vw, 24px) clamp(18px, 2.2vw, 28px);
+  margin-bottom: 14px;
+}
+.pos-line { display: grid; grid-template-columns: 108px 1fr; gap: 10px; margin-bottom: 8px; font-size: clamp(13px, 1.15vw, 15px); line-height: 1.4; }
+.pos-k { color: var(--amber); font-weight: 800; }
+.pos-quote {
+  margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.18);
+  font-weight: 700; font-size: clamp(14px, 1.25vw, 16px);
+}
+.not-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.not-card {
+  background: var(--card); border-radius: 14px; padding: 14px 16px;
+  border: 1px solid var(--line); box-shadow: 0 8px 24px rgba(13,31,92,.04);
+}
+.not-card .n { font-size: 22px; font-weight: 800; color: var(--blue-mid); margin-bottom: 6px; }
+.not-card p { font-size: 14px; line-height: 1.35; font-weight: 600; color: var(--navy); }
+.not-label { font-size: 12px; font-weight: 800; letter-spacing: .12em; color: var(--blue-soft); margin-bottom: 8px; }
+
+/* Strengths */
+.strength-list { display: grid; gap: 10px; margin-top: 10px; }
+.strength-item {
+  display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start;
+  background: rgba(255,255,255,.75); border: 1px solid var(--line);
+  border-radius: 14px; padding: 12px 14px;
+}
+.num {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--blue); color: #fff; display: grid; place-items: center;
+  font-weight: 800; font-size: 13px;
+}
+.strength-item h3 { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
+.strength-item p { font-size: 13px; line-height: 1.4; color: var(--muted); }
+.enemy {
+  margin-top: 12px; border: 1.5px solid rgba(232,122,46,.45);
+  background: rgba(232,122,46,.08); border-radius: 14px; padding: 12px 16px;
+}
+.enemy strong { display: block; color: var(--orange); font-size: 13px; margin-bottom: 4px; letter-spacing: .04em; }
+.enemy span { font-size: 14px; line-height: 1.4; color: var(--navy); }
+
+/* Benefits */
+.b-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0 14px; }
+.b-card {
+  background: #eaf0ff; border-radius: 14px; padding: 14px 16px;
+}
+.b-card h3 { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+.b-card p { font-size: 13px; line-height: 1.4; color: var(--muted); }
+.subhead {
+  font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--blue); margin: 4px 0 8px;
+}
+.partner-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.pillar {
+  background: linear-gradient(145deg, #12307a, #1c4299); color: #fff;
+  border-radius: 14px; padding: 14px 16px;
+}
+.pillar strong { display: block; font-size: 14px; margin-bottom: 4px; }
+.pillar span { font-size: 12px; line-height: 1.35; color: rgba(255,255,255,.75); }
+
+/* Comparison */
+.table-wrap {
+  margin-top: 10px; background: #fff; border-radius: 16px; border: 1px solid var(--line);
+  overflow: hidden;
+}
+table { width: 100%; border-collapse: collapse; font-size: clamp(11px, 1.05vw, 13px); }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; line-height: 1.3; }
+th {
+  font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--blue-soft); background: #eaf0ff; font-weight: 700;
+}
+tr:last-child td { border-bottom: none; }
+td:first-child { font-weight: 800; color: var(--navy); white-space: nowrap; }
+.tag {
+  display: inline-block; padding: 5px 10px; border-radius: 999px;
+  font-weight: 700; font-size: 12px; color: #fff; background: var(--green);
+}
+.tag.orange { background: var(--orange); }
+.one {
+  margin-top: 12px; border-left: 4px solid var(--orange);
+  background: rgba(232,122,46,.08); border-radius: 0 12px 12px 0; padding: 12px 16px;
+}
+.one strong { display: block; color: var(--orange); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
+.one span { font-size: 15px; font-weight: 700; line-height: 1.35; }
+
+/* Voice + hero + proof */
+.voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0 12px; }
+.voice {
+  background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px;
+}
+.voice h3 { font-size: 14px; font-weight: 800; margin-bottom: 8px; color: var(--navy); }
+.voice ul { list-style: none; display: grid; gap: 6px; }
+.voice li {
+  position: relative; padding-left: 14px; font-size: 13px; line-height: 1.35; color: var(--muted);
+}
+.voice li::before {
+  content: ""; position: absolute; left: 0; top: .5em; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--orange);
+}
+.hero-box {
+  background: linear-gradient(145deg, #0f2468, #1c4299 65%, #2a5bc4);
+  color: #fff; border-radius: 16px; padding: 16px 20px; margin-bottom: 12px;
+}
+.hero-label { font-size: 11px; font-weight: 800; letter-spacing: .12em; color: var(--blue-soft); margin-bottom: 6px; }
+.hero-box .brand { font-size: 18px; font-weight: 800; letter-spacing: .04em; margin-bottom: 4px; }
+.hero-box .h { font-size: clamp(16px, 1.6vw, 20px); font-weight: 700; margin-bottom: 4px; }
+.hero-box .s { font-size: 13px; color: rgba(255,255,255,.75); margin-bottom: 10px; }
+.hero-box .cta {
+  display: inline-flex; padding: 8px 14px; border-radius: 999px;
+  background: var(--orange); color: #fff; font-weight: 800; font-size: 13px;
+}
+.proof-wrap { background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.proof-wrap table th { background: #eaf0ff; }
+.proof-wrap td:first-child { width: 36px; color: var(--blue); }
+
+.controls {
+  position: fixed; right: 18px; bottom: 18px; z-index: 40;
+  display: flex; align-items: center; gap: 8px; padding: 8px;
+  border-radius: 999px; background: rgba(10,22,56,.78); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,.12); color: #fff;
+}
+.controls button {
+  width: 38px; height: 38px; border: 0; border-radius: 50%;
+  background: rgba(255,255,255,.1); color: #fff; cursor: pointer; font-size: 18px;
+}
+.controls button:hover { background: rgba(255,255,255,.18); }
+.controls .page { min-width: 48px; text-align: center; font-size: 12px; font-weight: 700; color: rgba(255,255,255,.75); }
+.hint {
+  position: fixed; left: 18px; bottom: 26px; z-index: 30;
+  font-size: 12px; color: rgba(255,255,255,.35);
+}
+
+@media (max-width: 900px) {
+  .not-grid, .b-grid, .partner-grid, .pillars, .voice-grid { grid-template-columns: 1fr; }
+  .pos-line { grid-template-columns: 1fr; gap: 2px; }
+  th:nth-child(2), td:nth-child(2), th:nth-child(3), td:nth-child(3) { display: none; }
+  .hint { display: none; }
+  .slide { padding-bottom: 78px; }
+}
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 01 COVER -->
+  <section class="slide cover active" data-slide="1">
+    <div class="logo-row">
+      <div class="logo"><img src="assets/logo.png" alt=""/>КРУЖИМ</div>
+      <div class="sec">Brand Positioning · 2026</div>
+    </div>
+    <div class="content cover-wrap">
+      <div class="eyebrow">Brand Positioning · 2026</div>
+      <div class="cover-title">
+        <div class="line1">Кружки СПб — заявка уходит,</div>
+        <div class="line2">организатор звонит</div>
+      </div>
+      <p class="cover-desc">Позиционирование бренда: территория, сильные стороны, преимущества и почему родители выбирают КРУЖИМ, а не «кого-то ещё».</p>
+      <div class="pill">Городской стол записи в детские занятия</div>
+    </div>
+    <div class="foot"><span>кружим.рф · Санкт-Петербург</span><span>01 / 06</span></div>
+  </section>
+
+  <!-- 02 TERRITORY -->
+  <section class="slide light" data-slide="2">
+    <div class="logo-row">
+      <div class="logo"><img src="assets/logo.png" alt=""/>КРУЖИМ</div>
+      <div class="sec">Позиционирование</div>
+    </div>
+    <div class="content">
+      <h1>Территория бренда</h1>
+      <div class="badge">Живое подтверждение</div>
+      <p class="lede" style="margin-bottom:12px">Не «ещё один каталог», а сервис, где заявка заканчивается звонком организатора.</p>
+      <div class="pos-box">
+        <div class="pos-line"><span class="pos-k">Для</span><span>родителей в Санкт-Петербурге</span></div>
+        <div class="pos-line"><span class="pos-k">которые</span><span>устали искать кружок по чатам, сайтам и «навигаторам» и не понимать, живая ли запись</span></div>
+        <div class="pos-line"><span class="pos-k">КРУЖИМ —</span><span>городской стол записи в детские занятия, который из возраста и района собирает короткий список и доводит до звонка организатора</span></div>
+        <div class="pos-line"><span class="pos-k">потому что</span><span>муниципальные и частные кружки — в одном каталоге, а заявка уходит реальному партнёру</span></div>
+        <div class="pos-line"><span class="pos-k">в отличие от</span><span>Навигатора ДО / Familypass / районного чата — бюрократия, покупка слота или тишина</span></div>
+        <div class="pos-quote">«Кружки СПб — заявка уходит, организатор звонит.»</div>
+      </div>
+      <div class="not-label">Не для кого</div>
+      <div class="not-grid">
+        <div class="not-card"><div class="n">01</div><p>Не маркетплейс разовых слотов</p></div>
+        <div class="not-card"><div class="n">02</div><p>Не гос. сертификатный портал</p></div>
+        <div class="not-card"><div class="n">03</div><p>Не всероссийский «всё для детей»</p></div>
+      </div>
+    </div>
+    <div class="foot"><span>КРУЖИМ · Brand book</span><span>02 / 06</span></div>
+  </section>
+
+  <!-- 03 STRENGTHS -->
+  <section class="slide light" data-slide="3">
+    <div class="logo-row">
+      <div class="logo"><img src="assets/logo.png" alt=""/>КРУЖИМ</div>
+      <div class="sec">Сильные стороны</div>
+    </div>
+    <div class="content">
+      <h1>Сильные стороны продукта</h1>
+      <p class="lede">То, что уже есть в продукте и защищает позиционирование — не обещания «на бумаге».</p>
+      <div class="strength-list">
+        <div class="strength-item"><div class="num">1</div><div><h3>Петля доверия: заявка → звонок</h3><p>Родитель оставляет заявку, партнёр получает лид и перезванивает. Это отличает КРУЖИМ от мёртвых форм и объявлений.</p></div></div>
+        <div class="strength-item"><div class="num">2</div><div><h3>Муниципальное и частное в одном окне</h3><p>Бесплатные гос. кружки с явной меткой и платные школы рядом — без переключения между «двумя мирами».</p></div></div>
+        <div class="strength-item"><div class="num">3</div><div><h3>Короткий список, не бесконечная лента</h3><p>Возраст + район (+ карта) сразу сужают выбор. Меньше шума — быстрее решение.</p></div></div>
+        <div class="strength-item"><div class="num">4</div><div><h3>Модерация партнёров</h3><p>Кабинет партнёра и статус pending → active: в каталог попадают не «любые объявления с улицы».</p></div></div>
+        <div class="strength-item"><div class="num">5</div><div><h3>Глубина СПб, а не ширина страны</h3><p>Фокус на одном городе: районы, карта, локальные организаторы — вместо гонки «7000 занятий в 16 городах».</p></div></div>
+      </div>
+      <div class="enemy">
+        <strong>Ключевой враг бренда</strong>
+        <span>Пустые заявки, мёртвые объявления и чаты, где никто не подтверждает запись. Мы против хаоса поиска — за живой ответ.</span>
+      </div>
+    </div>
+    <div class="foot"><span>КРУЖИМ · Brand book</span><span>03 / 06</span></div>
+  </section>
+
+  <!-- 04 BENEFITS -->
+  <section class="slide light" data-slide="4">
+    <div class="logo-row">
+      <div class="logo"><img src="assets/logo.png" alt=""/>КРУЖИМ</div>
+      <div class="sec">Преимущества</div>
+    </div>
+    <div class="content">
+      <h1>Преимущества для родителей</h1>
+      <div class="b-grid">
+        <div class="b-card"><h3>Экономия вечеров</h3><p>Один заход вместо десяти вкладок, чатов мам и «уточните у администратора».</p></div>
+        <div class="b-card"><h3>Понятный следующий шаг</h3><p>Не «сохранить в избранное», а заявка с ожидаемым звонком организатора.</p></div>
+        <div class="b-card"><h3>Честные метки</h3><p>Видно: муниципальный / платный, возраст, район, цена или «Бесплатно».</p></div>
+        <div class="b-card"><h3>Доверие к каталогу</h3><p>Партнёры проходят регистрацию и модерацию — не анонимная доска объявлений.</p></div>
+      </div>
+      <div class="subhead">Преимущества для партнёров (организаторов)</div>
+      <div class="partner-grid">
+        <div class="b-card"><h3>Заявки от родителей рядом</h3><p>Не «место в каталоге ради галочки», а лиды из целевого района и возраста.</p></div>
+        <div class="b-card"><h3>Кабинет и статусы</h3><p>Управление кружками, модерация, понятный путь от регистрации до публикации.</p></div>
+      </div>
+      <div class="subhead">Три опоры сообщений</div>
+      <div class="pillars">
+        <div class="pillar"><strong>Короткий список</strong><span>Сначала возраст и район — потом варианты</span></div>
+        <div class="pillar"><strong>Живой ответ</strong><span>Заявка заканчивается звонком, не тишиной</span></div>
+        <div class="pillar"><strong>Всё честное рядом</strong><span>Муниципальное и частное — с явной меткой</span></div>
+      </div>
+    </div>
+    <div class="foot"><span>КРУЖИМ · Brand book</span><span>04 / 06</span></div>
+  </section>
+
+  <!-- 05 WHY -->
+  <section class="slide light" data-slide="5">
+    <div class="logo-row">
+      <div class="logo"><img src="assets/logo.png" alt=""/>КРУЖИМ</div>
+      <div class="sec">Почему КРУЖИМ</div>
+    </div>
+    <div class="content">
+      <h1>Почему КРУЖИМ, а не кто-то ещё</h1>
+      <p class="lede">Сравнение по главному вопросу родителя: «Мне ответят и запишут — или снова в пустоту?»</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Альтернатива</th><th>Их обещание</th><th>Слабое место</th><th>КРУЖИМ</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Навигатор ДО</td><td>Госреестр программ и сертификаты</td><td>Бюрократия, UX, не про «быстро записаться»</td><td><span class="tag">Живая заявка + звонок</span></td></tr>
+            <tr><td>Familypass и аналоги</td><td>«Все секции», покупка слотов</td><td>Ширина каталога важнее подтверждения записи</td><td><span class="tag">Глубина СПб + ответ</span></td></tr>
+            <tr><td>Чаты / мама-форумы</td><td>«Живые советы»</td><td>Хаос, устаревшее, без статуса заявки</td><td><span class="tag">Структура + статус</span></td></tr>
+            <tr><td>Google / Avito</td><td>Найти объявление</td><td>Мёртвые страницы, нет модерации</td><td><span class="tag">Модерация партнёров</span></td></tr>
+            <tr><td>«Ничего не делать»</td><td>Подождать / спросить у школы</td><td>Месяцы без кружка, упущенный сезон</td><td><span class="tag orange">Старт за вечер</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="one">
+        <strong>Одной фразой</strong>
+        <span>Другие собирают занятия. КРУЖИМ доводит до разговора с организатором.</span>
+      </div>
+    </div>
+    <div class="foot"><span>КРУЖИМ · Brand book</span><span>05 / 06</span></div>
+  </section>
+
+  <!-- 06 VOICE + PROOF -->
+  <section class="slide light" data-slide="6">
+    <div class="logo-row">
+      <div class="logo"><img src="assets/logo.png" alt=""/>КРУЖИМ</div>
+      <div class="sec">Голос и следующий шаг</div>
+    </div>
+    <div class="content">
+      <h1>Голос бренда и proof roadmap</h1>
+      <div class="voice-grid">
+        <div class="voice">
+          <h3>Как говорим</h3>
+          <ul>
+            <li>Спокойно и конкретно</li>
+            <li>Глаголами процесса: выбрали → оставили → перезвонили</li>
+            <li>Уважаем время родителя</li>
+            <li>Без сюсюканья и крика</li>
+            <li>Городской тон СПб</li>
+          </ul>
+        </div>
+        <div class="voice">
+          <h3>Как не говорим</h3>
+          <ul>
+            <li>«Лучший выбор», «#1», «экосистема»</li>
+            <li>«Инновации», пустая «забота»</li>
+            <li>«Всё для детей» без фокуса</li>
+            <li>Гонка числом занятий с агрегаторами</li>
+            <li>Притворство гос. навигатором</li>
+          </ul>
+        </div>
+      </div>
+      <div class="hero-label">Hero (черновик под позиционирование)</div>
+      <div class="hero-box">
+        <div class="brand">КРУЖИМ</div>
+        <div class="h">Заявка в кружок — и звонок организатора</div>
+        <div class="s">Возраст и район → муниципальные и частные занятия в СПб</div>
+        <div class="cta">Подобрать кружок</div>
+      </div>
+      <div class="subhead">Что усилить в продукте (чтобы бренд не врал)</div>
+      <div class="proof-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Proof</th><th>Зачем</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Метрика «% заявок с ответом за 24ч»</td><td>Сделать «живой ответ» измеримым</td></tr>
+            <tr><td>2</td><td>SLA / пауза партнёров, которые не звонят</td><td>Защитить доверие</td></tr>
+            <tr><td>3</td><td>Hero и партнёрский лендинг на spine</td><td>Сообщение = продукт</td></tr>
+            <tr><td>4</td><td>Показ муниципальный / платный всегда явно</td><td>Честность каталога</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="foot"><span>КРУЖИМ · Brand book · кружим.рф</span><span>06 / 06</span></div>
+  </section>
+</div>
+
+<div class="hint">← → / пробел · F — полный экран</div>
+<div class="controls">
+  <button type="button" id="prev" aria-label="Назад">‹</button>
+  <div class="page" id="page">1 / 6</div>
+  <button type="button" id="next" aria-label="Вперёд">›</button>
+</div>
+
+<script>
+(() => {
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = 0;
+  const page = document.getElementById('page');
+  const show = (n) => {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    page.textContent = `${i + 1} / ${slides.length}`;
+  };
+  document.getElementById('prev').onclick = () => show(i - 1);
+  document.getElementById('next').onclick = () => show(i + 1);
+  window.addEventListener('keydown', (e) => {
+    if (['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    else if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    }
+  });
+  let tx = null;
+  window.addEventListener('touchstart', e => { tx = e.changedTouches[0].screenX; }, {passive:true});
+  window.addEventListener('touchend', e => {
+    if (tx == null) return;
+    const dx = e.changedTouches[0].screenX - tx;
+    if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1));
+    tx = null;
+  }, {passive:true});
+  show(0);
+})();
+</script>
+</body>
+</html>
