@@ -349,20 +349,24 @@ body {
   z-index: 10;
 }
 .dots span {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: rgba(40, 30, 20, 0.25);
-  transition: transform 0.25s, background 0.25s;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(40, 30, 20, 0.22);
+  transition: width 0.25s, background 0.25s, transform 0.25s;
   cursor: pointer;
   pointer-events: auto;
+  border: 1px solid rgba(40, 30, 20, 0.15);
 }
 .dots span.on {
-  background: rgba(40, 30, 20, 0.75);
-  transform: scale(1.15);
+  width: 22px;
+  background: rgba(40, 30, 20, 0.82);
+  transform: none;
 }
 
 .controls {
+  position: relative;
+  z-index: 20;
   display: flex;
   gap: 10px;
   justify-content: center;
@@ -380,6 +384,9 @@ body {
   box-shadow: 0 10px 22px rgba(0,0,0,0.28);
   min-width: 140px;
   transition: transform 0.15s, filter 0.15s;
+  position: relative;
+  z-index: 21;
+  touch-action: manipulation;
 }
 .controls button:active { transform: scale(0.97); }
 .controls button.ghost {
