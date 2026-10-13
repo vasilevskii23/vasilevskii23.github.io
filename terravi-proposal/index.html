@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ТЕРРАВИ — Российские промывочные реагенты для коагулометров</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #072830;
+    --ink-soft: #1a4550;
+    --teal: #0c6b74;
+    --teal-deep: #06545c;
+    --mint: #6fc4b8;
+    --mint-soft: #b8e0d8;
+    --foam: #e7f5f2;
+    --paper: #f3faf8;
+    --white: #ffffff;
+    --line: rgba(7, 40, 48, 0.12);
+    --muted: #4a6b72;
+    --gold: #b8892a;
+    --display: "Golos Text", "Segoe UI", sans-serif;
+    --body: "Manrope", "Segoe UI", sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #c5d5d2;
+    color: var(--ink);
+    font-family: var(--body);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    margin: 12px auto;
+    position: relative;
+    overflow: hidden;
+    background: var(--paper);
+    box-shadow: 0 18px 50px rgba(7, 40, 48, 0.18);
+  }
+
+  /* ===== PAGE 1 ===== */
+  .hero {
+    position: relative;
+    height: 108mm;
+    overflow: hidden;
+    color: var(--white);
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(115deg, rgba(7, 40, 48, 0.88) 0%, rgba(6, 84, 92, 0.72) 48%, rgba(12, 107, 116, 0.45) 100%),
+      url("assets/hero-lab.jpg") center / cover no-repeat;
+  }
+  .hero-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.22;
+    background-image:
+      radial-gradient(circle at 18% 20%, rgba(111, 196, 184, 0.55) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 72% 64%, rgba(255, 255, 255, 0.35) 0 1px, transparent 1.5px);
+    background-size: 18px 18px, 22px 22px;
+  }
+  .hero-shape {
+    position: absolute;
+    right: -28mm;
+    top: -20mm;
+    width: 92mm;
+    height: 160mm;
+    background: linear-gradient(160deg, rgba(111, 196, 184, 0.35), rgba(12, 107, 116, 0.08));
+    clip-path: polygon(35% 0, 100% 0, 100% 100%, 0 100%, 18% 52%);
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    padding: 12mm 14mm 10mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .brand-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8mm;
+  }
+  .brand {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 28pt;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+  .brand span {
+    display: block;
+    margin-top: 2.5mm;
+    font-family: var(--body);
+    font-size: 8pt;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.78;
+  }
+  .badge {
+    align-self: flex-start;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.08);
+    padding: 2.2mm 4mm;
+    font-size: 7.5pt;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .hero-copy { max-width: 145mm; }
+  .hero-copy h1 {
+    font-family: var(--display);
+    font-size: 34pt;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 4mm;
+  }
+  .hero-copy p {
+    font-size: 12.5pt;
+    font-weight: 500;
+    line-height: 1.35;
+    max-width: 118mm;
+    color: rgba(255, 255, 255, 0.92);
+  }
+  .cta-row {
+    display: flex;
+    align-items: center;
+    gap: 4mm;
+    margin-top: 7mm;
+  }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 2.5mm;
+    background: var(--mint);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 9.5pt;
+    padding: 3.2mm 5.5mm;
+    text-decoration: none;
+  }
+  .cta-secondary {
+    font-size: 9pt;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.88);
+    letter-spacing: 0.02em;
+  }
+
+  .content {
+    padding: 7mm 14mm 0;
+  }
+  .lead-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 6mm;
+    margin-bottom: 6mm;
+  }
+  .lead-main p {
+    font-size: 9.2pt;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin-bottom: 3.2mm;
+  }
+  .lead-main p:last-child { margin-bottom: 0; }
+  .aside {
+    position: relative;
+    padding: 5mm 5mm 5mm 5.5mm;
+    background:
+      linear-gradient(165deg, rgba(12, 107, 116, 0.1), rgba(111, 196, 184, 0.18)),
+      var(--foam);
+    border-left: 2.5px solid var(--teal);
+  }
+  .aside-label {
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 2.5mm;
+  }
+  .aside p {
+    font-size: 8.6pt;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .aside strong {
+    display: block;
+    margin-top: 3mm;
+    font-family: var(--display);
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.35;
+  }
+
+  .points {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4mm 6mm;
+    margin-bottom: 6mm;
+  }
+  .point {
+    display: grid;
+    grid-template-columns: 8mm 1fr;
+    gap: 3mm;
+    align-items: start;
+  }
+  .point-num {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 14pt;
+    color: var(--teal);
+    line-height: 1;
+    padding-top: 0.5mm;
+  }
+  .point h3 {
+    font-family: var(--display);
+    font-size: 10pt;
+    font-weight: 700;
+    margin-bottom: 1.2mm;
+  }
+  .point p {
+    font-size: 8.2pt;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  .products {
+    position: relative;
+    margin: 0 -14mm;
+    padding: 5.5mm 14mm 22mm;
+    background:
+      linear-gradient(180deg, rgba(231, 245, 242, 0.35) 0%, rgba(12, 107, 116, 0.1) 100%),
+      linear-gradient(90deg, #d7ebe7, #eef7f5 45%, #d2e8e4);
+  }
+  .products-label {
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal-deep);
+    margin-bottom: 3.5mm;
+  }
+  .product-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3.5mm;
+    align-items: stretch;
+  }
+  .product-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2mm;
+  }
+  .product-shot {
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(7, 40, 48, 0.07);
+    height: 42mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .product-shot img {
+    max-width: 92%;
+    max-height: 38mm;
+    object-fit: contain;
+  }
+  .product-cap {
+    font-size: 6.8pt;
+    line-height: 1.35;
+    color: var(--ink-soft);
+    font-weight: 600;
+    text-align: center;
+  }
+  .product-cap span {
+    display: block;
+    font-weight: 500;
+    color: var(--muted);
+    font-size: 6.2pt;
+    margin-top: 0.4mm;
+  }
+
+  .page1-footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 16mm;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14mm;
+    background: linear-gradient(90deg, var(--ink) 0%, var(--teal-deep) 70%, #0a7a72 100%);
+    color: var(--white);
+  }
+  .page1-footer .company {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 13pt;
+    letter-spacing: 0.04em;
+  }
+  .page1-footer .meta {
+    font-size: 8pt;
+    opacity: 0.85;
+    text-align: right;
+    line-height: 1.4;
+  }
+
+  /* ===== PAGE 2 ===== */
+  .page2-header {
+    position: relative;
+    height: 38mm;
+    padding: 10mm 14mm 0;
+    color: var(--white);
+    overflow: hidden;
+    background:
+      linear-gradient(120deg, var(--ink) 0%, var(--teal-deep) 55%, #0d8078 100%);
+  }
+  .page2-header::after {
+    content: "";
+    position: absolute;
+    right: -10mm;
+    top: -8mm;
+    width: 70mm;
+    height: 70mm;
+    background: linear-gradient(160deg, rgba(111, 196, 184, 0.35), transparent);
+    clip-path: polygon(40% 0, 100% 0, 100% 100%, 0 70%);
+  }
+  .page2-header .eyebrow {
+    position: relative;
+    z-index: 1;
+    font-size: 7.5pt;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 2.5mm;
+  }
+  .page2-header h2 {
+    position: relative;
+    z-index: 1;
+    font-family: var(--display);
+    font-size: 22pt;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .page2-header p {
+    position: relative;
+    z-index: 1;
+    margin-top: 2mm;
+    font-size: 9.5pt;
+    opacity: 0.88;
+    max-width: 140mm;
+  }
+
+  .page2-body {
+    padding: 6mm 12mm 32mm;
+  }
+
+  table.catalog {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.6pt;
+    line-height: 1.35;
+  }
+  table.catalog thead th {
+    background: var(--ink);
+    color: var(--white);
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 7.2pt;
+    letter-spacing: 0.04em;
+    text-align: left;
+    padding: 2.8mm 2.5mm;
+  }
+  table.catalog tbody td {
+    padding: 2.6mm 2.5mm;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+    color: var(--ink-soft);
+  }
+  table.catalog tbody tr:nth-child(even) td {
+    background: rgba(12, 107, 116, 0.04);
+  }
+  table.catalog .sku {
+    font-family: var(--display);
+    font-weight: 700;
+    color: var(--teal-deep);
+    white-space: nowrap;
+  }
+  table.catalog .name {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  table.catalog .vol strong {
+    display: block;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  table.catalog .analog {
+    font-size: 7.2pt;
+  }
+  table.catalog .analog code {
+    display: block;
+    font-family: var(--body);
+    font-size: 6.8pt;
+    color: var(--muted);
+    margin-top: 0.6mm;
+  }
+
+  .storage {
+    margin-top: 5.5mm;
+    display: grid;
+    grid-template-columns: 22mm 1fr;
+    gap: 4mm;
+    padding: 5mm;
+    background:
+      linear-gradient(135deg, rgba(12, 107, 116, 0.06), rgba(111, 196, 184, 0.12)),
+      var(--white);
+    border: 1px solid rgba(12, 107, 116, 0.12);
+  }
+  .trust-row {
+    margin-top: 5mm;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3mm;
+  }
+  .trust {
+    padding: 3.5mm 3.5mm 3.2mm;
+    background: linear-gradient(160deg, rgba(12, 107, 116, 0.07), rgba(231, 245, 242, 0.9));
+    border-top: 2.5px solid var(--teal);
+  }
+  .trust strong {
+    display: block;
+    font-family: var(--display);
+    font-size: 8.5pt;
+    font-weight: 700;
+    margin-bottom: 1mm;
+    color: var(--ink);
+  }
+  .trust span {
+    font-size: 7.2pt;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+  .storage-mark {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: var(--ink);
+    color: var(--white);
+    padding: 3mm;
+  }
+  .storage-mark .deg {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 11pt;
+    line-height: 1.15;
+  }
+  .storage-mark .sub {
+    margin-top: 1.5mm;
+    font-size: 6.5pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+  .storage-copy h3 {
+    font-family: var(--display);
+    font-size: 10pt;
+    margin-bottom: 2mm;
+  }
+  .storage-copy p {
+    font-size: 8pt;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-bottom: 2mm;
+  }
+  .storage-copy p:last-child { margin-bottom: 0; }
+
+  .contact-band {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-height: 28mm;
+    padding: 5.5mm 14mm;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 8mm;
+    align-items: center;
+    color: var(--white);
+    background:
+      linear-gradient(105deg, var(--ink) 0%, var(--teal-deep) 58%, #0f8a7f 100%);
+  }
+  .contact-band h3 {
+    font-family: var(--display);
+    font-size: 14pt;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+  .contact-band .tagline {
+    margin-top: 1.5mm;
+    font-size: 8.5pt;
+    opacity: 0.82;
+  }
+  .contact-details {
+    text-align: right;
+  }
+  .contact-details .who {
+    font-size: 9pt;
+    font-weight: 600;
+    margin-bottom: 1mm;
+  }
+  .contact-details .phone {
+    font-family: var(--display);
+    font-size: 16pt;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .contact-details .note {
+    margin-top: 1.5mm;
+    font-size: 7.5pt;
+    opacity: 0.75;
+  }
+
+  @media print {
+    html, body { background: none; margin: 0; }
+    .page {
+      margin: 0;
+      box-shadow: none;
+      page-break-after: always;
+      break-after: page;
+    }
+    .page:last-child {
+      page-break-after: auto;
+      break-after: auto;
+    }
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== PAGE 1 ===================== -->
+<section class="page" id="page-1">
+  <header class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-pattern" aria-hidden="true"></div>
+    <div class="hero-shape" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div class="brand-row">
+        <div class="brand">
+          ООО «ТЕРРАВИ»
+          <span>Коммерческое предложение</span>
+        </div>
+        <div class="badge">Производство в России</div>
+      </div>
+      <div class="hero-copy">
+        <h1>Импортозамещение</h1>
+        <p>Российские промывочные реагенты для коагулометров</p>
+        <div class="cta-row">
+          <a class="cta" href="tel:+79052682323">Запросить поставку</a>
+          <span class="cta-secondary">ACL · HemosIL-аналоги · РФ регистрация</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="lead-grid">
+      <div class="lead-main">
+        <p>Для надёжной работы коагулометра важны не только диагностические реагенты. Дозирующая и гидравлическая системы прибора нуждаются в регулярной очистке от остатков проб и реагентов — во время исследований и при техническом обслуживании.</p>
+        <p>Производство в России позволяет уменьшить зависимость поставок реагентов от международной логистики и сократить затраты, связанные с доставкой готовой продукции из-за рубежа.</p>
+      </div>
+      <aside class="aside">
+        <div class="aside-label">Регистрация</div>
+        <p>«Промывающий раствор ACL.ЭС» зарегистрирован в России:</p>
+        <strong>№ Г004-00110-00/05721163<br />от 03.08.2026</strong>
+        <p style="margin-top:2.5mm">Неограниченный срок действия регистрационного удостоверения.</p>
+      </aside>
+    </div>
+
+    <div class="points">
+      <div class="point">
+        <div class="point-num">01</div>
+        <div>
+          <h3>Рабочее состояние прибора</h3>
+          <p>Российские системные жидкости поддерживают рабочее состояние прибора, обеспечивая качественное выполнение исследований с оригинальными фирменными диагностическими наборами.</p>
+        </div>
+      </div>
+      <div class="point">
+        <div class="point-num">02</div>
+        <div>
+          <h3>Качество как у фирменных</h3>
+          <p>Качество растворов аналогично фирменным, подтверждено клинико-лабораторными испытаниями. Это позволяет сократить потребность в закупке объёмных промывочных растворов за рубежом.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="products">
+      <div class="products-label">Линейка промывочных реагентов</div>
+      <div class="product-row">
+        <div class="product-item">
+          <div class="product-shot"><img src="assets/product-rinse-4000.jpg" alt="Промывочный раствор 4000 мл" /></div>
+          <div class="product-cap">Промывочный раствор<span>В-71856 · 4000 мл</span></div>
+        </div>
+        <div class="product-item">
+          <div class="product-shot"><img src="assets/product-clean-a.jpg" alt="Моющий раствор 500 мл" /></div>
+          <div class="product-cap">Моющий раствор<span>В-71851 · 500 мл</span></div>
+        </div>
+        <div class="product-item">
+          <div class="product-shot"><img src="assets/product-clean-b.jpg" alt="Моющий агент 80 мл" /></div>
+          <div class="product-cap">Моющий агент<span>В-71852/80 · 80 мл</span></div>
+        </div>
+        <div class="product-item">
+          <div class="product-shot"><img src="assets/product-emulsion.jpg" alt="Промывающая эмульсия 1000 мл" /></div>
+          <div class="product-cap">Промывающая эмульсия<span>В-71862 · 1000 мл</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="page1-footer">
+    <div class="company">ООО «ТЕРРАВИ»</div>
+    <div class="meta">Российские промывочные реагенты<br />для коагулометров серии ACL TOP</div>
+  </footer>
+</section>
+
+<!-- ===================== PAGE 2 ===================== -->
+<section class="page" id="page-2">
+  <header class="page2-header">
+    <div class="eyebrow">Ассортимент · ООО «ТЕРРАВИ»</div>
+    <h2>Растворы для коагулометров</h2>
+    <p>Полная линейка системных жидкостей — аналоги HemosIL по характеристикам, готовые к применению и в форматах для переноса / разведения.</p>
+  </header>
+
+  <div class="page2-body">
+    <table class="catalog">
+      <thead>
+        <tr>
+          <th style="width:18%">Артикул</th>
+          <th style="width:28%">Наименование</th>
+          <th style="width:24%">Объём и способ подготовки</th>
+          <th style="width:30%">Аналогичен по характеристикам</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="sku">В-71851</td>
+          <td class="name">Моющий раствор, 500 мл</td>
+          <td class="vol"><strong>500 мл</strong>готовый к применению</td>
+          <td class="analog">HemosIL Cleaning Solution (Clean A)<code>00009831700</code></td>
+        </tr>
+        <tr>
+          <td class="sku">В-71852/80</td>
+          <td class="name">Моющий агент, 80 мл</td>
+          <td class="vol"><strong>80 мл</strong>готовый к применению</td>
+          <td class="analog">HemosIL Cleaning Agent (Clean B)<code>00009832700</code></td>
+        </tr>
+        <tr>
+          <td class="sku">В-71856</td>
+          <td class="name">Промывочный раствор для приборов серии ACL ТОР</td>
+          <td class="vol"><strong>4000 мл</strong>готовый к применению</td>
+          <td class="analog">HemosIL Rinse Solution<code>00020302400</code></td>
+        </tr>
+        <tr>
+          <td class="sku">В-71855</td>
+          <td class="name">Промывочный раствор для приборов серии ACL ТОР</td>
+          <td class="vol"><strong>2000 мл</strong>Требует переноса в системный флакон</td>
+          <td class="analog">HemosIL Rinse Solution<code>00020302400</code></td>
+        </tr>
+        <tr>
+          <td class="sku">В-71853</td>
+          <td class="name">Промывочный раствор для приборов серии ACL ТОР</td>
+          <td class="vol"><strong>4000 мл</strong>Требует переноса в системный флакон</td>
+          <td class="analog">HemosIL Rinse Solution<code>00020302400</code></td>
+        </tr>
+        <tr>
+          <td class="sku">В-71854</td>
+          <td class="name">Промывочный раствор для приборов серии ACL ТОР, 80× концентрат</td>
+          <td class="vol"><strong>50 мл</strong>Концентрат для разведения водой</td>
+          <td class="analog">HemosIL Rinse Solution<code>00020302400</code></td>
+        </tr>
+        <tr>
+          <td class="sku">В-71862</td>
+          <td class="name">Промывающая эмульсия</td>
+          <td class="vol"><strong>1000 мл</strong>готовая к применению</td>
+          <td class="analog">HemosIL Wash-R Emulsion<code>00020002400</code></td>
+        </tr>
+        <tr>
+          <td class="sku">В-71861</td>
+          <td class="name">Промывающая эмульсия</td>
+          <td class="vol"><strong>1000 мл</strong>Требует переноса в системный флакон</td>
+          <td class="analog">HemosIL Wash-R Emulsion<code>00020002400</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="storage">
+      <div class="storage-mark">
+        <div class="deg">15–25 °C</div>
+        <div class="sub">хранение</div>
+      </div>
+      <div class="storage-copy">
+        <h3>Условия хранения и транспортировки</h3>
+        <p>Растворы могут храниться в упаковке изготовителя при температуре 15–25 °C в течение всего срока годности. Допускается однократное замораживание. Допускается транспортировка при температуре до +35 °C в течение 5 суток.</p>
+        <p>После вскрытия готовые к применению растворы могут храниться при температуре 15–25 °C в течение всего срока годности в герметично закрытой таре. Промывочный раствор, приготовленный из концентрата, может быть использован в течение 14 суток при отсутствии загрязнений раствора.</p>
+      </div>
+    </div>
+
+    <div class="trust-row">
+      <div class="trust">
+        <strong>Импортозамещение</strong>
+        <span>Снижение зависимости от международной логистики и затрат на зарубежные поставки.</span>
+      </div>
+      <div class="trust">
+        <strong>Совместимость ACL</strong>
+        <span>Системные жидкости для работы с оригинальными фирменными диагностическими наборами.</span>
+      </div>
+      <div class="trust">
+        <strong>Аналоги HemosIL</strong>
+        <span>Характеристики подтверждены клинико-лабораторными испытаниями.</span>
+      </div>
+    </div>
+  </div>
+
+  <footer class="contact-band">
+    <div>
+      <h3>ООО «ТЕРРАВИ»</h3>
+      <div class="tagline">Готовы подготовить коммерческое предложение и график поставок под ваш парк ACL.</div>
+    </div>
+    <div class="contact-details">
+      <div class="who">Контакт для связи: Елена</div>
+      <div class="phone">+7 (905) 268-23-23</div>
+      <div class="note">Телефон · запрос ассортимента и сроков</div>
+    </div>
+  </footer>
+</section>
+
+</body>
+</html>
