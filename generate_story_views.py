@@ -43,24 +43,35 @@ def main() -> None:
     im = Image.fromarray(new_arr)
 
     cx, cy, r = 654, 212, 202
-    portrait = Image.open(PORTRAIT).convert("L")
-    portrait = ImageEnhance.Contrast(portrait).enhance(1.22)
-    portrait = ImageEnhance.Brightness(portrait).enhance(1.0).convert("RGB")
     side = r * 2
+    bg = (252, 252, 252)
+
+    from PIL import ImageOps
+
+    portrait = ImageOps.exif_transpose(Image.open(PORTRAIT)).convert("L")
+    portrait = ImageEnhance.Contrast(portrait).enhance(1.15)
+    portrait = ImageEnhance.Brightness(portrait).enhance(1.02).convert("RGB")
     pw, ph = portrait.size
-    scale = max(side / pw, side / ph) * 1.28
-    nw, nh = int(pw * scale), int(ph * scale)
-    portrait = portrait.resize((nw, nh), Image.Resampling.LANCZOS)
-    left = (nw - side) // 2
-    top = max(0, int((nh - side) * 0.20))
-    if top + side > nh:
-        top = nh - side
-    portrait = portrait.crop((left, top, left + side, top + side))
+
+    # Pad so the full head sits smaller inside the circle with clear margin
+    pad = int(max(pw, ph) * 0.16)
+    framed = Image.new("RGB", (pw + 2 * pad, ph + 2 * pad), bg)
+    framed.paste(portrait, (pad, pad))
+    fw, fh = framed.size
+    sq = max(fw, fh)
+    square = Image.new("RGB", (sq, sq), bg)
+    square.paste(framed, ((sq - fw) // 2, (sq - fh) // 2))
+
+    inner_fit = int(side * 0.78)
+    square = square.resize((inner_fit, inner_fit), Image.Resampling.LANCZOS)
+    circle_canvas = Image.new("RGB", (side, side), bg)
+    off = (side - inner_fit) // 2
+    circle_canvas.paste(square, (off, off))
 
     mask_hi = Image.new("L", (side * 4, side * 4), 0)
     ImageDraw.Draw(mask_hi).ellipse([1, 1, side * 4 - 2, side * 4 - 2], fill=255)
     mask = mask_hi.resize((side, side), Image.Resampling.LANCZOS)
-    im.paste(portrait, (cx - r, cy - r), mask)
+    im.paste(circle_canvas, (cx - r, cy - r), mask)
 
     draw = ImageDraw.Draw(im)
     font_label = ImageFont.truetype(str(FONT_LABEL), 32)
