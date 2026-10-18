@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>/zerogravity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #050608;
+    --panel: rgba(10, 12, 16, 0.88);
+    --border: #1a1f28;
+    --text: #eceef2;
+    --muted: #8b93a1;
+    --accent: #f2f4f8;
+    --glow: #dfe7ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100%; background: var(--bg); color: var(--text);
+    font-family: "IBM Plex Sans", system-ui, sans-serif; }
+  body {
+    background:
+      radial-gradient(900px 480px at 50% -8%, #1a2030 0%, transparent 55%),
+      radial-gradient(700px 500px at 70% 80%, #0c1018 0%, transparent 45%),
+      var(--bg);
+  }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 28px 16px 64px; }
+  header { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: end; margin-bottom: 22px; }
+  h1 { font-family: Syne, sans-serif; font-weight: 800; letter-spacing: 0.02em;
+    font-size: clamp(34px, 7vw, 56px); line-height: 0.95; }
+  h1 span { color: var(--glow); text-shadow: 0 0 28px rgba(223,231,255,0.25); }
+  .lede { max-width: 34rem; color: var(--muted); font-size: 14px; line-height: 1.45; }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tabs button {
+    appearance: none; border: 1px solid var(--border); background: #0c1016; color: var(--muted);
+    border-radius: 999px; padding: 10px 14px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .tabs button.active { color: var(--text); border-color: #3a4456; background: #121821; }
+
+  .hero {
+    border: 1px solid var(--border); border-radius: 18px; overflow: hidden; background: #080a0e;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+  }
+  .hero img { display: block; width: 100%; height: auto; }
+  .caption { padding: 14px 16px 16px; color: var(--muted); font-size: 13px; }
+  .caption strong { color: var(--text); display: block; margin-bottom: 2px; font-size: 14px; }
+
+  .grid { margin-top: 16px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+  figure { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: #080a0e; }
+  figure img { display: block; width: 100%; aspect-ratio: 3/4; object-fit: cover; }
+  figcaption { padding: 10px 12px 12px; font-size: 12px; color: var(--muted); }
+  figcaption strong { display: block; color: var(--text); margin-bottom: 2px; }
+
+  /* Physics stage */
+  #stage-wrap { display: none; margin-top: 8px; }
+  #stage-wrap.on { display: block; }
+  #gallery.on { display: block; }
+  #gallery { display: none; }
+  #gallery.on { display: block; }
+
+  .physics-shell {
+    position: relative; border: 1px solid var(--border); border-radius: 18px; overflow: hidden;
+    background: #05070b; height: min(78vh, 820px);
+  }
+  canvas#world { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+  canvas#world:active { cursor: grabbing; }
+  .hud {
+    position: absolute; inset: 12px 12px auto 12px; z-index: 5; display: flex; flex-wrap: wrap;
+    gap: 8px; justify-content: space-between; pointer-events: none;
+  }
+  .hud .brand, .hud .controls { pointer-events: auto; }
+  .hud .brand {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px;
+    backdrop-filter: blur(10px); max-width: 280px;
+  }
+  .hud .brand b { font-family: Syne, sans-serif; font-size: 16px; }
+  .hud .brand p { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 6px; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 8px; backdrop-filter: blur(10px); }
+  .controls button {
+    appearance: none; border: 1px solid var(--border); background: #10151d; color: var(--text);
+    border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; min-height: 40px;
+  }
+  .controls button.on { border-color: #9fb0c8; color: #dce6f5; }
+  .controls button.grav-on { border-color: #e2c48a; color: #e2c48a; }
+  .controls button.pulse { border-color: #8fd6b5; color: #8fd6b5; }
+  .controls button.warn { border-color: #e2c48a; color: #e2c48a; }
+  .meter {
+    position: absolute; right: 12px; bottom: 12px; z-index: 5;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px;
+    font-size: 11px; color: var(--muted); backdrop-filter: blur(10px);
+  }
+  .meter strong { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1><span>/zerogravity</span></h1>
+      <p class="lede">Sci-fi OOTD по референсу: шлем с белым визором, астероидное поле, rim light в тёмном void. Портрет → cinematic zero-g.</p>
+    </div>
+    <div class="tabs">
+      <button type="button" class="active" data-view="gallery">Стиллы</button>
+      <button type="button" data-view="physics">Physics</button>
+    </div>
+  </header>
+
+  <section id="gallery" class="on">
+    <div class="hero">
+      <img src="zerogravity-hero.jpg" alt="Zero gravity hero"/>
+      <div class="caption"><strong>HERO</strong>Главный кадр в стиле референса — левитация среди обломков, glowing visor.</div>
+    </div>
+    <div class="grid">
+      <figure><img src="source-preview.jpg" alt="Input"/><figcaption><strong>INPUT</strong>Исходный портрет</figcaption></figure>
+      <figure><img src="reference.jpg" alt="Reference"/><figcaption><strong>REF</strong>Целевой референс</figcaption></figure>
+      <figure><img src="zerogravity-wide.jpg" alt="Wide"/><figcaption><strong>WIDE</strong>Плотное астероидное поле</figcaption></figure>
+      <figure><img src="zerogravity-close.jpg" alt="Close"/><figcaption><strong>CLOSE</strong>Крупный план, DOF</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="stage-wrap">
+    <div class="physics-shell">
+      <canvas id="world"></canvas>
+      <div class="hud">
+        <div class="brand">
+          <b>zero-g shards</b>
+          <p>Осколки HERO. Тяни, Impulse, Explode, G.</p>
+        </div>
+        <div class="controls">
+          <button id="btnGravity" class="on" type="button">G: OFF</button>
+          <button id="btnPulse" class="pulse" type="button">Impulse</button>
+          <button id="btnExplode" class="warn" type="button">Explode</button>
+          <button id="btnReset" type="button">Reset</button>
+        </div>
+      </div>
+      <div class="meter">shards <strong id="mShards">0</strong> · gravity <strong id="mG">0.000</strong></div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script>
+(function () {
+  const gallery = document.getElementById('gallery');
+  const stageWrap = document.getElementById('stage-wrap');
+  const tabs = document.querySelectorAll('.tabs button');
+  let physicsReady = false;
+
+  tabs.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      tabs.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const view = btn.dataset.view;
+      const isPhysics = view === 'physics';
+      gallery.classList.toggle('on', !isPhysics);
+      stageWrap.classList.toggle('on', isPhysics);
+      if (isPhysics && !physicsReady) {
+        physicsReady = true;
+        bootPhysics();
+      } else if (isPhysics && window.__zgRebuild) {
+        window.__zgRebuild();
+      }
+    });
+  });
+
+  function bootPhysics() {
+    const { Engine, Render, Runner, Bodies, Body, Composite, Mouse, MouseConstraint, Events } = Matter;
+    const canvas = document.getElementById('world');
+    const shell = canvas.parentElement;
+    const btnGravity = document.getElementById('btnGravity');
+    const btnPulse = document.getElementById('btnPulse');
+    const btnExplode = document.getElementById('btnExplode');
+    const btnReset = document.getElementById('btnReset');
+    const mShards = document.getElementById('mShards');
+    const mG = document.getElementById('mG');
+    const COLS = 8, ROWS = 12;
+    let engine, render, runner, shards = [], gravityOn = false, atlas = null, tileTextures = [];
+
+    function size() {
+      const r = shell.getBoundingClientRect();
+      return { w: Math.max(320, Math.floor(r.width)), h: Math.max(420, Math.floor(r.height)) };
+    }
+
+    function clearWorld() {
+      if (!engine) return;
+      Composite.clear(engine.world, false);
+      shards = [];
+    }
+
+    function bakeTiles() {
+      if (tileTextures.length) return;
+      const srcTW = atlas.width / COLS;
+      const srcTH = atlas.height / ROWS;
+      const c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(srcTW));
+      c.height = Math.max(1, Math.round(srcTH));
+      const ctx = c.getContext('2d');
+      for (let r = 0; r < ROWS; r++) {
+        for (let col = 0; col < COLS; col++) {
+          ctx.clearRect(0, 0, c.width, c.height);
+          ctx.drawImage(atlas, col * srcTW, r * srcTH, srcTW, srcTH, 0, 0, c.width, c.height);
+          tileTextures.push({ url: c.toDataURL('image/jpeg', 0.84), sw: srcTW, sh: srcTH });
+        }
+      }
+    }
+
+    function makeWalls(w, h) {
+      const t = 80;
+      const opts = { isStatic: true, render: { visible: false }, restitution: 0.95, friction: 0.02 };
+      Composite.add(engine.world, [
+        Bodies.rectangle(w / 2, -t / 2, w + t * 2, t, opts),
+        Bodies.rectangle(w / 2, h + t / 2, w + t * 2, t, opts),
+        Bodies.rectangle(-t / 2, h / 2, t, h + t * 2, opts),
+        Bodies.rectangle(w + t / 2, h / 2, t, h + t * 2, opts),
+      ]);
+    }
+
+    function makeShards(w, h) {
+      bakeTiles();
+      const margin = Math.min(w, h) * 0.08;
+      const maxH = h - margin * 2;
+      const maxW = w - margin * 2;
+      const aspect = atlas.width / atlas.height;
+      let drawH = maxH, drawW = drawH * aspect;
+      if (drawW > maxW) { drawW = maxW; drawH = drawW / aspect; }
+      const tileW = drawW / COLS, tileH = drawH / ROWS;
+      const originX = (w - drawW) / 2 + tileW / 2;
+      const originY = (h - drawH) / 2 + tileH / 2;
+      const srcTW = tileTextures[0].sw, srcTH = tileTextures[0].sh;
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const tex = tileTextures[r * COLS + c];
+          const body = Bodies.rectangle(originX + c * tileW, originY + r * tileH, tileW - 1.5, tileH - 1.5, {
+            chamfer: { radius: 3 },
+            frictionAir: 0.012, friction: 0.08, restitution: 0.86, density: 0.0012,
+            render: { sprite: { texture: tex.url, xScale: (tileW - 1.5) / srcTW, yScale: (tileH - 1.5) / srcTH } },
+          });
+          Body.setVelocity(body, { x: (Math.random() - 0.5) * 0.5, y: (Math.random() - 0.5) * 0.5 });
+          shards.push(body);
+        }
+      }
+      Composite.add(engine.world, shards);
+      mShards.textContent = String(shards.length);
+    }
+
+    function applyGravity() {
+      if (engine) {
+        engine.gravity.x = 0;
+        engine.gravity.y = gravityOn ? 1 : 0;
+        engine.gravity.scale = gravityOn ? 0.001 : 0;
+      }
+      btnGravity.textContent = gravityOn ? 'G: ON' : 'G: OFF';
+      btnGravity.classList.toggle('on', !gravityOn);
+      btnGravity.classList.toggle('grav-on', gravityOn);
+      mG.textContent = gravityOn ? '0.001' : '0.000';
+    }
+
+    function impulse() {
+      const { w, h } = size();
+      const cx = w / 2, cy = h / 2;
+      for (const b of shards) {
+        const dx = b.position.x - cx, dy = b.position.y - cy;
+        const d = Math.max(40, Math.hypot(dx, dy));
+        Body.applyForce(b, b.position, { x: (dx / d) * 0.012, y: (dy / d) * 0.012 });
+      }
+    }
+    function explode() {
+      for (const b of shards) {
+        Body.setVelocity(b, { x: (Math.random() - 0.5) * 18, y: (Math.random() - 0.5) * 18 });
+      }
+    }
+
+    function rebuild() {
+      const { w, h } = size();
+      clearWorld();
+      const dpr = window.devicePixelRatio || 1;
+      render.canvas.width = Math.floor(w * dpr);
+      render.canvas.height = Math.floor(h * dpr);
+      render.canvas.style.width = w + 'px';
+      render.canvas.style.height = h + 'px';
+      render.options.width = w;
+      render.options.height = h;
+      render.options.pixelRatio = dpr;
+      render.bounds.max.x = w;
+      render.bounds.max.y = h;
+      makeWalls(w, h);
+      makeShards(w, h);
+      applyGravity();
+    }
+    window.__zgRebuild = rebuild;
+
+    const { w, h } = size();
+    engine = Engine.create({ enableSleeping: false });
+    render = Render.create({
+      canvas, engine,
+      options: { width: w, height: h, background: 'transparent', wireframes: false, pixelRatio: window.devicePixelRatio || 1 },
+    });
+    runner = Runner.create();
+    Runner.run(runner, engine);
+    Render.run(render);
+    const mouse = Mouse.create(render.canvas);
+    Composite.add(engine.world, MouseConstraint.create(engine, {
+      mouse, constraint: { stiffness: 0.18, render: { visible: false } },
+    }));
+    render.mouse = mouse;
+    Events.on(engine, 'beforeUpdate', () => {
+      if (gravityOn) return;
+      for (const b of shards) {
+        Body.setVelocity(b, { x: b.velocity.x * 0.9985, y: b.velocity.y * 0.9985 });
+        Body.setAngularVelocity(b, b.angularVelocity * 0.998);
+      }
+    });
+
+    function bindHud(el, fn) {
+      el.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); fn(); });
+    }
+    bindHud(btnGravity, () => { gravityOn = !gravityOn; applyGravity(); });
+    bindHud(btnPulse, impulse);
+    bindHud(btnExplode, explode);
+    bindHud(btnReset, rebuild);
+    window.addEventListener('resize', () => { if (stageWrap.classList.contains('on')) rebuild(); });
+
+    const img = new Image();
+    img.onload = () => { atlas = img; rebuild(); setTimeout(impulse, 300); };
+    img.src = 'atlas.jpg';
+  }
+})();
+</script>
+</body>
+</html>
