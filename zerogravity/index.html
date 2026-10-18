@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>/zerogravity — physics system</title>
+<style>
+  :root {
+    --bg: #07090c;
+    --panel: rgba(12, 16, 22, 0.82);
+    --border: #1b2430;
+    --text: #e8eef4;
+    --muted: #8a96a4;
+    --accent: #78d2ff;
+    --accent2: #9ef0c8;
+    --warn: #f0c878;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text);
+    font-family: "IBM Plex Sans", "Segoe UI", sans-serif; }
+  body {
+    background:
+      radial-gradient(1000px 520px at 50% -15%, #142033 0%, transparent 55%),
+      radial-gradient(700px 400px at 85% 90%, #101820 0%, transparent 50%),
+      var(--bg);
+  }
+  #stage { position: fixed; inset: 0; z-index: 0; }
+  canvas#world { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+  canvas#world:active { cursor: grabbing; }
+
+  .hud {
+    position: fixed; z-index: 40; left: 14px; right: 14px; top: 14px;
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; justify-content: space-between;
+    pointer-events: none;
+  }
+  .brand, .controls, .stills, .meter { pointer-events: auto; }
+  .brand {
+    background: var(--panel); border: 1px solid var(--border); backdrop-filter: blur(10px);
+    border-radius: 14px; padding: 12px 14px; max-width: min(420px, 100%);
+  }
+  .brand h1 { font-size: clamp(22px, 4vw, 30px); letter-spacing: 0.04em; font-weight: 700; }
+  .brand h1 span { color: var(--accent); }
+  .brand p { margin-top: 4px; color: var(--muted); font-size: 13px; line-height: 1.4; }
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end;
+    background: var(--panel); border: 1px solid var(--border); backdrop-filter: blur(10px);
+    border-radius: 14px; padding: 10px;
+  }
+  button {
+    appearance: none; border: 1px solid var(--border); background: #121820; color: var(--text);
+    border-radius: 10px; padding: 12px 14px; font: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: border-color .15s, background .15s, transform .1s;
+    min-height: 44px; position: relative; z-index: 41;
+  }
+  button:hover { border-color: #2c3a4d; }
+  button:active { transform: scale(0.97); }
+  button.on { border-color: var(--accent); color: var(--accent); background: rgba(120,210,255,0.08); }
+  button.grav-on { border-color: var(--warn); color: var(--warn); background: rgba(240,200,120,0.1); }
+  button.pulse { border-color: var(--accent2); color: var(--accent2); }
+  button.warn { border-color: var(--warn); color: var(--warn); }
+
+  .stills {
+    position: fixed; z-index: 40; left: 14px; right: 14px; bottom: 14px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    max-width: 720px;
+  }
+  .stills a {
+    display: block; border-radius: 10px; overflow: hidden; border: 1px solid var(--border);
+    background: #0c1118; text-decoration: none; color: var(--muted); font-size: 11px;
+  }
+  .stills img { display: block; width: 100%; aspect-ratio: 3/4; object-fit: cover; }
+  .stills span { display: block; padding: 6px 8px; letter-spacing: 0.04em; }
+
+  .meter {
+    position: fixed; z-index: 40; right: 14px; bottom: 14px;
+    background: var(--panel); border: 1px solid var(--border); backdrop-filter: blur(10px);
+    border-radius: 12px; padding: 10px 12px; font-size: 12px; color: var(--muted);
+    min-width: 150px;
+  }
+  .meter strong { color: var(--text); font-variant-numeric: tabular-nums; }
+  .meter .g { color: var(--accent); }
+
+  @media (max-width: 720px) {
+    .stills { grid-template-columns: repeat(4, 1fr); max-width: none; }
+    .meter { display: none; }
+    .brand p { display: none; }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div id="stage"><canvas id="world"></canvas></div>
+
+<div class="hud">
+  <div class="brand">
+    <h1><span>/zerogravity</span></h1>
+    <p>Интерактивная физика нулевой гравитации. Тяни осколки портрета, включай импульсы, возвращай землю.</p>
+  </div>
+  <div class="controls">
+    <button id="btnGravity" class="on" type="button">G: OFF</button>
+    <button id="btnPulse" class="pulse" type="button">Impulse</button>
+    <button id="btnExplode" class="warn" type="button">Explode</button>
+    <button id="btnReset" type="button">Reset</button>
+  </div>
+</div>
+
+<div class="stills">
+  <a href="source-preview.jpg" target="_blank" rel="noopener"><img src="source-preview.jpg" alt="Input"/><span>INPUT</span></a>
+  <a href="zerogravity-float.jpg" target="_blank" rel="noopener"><img src="zerogravity-float.jpg" alt="Float"/><span>FLOAT</span></a>
+  <a href="zerogravity-shatter.jpg" target="_blank" rel="noopener"><img src="zerogravity-shatter.jpg" alt="Shatter"/><span>SHATTER</span></a>
+  <a href="zerogravity-orbit.jpg" target="_blank" rel="noopener"><img src="zerogravity-orbit.jpg" alt="Orbit"/><span>ORBIT</span></a>
+</div>
+
+<div class="meter">
+  shards <strong id="mShards">0</strong><br/>
+  gravity <strong id="mG" class="g">0.000</strong><br/>
+  drag to throw · walls bounce
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script>
+(function () {
+  const { Engine, Render, Runner, Bodies, Body, Composite, Mouse, MouseConstraint, Events, Query } = Matter;
+
+  const canvas = document.getElementById('world');
+  const btnGravity = document.getElementById('btnGravity');
+  const btnPulse = document.getElementById('btnPulse');
+  const btnExplode = document.getElementById('btnExplode');
+  const btnReset = document.getElementById('btnReset');
+  const mShards = document.getElementById('mShards');
+  const mG = document.getElementById('mG');
+
+  const COLS = 8;
+  const ROWS = 12;
+  const ATLAS = 'atlas.jpg';
+
+  let engine, render, runner, mouseConstraint, shards = [], walls = [];
+  let gravityOn = false;
+  let atlas = null;
+  let tileW = 0, tileH = 0;
+  let tileTextures = [];
+
+  function size() {
+    return { w: window.innerWidth, h: window.innerHeight };
+  }
+
+  function clearWorld() {
+    if (!engine) return;
+    Composite.clear(engine.world, false);
+    shards = [];
+    walls = [];
+  }
+
+  function makeWalls(w, h) {
+    const t = 80;
+    const opts = { isStatic: true, render: { visible: false }, friction: 0.02, restitution: 0.95 };
+    walls = [
+      Bodies.rectangle(w / 2, -t / 2, w + t * 2, t, opts),
+      Bodies.rectangle(w / 2, h + t / 2, w + t * 2, t, opts),
+      Bodies.rectangle(-t / 2, h / 2, t, h + t * 2, opts),
+      Bodies.rectangle(w + t / 2, h / 2, t, h + t * 2, opts),
+    ];
+    Composite.add(engine.world, walls);
+  }
+
+  function bakeTiles() {
+    if (tileTextures.length) return;
+    const srcTW = atlas.width / COLS;
+    const srcTH = atlas.height / ROWS;
+    const tileCache = document.createElement('canvas');
+    tileCache.width = Math.max(1, Math.round(srcTW));
+    tileCache.height = Math.max(1, Math.round(srcTH));
+    const ctx = tileCache.getContext('2d');
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        ctx.clearRect(0, 0, tileCache.width, tileCache.height);
+        ctx.drawImage(
+          atlas,
+          c * srcTW, r * srcTH, srcTW, srcTH,
+          0, 0, tileCache.width, tileCache.height
+        );
+        tileTextures.push({
+          url: tileCache.toDataURL('image/jpeg', 0.82),
+          sw: srcTW,
+          sh: srcTH,
+        });
+      }
+    }
+  }
+
+  function makeShards(w, h) {
+    bakeTiles();
+    const margin = Math.min(w, h) * 0.08;
+    const maxH = h - margin * 2 - 110;
+    const maxW = w - margin * 2;
+    const aspect = atlas.width / atlas.height;
+    let drawH = maxH;
+    let drawW = drawH * aspect;
+    if (drawW > maxW) {
+      drawW = maxW;
+      drawH = drawW / aspect;
+    }
+    tileW = drawW / COLS;
+    tileH = drawH / ROWS;
+    const originX = (w - drawW) / 2 + tileW / 2;
+    const originY = (h - drawH) / 2 + tileH / 2 - 20;
+    const srcTW = tileTextures[0].sw;
+    const srcTH = tileTextures[0].sh;
+
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const idx = r * COLS + c;
+        const tex = tileTextures[idx];
+        const x = originX + c * tileW;
+        const y = originY + r * tileH;
+        const body = Bodies.rectangle(x, y, tileW - 1.5, tileH - 1.5, {
+          chamfer: { radius: 3 },
+          frictionAir: 0.012,
+          friction: 0.08,
+          restitution: 0.86,
+          density: 0.0012,
+          render: {
+            sprite: {
+              texture: tex.url,
+              xScale: (tileW - 1.5) / srcTW,
+              yScale: (tileH - 1.5) / srcTH,
+            },
+          },
+        });
+        Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.02);
+        Body.setVelocity(body, {
+          x: (Math.random() - 0.5) * 0.6,
+          y: (Math.random() - 0.5) * 0.6,
+        });
+        shards.push(body);
+      }
+    }
+    Composite.add(engine.world, shards);
+    mShards.textContent = String(shards.length);
+  }
+
+  function applyGravity() {
+    if (engine) {
+      engine.gravity.x = 0;
+      engine.gravity.y = gravityOn ? 1 : 0;
+      engine.gravity.scale = gravityOn ? 0.001 : 0;
+    }
+    btnGravity.textContent = gravityOn ? 'G: ON' : 'G: OFF';
+    btnGravity.classList.toggle('on', !gravityOn);
+    btnGravity.classList.toggle('grav-on', gravityOn);
+    mG.textContent = gravityOn ? '0.001' : '0.000';
+  }
+
+  function impulse() {
+    const { w, h } = size();
+    const cx = w / 2, cy = h / 2;
+    for (const b of shards) {
+      const dx = b.position.x - cx;
+      const dy = b.position.y - cy;
+      const d = Math.max(40, Math.hypot(dx, dy));
+      Body.applyForce(b, b.position, {
+        x: (dx / d) * 0.012 + (Math.random() - 0.5) * 0.004,
+        y: (dy / d) * 0.012 + (Math.random() - 0.5) * 0.004,
+      });
+      Body.setAngularVelocity(b, b.angularVelocity + (Math.random() - 0.5) * 0.08);
+    }
+  }
+
+  function explode() {
+    for (const b of shards) {
+      Body.setVelocity(b, {
+        x: (Math.random() - 0.5) * 18,
+        y: (Math.random() - 0.5) * 18,
+      });
+      Body.setAngularVelocity(b, (Math.random() - 0.5) * 0.35);
+    }
+  }
+
+  function rebuild() {
+    const { w, h } = size();
+    clearWorld();
+    const dpr = window.devicePixelRatio || 1;
+    render.canvas.width = Math.floor(w * dpr);
+    render.canvas.height = Math.floor(h * dpr);
+    render.canvas.style.width = w + 'px';
+    render.canvas.style.height = h + 'px';
+    render.options.width = w;
+    render.options.height = h;
+    render.options.pixelRatio = dpr;
+    render.bounds.max.x = w;
+    render.bounds.max.y = h;
+    makeWalls(w, h);
+    makeShards(w, h);
+    applyGravity();
+  }
+
+  function boot() {
+    const { w, h } = size();
+    engine = Engine.create({ enableSleeping: false });
+    render = Render.create({
+      canvas,
+      engine,
+      options: {
+        width: w,
+        height: h,
+        background: 'transparent',
+        wireframes: false,
+        pixelRatio: window.devicePixelRatio,
+        showAngleIndicator: false,
+      },
+    });
+    runner = Runner.create();
+    Runner.run(runner, engine);
+    Render.run(render);
+
+    const mouse = Mouse.create(render.canvas);
+    mouseConstraint = MouseConstraint.create(engine, {
+      mouse,
+      constraint: {
+        stiffness: 0.18,
+        render: { visible: false },
+      },
+    });
+    Composite.add(engine.world, mouseConstraint);
+    render.mouse = mouse;
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'g' || e.key === 'G') {
+        gravityOn = !gravityOn;
+        applyGravity();
+      } else if (e.key === ' ') {
+        e.preventDefault();
+        impulse();
+      } else if (e.key === 'e' || e.key === 'E') {
+        explode();
+      } else if (e.key === 'r' || e.key === 'R') {
+        rebuild();
+      }
+    });
+
+    // soft damping in zero-g so shards don't spin forever too wildly
+    Events.on(engine, 'beforeUpdate', () => {
+      if (gravityOn) return;
+      for (const b of shards) {
+        Body.setVelocity(b, { x: b.velocity.x * 0.9985, y: b.velocity.y * 0.9985 });
+        Body.setAngularVelocity(b, b.angularVelocity * 0.998);
+      }
+    });
+
+    rebuild();
+  }
+
+  function bindHud(el, fn) {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      fn();
+    });
+  }
+  bindHud(btnGravity, () => { gravityOn = !gravityOn; applyGravity(); });
+  bindHud(btnPulse, () => impulse());
+  bindHud(btnExplode, () => explode());
+  bindHud(btnReset, () => rebuild());
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(rebuild, 120);
+  });
+
+  const img = new Image();
+  img.onload = () => {
+    atlas = img;
+    boot();
+    // gentle opening drift
+    setTimeout(impulse, 350);
+  };
+  img.onerror = () => {
+    document.querySelector('.brand p').textContent = 'Не удалось загрузить atlas.jpg';
+  };
+  img.src = ATLAS;
+})();
+</script>
+</body>
+</html>
