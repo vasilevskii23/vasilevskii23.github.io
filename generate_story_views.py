@@ -81,7 +81,7 @@ def main() -> None:
     d_h = int(dys.max() - dys.min()) + 1
     days = orig[940:962, 117:290]
     col = tuple(int(c) for c in days[days.mean(2) > 180].mean(0))
-    date_text = "15.10 — 22.10"
+    date_text = "22.09 — 21.10"
     font = ImageFont.truetype(str(FONT_DATE), d_h * scale)
     bb = ImageDraw.Draw(Image.new("L", (1, 1))).textbbox((0, 0), date_text, font=font)
     g = Image.new("L", (bb[2] - bb[0] + 4 * scale, bb[3] - bb[1] + 4 * scale), 0)
