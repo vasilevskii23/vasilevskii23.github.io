@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lifotronic Panda — 3D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg0: #1a1410;
+      --bg1: #2a221c;
+      --cream: #f3ebe3;
+      --red: #c62828;
+      --ink: #2c241c;
+      --muted: #8a7a6c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 20%, #3d2e24 0%, transparent 55%),
+        radial-gradient(ellipse 70% 50% at 80% 90%, #4a1c1c 0%, transparent 45%),
+        linear-gradient(165deg, var(--bg1), var(--bg0));
+      color: var(--cream);
+    }
+    #canvas { position: fixed; inset: 0; display: block; }
+    .hud {
+      position: fixed; inset: 0; pointer-events: none;
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: clamp(16px, 3vw, 28px);
+      z-index: 2;
+    }
+    .top {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+    }
+    .brand h1 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(1.4rem, 3.5vw, 2.1rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .brand h1 span { color: #ef5350; }
+    .brand p {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      max-width: 28ch;
+      line-height: 1.4;
+    }
+    .controls {
+      pointer-events: auto;
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: flex-end;
+    }
+    .btn {
+      appearance: none; border: 1px solid rgba(243,235,227,0.18);
+      background: rgba(26,20,16,0.55);
+      backdrop-filter: blur(10px);
+      color: var(--cream);
+      font: 500 0.8rem/1 "DM Sans", sans-serif;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    }
+    .btn:hover { background: rgba(50,36,28,0.75); border-color: rgba(243,235,227,0.35); }
+    .btn:active { transform: scale(0.97); }
+    .btn.active { background: var(--red); border-color: transparent; }
+    .bottom {
+      display: flex; justify-content: space-between; align-items: flex-end; gap: 12px;
+      flex-wrap: wrap;
+    }
+    .hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: rgba(26,20,16,0.45);
+      backdrop-filter: blur(8px);
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(243,235,227,0.08);
+    }
+    .refs {
+      pointer-events: auto;
+      display: flex; gap: 6px;
+    }
+    .refs button {
+      width: 48px; height: 48px; padding: 0; border: 2px solid transparent;
+      border-radius: 10px; overflow: hidden; cursor: pointer;
+      background: #000; opacity: 0.7; transition: opacity 0.2s, border-color 0.2s;
+    }
+    .refs button:hover, .refs button.active { opacity: 1; border-color: #ef5350; }
+    .refs img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .loader {
+      position: fixed; inset: 0; z-index: 10;
+      display: grid; place-items: center;
+      background: var(--bg0);
+      transition: opacity 0.5s ease, visibility 0.5s;
+    }
+    .loader.hide { opacity: 0; visibility: hidden; }
+    .loader-inner { text-align: center; }
+    .spinner {
+      width: 36px; height: 36px; margin: 0 auto 14px;
+      border: 3px solid rgba(243,235,227,0.15);
+      border-top-color: #ef5350;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader p { color: var(--muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="loader" id="loader">
+    <div class="loader-inner">
+      <div class="spinner"></div>
+      <p>Собираю плюшевую панду…</p>
+    </div>
+  </div>
+  <canvas id="canvas"></canvas>
+  <div class="hud">
+    <div class="top">
+      <div class="brand">
+        <h1>Panda <span>Lifotronic</span></h1>
+        <p>3D-модель плюшевой панды в красном худи по фото.</p>
+      </div>
+      <div class="controls">
+        <button class="btn active" id="btnAuto" type="button">Автоповорот</button>
+        <button class="btn" id="btnFur" type="button">Мех: вкл</button>
+        <button class="btn" id="btnReset" type="button">Сброс камеры</button>
+        <button class="btn" id="btnGLB" type="button">Скачать GLB</button>
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="hint">Перетаскивайте мышью · колесо — зум · ПКМ — панорама</div>
+      <div class="refs" id="refs"></div>
+    </div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFExporter } from "three/addons/exporters/GLTFExporter.js";
+
+const COLORS = {
+  white: 0xf5f2ee,
+  whiteFur: 0xf0ebe4,
+  black: 0x1a1a1a,
+  blackFur: 0x141414,
+  red: 0xc62828,
+  redDeep: 0xa01f1f,
+  nose: 0x4a2c1a,
+  paw: 0xa67c52,
+  cream: 0xe8dcc8,
+};
+
+const canvas = document.getElementById("canvas");
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: true,
+  alpha: true,
+  preserveDrawingBuffer: true,
+});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(2.6, 1.55, 3.4);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.minDistance = 1.6;
+controls.maxDistance = 8;
+controls.target.set(0, 0.55, 0);
+controls.maxPolarAngle = Math.PI * 0.92;
+
+let autoRotate = true;
+let furVisible = true;
+
+// ——— lighting ———
+const hemi = new THREE.HemisphereLight(0xfff2e0, 0x3a2a22, 0.85);
+scene.add(hemi);
+
+const key = new THREE.DirectionalLight(0xfff5ea, 1.35);
+key.position.set(3.5, 6, 2.5);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+key.shadow.camera.near = 0.5;
+key.shadow.camera.far = 20;
+key.shadow.camera.left = -4;
+key.shadow.camera.right = 4;
+key.shadow.camera.top = 4;
+key.shadow.camera.bottom = -4;
+key.shadow.bias = -0.0004;
+scene.add(key);
+
+const fill = new THREE.DirectionalLight(0xb8d4ff, 0.35);
+fill.position.set(-4, 2, -2);
+scene.add(fill);
+
+const rim = new THREE.DirectionalLight(0xff8866, 0.4);
+rim.position.set(-1, 3, -4);
+scene.add(rim);
+
+const soft = new THREE.PointLight(0xffccaa, 0.55, 12);
+soft.position.set(0, 2.2, 2.5);
+scene.add(soft);
+
+// ——— ground ———
+const ground = new THREE.Mesh(
+  new THREE.CircleGeometry(4.5, 64),
+  new THREE.MeshStandardMaterial({
+    color: 0x2a221c,
+    roughness: 0.92,
+    metalness: 0.05,
+  })
+);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+const ring = new THREE.Mesh(
+  new THREE.RingGeometry(1.15, 1.28, 64),
+  new THREE.MeshBasicMaterial({ color: 0xc62828, transparent: true, opacity: 0.35, side: THREE.DoubleSide })
+);
+ring.rotation.x = -Math.PI / 2;
+ring.position.y = 0.002;
+scene.add(ring);
+
+// ——— helpers ———
+function softMat(color, opts = {}) {
+  return new THREE.MeshStandardMaterial({
+    color,
+    roughness: opts.roughness ?? 0.88,
+    metalness: opts.metalness ?? 0,
+    flatShading: false,
+    ...opts,
+  });
+}
+
+function glossyMat(color) {
+  return new THREE.MeshPhysicalMaterial({
+    color,
+    roughness: 0.12,
+    metalness: 0.05,
+    clearcoat: 1,
+    clearcoatRoughness: 0.08,
+  });
+}
+
+function fabricMat(color) {
+  return new THREE.MeshStandardMaterial({
+    color,
+    roughness: 0.78,
+    metalness: 0,
+  });
+}
+
+function makeFurTexture(baseHex, density = 180) {
+  const size = 256;
+  const c = document.createElement("canvas");
+  c.width = c.height = size;
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0, 0, size, size);
+  const r = (baseHex >> 16) & 255;
+  const g = (baseHex >> 8) & 255;
+  const b = baseHex & 255;
+  for (let i = 0; i < density; i++) {
+    const x = Math.random() * size;
+    const y = Math.random() * size;
+    const len = 8 + Math.random() * 22;
+    const ang = -Math.PI / 2 + (Math.random() - 0.5) * 0.7;
+    ctx.strokeStyle = `rgba(${r},${g},${b},${0.15 + Math.random() * 0.55})`;
+    ctx.lineWidth = 0.6 + Math.random() * 1.4;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + Math.cos(ang) * len, y + Math.sin(ang) * len);
+    ctx.stroke();
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function makeFurShells(geo, colorHex, layers = 4, extend = 0.035, group) {
+  const shells = new THREE.Group();
+  shells.name = "furShells";
+  const alpha = makeFurTexture(0xffffff, 280);
+  for (let i = 1; i <= layers; i++) {
+    const t = i / layers;
+    const mat = new THREE.MeshStandardMaterial({
+      color: colorHex,
+      roughness: 1,
+      metalness: 0,
+      transparent: true,
+      opacity: 0.12 * (1 - t * 0.4),
+      alphaMap: alpha,
+      alphaTest: 0.08,
+      depthWrite: false,
+      side: THREE.FrontSide,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.scale.setScalar(1 + extend * t);
+    shells.add(mesh);
+  }
+  group.add(shells);
+  return shells;
+}
+
+function makeKnitTexture() {
+  const c = document.createElement("canvas");
+  c.width = 512;
+  c.height = 512;
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = "#c62828";
+  ctx.fillRect(0, 0, c.width, c.height);
+  for (let i = 0; i < 18000; i++) {
+    const x = Math.random() * c.width;
+    const y = Math.random() * c.height;
+    ctx.fillStyle = Math.random() > 0.5 ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.045)";
+    ctx.fillRect(x, y, 2, 1);
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(2, 2);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function makeLogoTexture() {
+  const c = document.createElement("canvas");
+  c.width = 1024;
+  c.height = 256;
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0, 0, c.width, c.height);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 140px DM Sans, Arial Black, Arial, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("Lifotronic", c.width / 2, c.height / 2);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 8;
+  return tex;
+}
+
+function capsule(r, len, seg = 16) {
+  return new THREE.CapsuleGeometry(r, Math.max(0.01, len - 2 * r), seg, seg * 2);
+}
+
+function sprinkleFibers(parent, radius, colorHex, count = 120, len = 0.045) {
+  const fibers = new THREE.Group();
+  fibers.name = "fibers";
+  const geo = new THREE.CylinderGeometry(0.0035, 0.0012, len, 3);
+  const mat = new THREE.MeshStandardMaterial({
+    color: colorHex,
+    roughness: 1,
+    metalness: 0,
+  });
+  for (let i = 0; i < count; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    // Bias toward top/front so face stays clean
+    const phi = Math.acos(Math.random() * 0.85);
+    const dir = new THREE.Vector3(
+      Math.sin(phi) * Math.cos(theta),
+      Math.cos(phi),
+      Math.sin(phi) * Math.sin(theta)
+    );
+    // Skip dense fibers on front face region
+    if (dir.z > 0.55 && Math.abs(dir.y) < 0.35) continue;
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.copy(dir).multiplyScalar(radius * (0.96 + Math.random() * 0.06));
+    const wobble = dir.clone().add(new THREE.Vector3(
+      (Math.random() - 0.5) * 0.35,
+      0.15 + Math.random() * 0.25,
+      (Math.random() - 0.5) * 0.35
+    )).normalize();
+    mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), wobble);
+    mesh.scale.y = 0.55 + Math.random() * 0.7;
+    fibers.add(mesh);
+  }
+  parent.add(fibers);
+  return fibers;
+}
+
+// ——— panda root ———
+const panda = new THREE.Group();
+panda.name = "LifotronicPanda";
+scene.add(panda);
+
+const whiteFur = softMat(COLORS.whiteFur, { roughness: 0.94 });
+const blackFur = softMat(COLORS.blackFur, { roughness: 0.92 });
+const hoodieMat = new THREE.MeshStandardMaterial({
+  map: makeKnitTexture(),
+  color: 0xffffff,
+  roughness: 0.8,
+  metalness: 0,
+});
+const eyeMat = glossyMat(0x090909);
+const noseMat = glossyMat(0x5a3418);
+const pawMat = softMat(COLORS.paw, { roughness: 0.95 });
+const cordMat = softMat(0xf5f5f5, { roughness: 0.85 });
+
+const furGroups = [];
+
+// Head — slightly oversized chibi
+const headGeo = new THREE.SphereGeometry(0.62, 48, 40);
+headGeo.scale(1.04, 0.98, 1.0);
+const head = new THREE.Mesh(headGeo, whiteFur);
+head.position.set(0, 1.18, 0.06);
+head.castShadow = true;
+head.receiveShadow = true;
+panda.add(head);
+furGroups.push(makeFurShells(headGeo, COLORS.white, 4, 0.04, head));
+furGroups.push(sprinkleFibers(head, 0.62, COLORS.white, 220, 0.09));
+
+// Muzzle
+const muzzle = new THREE.Mesh(new THREE.SphereGeometry(0.24, 24, 20), whiteFur);
+muzzle.scale.set(1.1, 0.72, 0.9);
+muzzle.position.set(0, 1.02, 0.5);
+muzzle.castShadow = true;
+panda.add(muzzle);
+
+// Ears
+function makeEar(side) {
+  const ear = new THREE.Group();
+  const outer = new THREE.Mesh(new THREE.SphereGeometry(0.17, 20, 16), blackFur);
+  outer.scale.set(1.05, 0.9, 0.5);
+  outer.castShadow = true;
+  ear.add(outer);
+  furGroups.push(makeFurShells(outer.geometry, COLORS.black, 4, 0.045, outer));
+  furGroups.push(sprinkleFibers(outer, 0.17, COLORS.black, 40, 0.05));
+  const inner = new THREE.Mesh(
+    new THREE.SphereGeometry(0.09, 12, 10),
+    softMat(0x2a2a2a, { roughness: 0.95 })
+  );
+  inner.scale.set(1, 0.85, 0.35);
+  inner.position.z = 0.05;
+  ear.add(inner);
+  ear.position.set(side * 0.46, 1.6, 0.0);
+  ear.rotation.z = side * 0.32;
+  ear.rotation.x = -0.12;
+  panda.add(ear);
+}
+makeEar(-1);
+makeEar(1);
+
+// Large teardrop eye patches + protruding bead eyes
+function makeEye(side) {
+  const g = new THREE.Group();
+
+  // Soft black oval patch (classic panda marking)
+  const patch = new THREE.Mesh(new THREE.SphereGeometry(0.2, 28, 22), blackFur);
+  patch.scale.set(1.05, 1.45, 0.55);
+  patch.castShadow = true;
+  g.add(patch);
+  furGroups.push(sprinkleFibers(patch, 0.19, COLORS.black, 55, 0.045));
+
+  // Extra lower teardrop bulge
+  const tear = new THREE.Mesh(new THREE.SphereGeometry(0.12, 18, 14), blackFur);
+  tear.scale.set(0.95, 1.2, 0.5);
+  tear.position.set(side * 0.04, -0.12, 0.02);
+  g.add(tear);
+
+  const eye = new THREE.Mesh(new THREE.SphereGeometry(0.11, 28, 24), eyeMat);
+  eye.position.set(0, 0.02, 0.14);
+  eye.castShadow = true;
+  g.add(eye);
+
+  const hl = new THREE.Mesh(
+    new THREE.SphereGeometry(0.034, 12, 10),
+    new THREE.MeshBasicMaterial({ color: 0xffffff })
+  );
+  hl.position.set(0.03, 0.05, 0.22);
+  g.add(hl);
+
+  const hl2 = new THREE.Mesh(
+    new THREE.SphereGeometry(0.015, 10, 8),
+    new THREE.MeshBasicMaterial({ color: 0xffffff })
+  );
+  hl2.position.set(-0.035, -0.025, 0.215);
+  g.add(hl2);
+
+  // Sit on the front of the head surface
+  g.position.set(side * 0.22, 1.22, 0.5);
+  g.rotation.y = side * 0.28;
+  g.rotation.z = side * -0.35;
+  g.rotation.x = 0.05;
+  panda.add(g);
+}
+makeEye(-1);
+makeEye(1);
+
+// Brown plastic nose (chocolate)
+const nose = new THREE.Mesh(new THREE.SphereGeometry(0.07, 18, 14), noseMat);
+nose.scale.set(1.3, 0.95, 1.0);
+nose.position.set(0, 1.04, 0.72);
+nose.castShadow = true;
+panda.add(nose);
+
+const smile = new THREE.Mesh(
+  new THREE.TorusGeometry(0.055, 0.007, 8, 16, Math.PI * 0.65),
+  softMat(0x3a2a22, { roughness: 1 })
+);
+smile.position.set(0, 0.96, 0.68);
+smile.rotation.x = Math.PI * 0.55;
+smile.rotation.z = Math.PI;
+panda.add(smile);
+
+// Keychain loop on crown
+const loop = new THREE.Mesh(
+  new THREE.TorusGeometry(0.055, 0.012, 10, 24),
+  softMat(0xf0f0f0, { roughness: 0.7 })
+);
+loop.position.set(0, 1.78, 0.02);
+loop.rotation.x = Math.PI / 2;
+panda.add(loop);
+
+// Body
+const body = new THREE.Mesh(new THREE.SphereGeometry(0.4, 32, 28), whiteFur);
+body.scale.set(1.08, 1.1, 0.95);
+body.position.set(0, 0.48, 0.02);
+body.castShadow = true;
+panda.add(body);
+
+// Hoodie torso — solid red knit
+const hoodieGeo = new THREE.SphereGeometry(0.46, 40, 32);
+hoodieGeo.scale(1.18, 1.0, 1.05);
+const hoodie = new THREE.Mesh(hoodieGeo, hoodieMat);
+hoodie.position.set(0, 0.52, 0.04);
+hoodie.castShadow = true;
+hoodie.receiveShadow = true;
+panda.add(hoodie);
+
+// Chest logo decal — readable on the front of the hoodie
+const logo = new THREE.Mesh(
+  new THREE.PlaneGeometry(0.78, 0.2),
+  new THREE.MeshStandardMaterial({
+    map: makeLogoTexture(),
+    transparent: true,
+    roughness: 0.6,
+    metalness: 0,
+    depthWrite: false,
+    polygonOffset: true,
+    polygonOffsetFactor: -2,
+  })
+);
+logo.position.set(0, 0.56, 0.5);
+logo.rotation.x = -0.18;
+panda.add(logo);
+
+// Hood up — frames the face
+const hoodL = new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 16), fabricMat(COLORS.red));
+hoodL.scale.set(0.7, 1.15, 0.85);
+hoodL.position.set(-0.38, 1.15, 0.05);
+hoodL.rotation.z = 0.35;
+hoodL.castShadow = true;
+panda.add(hoodL);
+const hoodR = hoodL.clone();
+hoodR.position.x = 0.38;
+hoodR.rotation.z = -0.35;
+panda.add(hoodR);
+
+const collar = new THREE.Mesh(
+  new THREE.TorusGeometry(0.34, 0.12, 16, 40),
+  fabricMat(COLORS.redDeep)
+);
+collar.position.set(0, 0.88, 0.04);
+collar.rotation.x = Math.PI / 2;
+collar.scale.set(1.08, 1, 0.88);
+collar.castShadow = true;
+panda.add(collar);
+
+const hoodBack = new THREE.Mesh(new THREE.SphereGeometry(0.32, 24, 18), fabricMat(COLORS.red));
+hoodBack.scale.set(1.25, 0.75, 0.9);
+hoodBack.position.set(0, 1.0, -0.32);
+hoodBack.castShadow = true;
+panda.add(hoodBack);
+
+// Sleeves
+function makeSleeve(side) {
+  const sleeve = new THREE.Mesh(capsule(0.145, 0.3, 12), fabricMat(COLORS.red));
+  sleeve.position.set(side * 0.5, 0.55, 0.08);
+  sleeve.rotation.z = side * Math.PI / 2.5;
+  sleeve.rotation.x = 0.35;
+  sleeve.castShadow = true;
+  panda.add(sleeve);
+
+  const cuff = new THREE.Mesh(
+    new THREE.TorusGeometry(0.135, 0.028, 10, 20),
+    fabricMat(COLORS.redDeep)
+  );
+  cuff.position.set(side * 0.62, 0.48, 0.14);
+  cuff.rotation.y = Math.PI / 2;
+  cuff.rotation.z = side * 0.45;
+  panda.add(cuff);
+}
+makeSleeve(-1);
+makeSleeve(1);
+
+// Arms
+function makeArm(side) {
+  const armGeo = capsule(0.12, 0.3, 12);
+  const arm = new THREE.Mesh(armGeo, blackFur);
+  arm.position.set(side * 0.68, 0.4, 0.18);
+  arm.rotation.z = side * 1.0;
+  arm.rotation.x = 0.45;
+  arm.castShadow = true;
+  panda.add(arm);
+  furGroups.push(makeFurShells(armGeo, COLORS.black, 4, 0.04, arm));
+  furGroups.push(sprinkleFibers(arm, 0.12, COLORS.black, 35, 0.045));
+
+  const pad = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 10), pawMat);
+  pad.scale.set(1.1, 0.7, 1);
+  pad.position.set(side * 0.8, 0.28, 0.3);
+  panda.add(pad);
+}
+makeArm(-1);
+makeArm(1);
+
+// Sitting legs — splayed forward
+function makeLeg(side) {
+  const legGeo = capsule(0.145, 0.38, 14);
+  const leg = new THREE.Mesh(legGeo, blackFur);
+  leg.position.set(side * 0.24, 0.18, 0.28);
+  leg.rotation.x = Math.PI / 2.05;
+  leg.rotation.z = side * 0.35;
+  leg.rotation.y = side * -0.15;
+  leg.castShadow = true;
+  panda.add(leg);
+  furGroups.push(makeFurShells(legGeo, COLORS.black, 4, 0.045, leg));
+  furGroups.push(sprinkleFibers(leg, 0.145, COLORS.black, 40, 0.05));
+
+  const foot = new THREE.Mesh(new THREE.SphereGeometry(0.14, 18, 14), blackFur);
+  foot.scale.set(1.15, 0.65, 1.3);
+  foot.position.set(side * 0.3, 0.08, 0.55);
+  foot.castShadow = true;
+  panda.add(foot);
+
+  const pad = new THREE.Mesh(new THREE.CircleGeometry(0.095, 18), pawMat);
+  pad.position.set(side * 0.3, 0.02, 0.58);
+  pad.rotation.x = -Math.PI / 2.15;
+  panda.add(pad);
+}
+makeLeg(-1);
+makeLeg(1);
+
+const belly = new THREE.Mesh(new THREE.SphereGeometry(0.17, 16, 12), whiteFur);
+belly.scale.set(1.25, 0.65, 0.85);
+belly.position.set(0, 0.18, 0.3);
+panda.add(belly);
+
+// Drawstrings with tassels
+function makeCord(side) {
+  const g = new THREE.Group();
+  const points = [
+    new THREE.Vector3(side * 0.1, 0.9, 0.32),
+    new THREE.Vector3(side * 0.14, 0.68, 0.42),
+    new THREE.Vector3(side * 0.12, 0.45, 0.48),
+    new THREE.Vector3(side * 0.08, 0.28, 0.45),
+  ];
+  const curve = new THREE.CatmullRomCurve3(points);
+  const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 28, 0.02, 8, false), cordMat);
+  tube.castShadow = true;
+  g.add(tube);
+
+  const tip = curve.getPoint(1);
+  for (let i = 0; i < 12; i++) {
+    const strand = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.004, 0.002, 0.08 + Math.random() * 0.05, 4),
+      cordMat
+    );
+    strand.position.set(
+      tip.x + (Math.random() - 0.5) * 0.035,
+      tip.y - 0.045,
+      tip.z + (Math.random() - 0.5) * 0.035
+    );
+    strand.rotation.z = (Math.random() - 0.5) * 0.6;
+    strand.rotation.x = (Math.random() - 0.5) * 0.5;
+    g.add(strand);
+  }
+  const pom = new THREE.Mesh(
+    new THREE.SphereGeometry(0.04, 10, 8),
+    softMat(0xfafafa, { roughness: 1 })
+  );
+  pom.position.copy(tip);
+  g.add(pom);
+  panda.add(g);
+}
+makeCord(-1);
+makeCord(1);
+
+const hem = new THREE.Mesh(
+  new THREE.TorusGeometry(0.44, 0.038, 10, 40),
+  fabricMat(COLORS.redDeep)
+);
+hem.position.set(0, 0.24, 0.06);
+hem.rotation.x = Math.PI / 2;
+hem.scale.set(1.08, 1, 0.98);
+hem.castShadow = true;
+panda.add(hem);
+
+// Subtle idle bob
+const baseY = 0;
+panda.position.y = baseY;
+
+// ——— refs UI ———
+const refFiles = [
+  "01a16566-6370-7f17-a865-83364b16ffd6.jpg",
+  "01a16566-645e-7752-b462-e74e3971282b.jpg",
+  "01a16566-6548-7e46-9dfb-55758f69b4f2.jpg",
+  "01a16566-6637-7a2f-ab38-d9fbb046c4ec.jpg",
+  "01a16566-6710-7e6c-9c98-0a11f0b8fbe5.jpg",
+];
+const refsEl = document.getElementById("refs");
+refFiles.forEach((f, i) => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.title = `Референс ${i + 1}`;
+  const img = document.createElement("img");
+  img.src = `refs/${f}`;
+  img.alt = `ref ${i + 1}`;
+  b.appendChild(img);
+  b.addEventListener("click", () => {
+    document.querySelectorAll(".refs button").forEach((x) => x.classList.remove("active"));
+    b.classList.add("active");
+    // match approximate camera angles from photos
+    const angles = [
+      { pos: [2.4, 1.4, 3.2], target: [0, 0.55, 0] },
+      { pos: [0.15, 1.1, 3.6], target: [0, 0.7, 0] },
+      { pos: [2.8, 1.5, 2.2], target: [0, 0.6, 0] },
+      { pos: [-2.6, 1.3, 2.8], target: [0, 0.65, 0] },
+      { pos: [-2.2, 2.4, -1.8], target: [0, 0.7, 0] },
+    ];
+    const a = angles[i];
+    camera.position.set(...a.pos);
+    controls.target.set(...a.target);
+    autoRotate = false;
+    document.getElementById("btnAuto").classList.remove("active");
+  });
+  refsEl.appendChild(b);
+});
+
+// ——— UI ———
+document.getElementById("btnAuto").addEventListener("click", (e) => {
+  autoRotate = !autoRotate;
+  e.currentTarget.classList.toggle("active", autoRotate);
+});
+document.getElementById("btnFur").addEventListener("click", (e) => {
+  furVisible = !furVisible;
+  furGroups.forEach((g) => (g.visible = furVisible));
+  e.currentTarget.textContent = furVisible ? "Мех: вкл" : "Мех: выкл";
+});
+document.getElementById("btnReset").addEventListener("click", () => {
+  camera.position.set(2.6, 1.55, 3.4);
+  controls.target.set(0, 0.55, 0);
+});
+async function exportPandaGLB() {
+  const exporter = new GLTFExporter();
+  const was = furGroups.map((g) => g.visible);
+  furGroups.forEach((g) => (g.visible = false));
+  try {
+    const gltf = await new Promise((resolve, reject) => {
+      exporter.parse(panda, resolve, reject, { binary: true });
+    });
+    return gltf;
+  } finally {
+    furGroups.forEach((g, i) => (g.visible = was[i]));
+  }
+}
+
+window.__exportPanda = async () => {
+  const gltf = await exportPandaGLB();
+  const bytes = new Uint8Array(gltf);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+};
+
+window.__setFrontView = () => {
+  autoRotate = false;
+  document.getElementById("btnAuto").classList.remove("active");
+  camera.position.set(0.15, 1.15, 3.5);
+  controls.target.set(0, 0.7, 0);
+  controls.update();
+};
+
+document.getElementById("btnGLB").addEventListener("click", async () => {
+  try {
+    const gltf = await exportPandaGLB();
+    const blob = new Blob([gltf], { type: "model/gltf-binary" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "lifotronic-panda.glb";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  } catch (err) {
+    console.error(err);
+    alert("Не удалось экспортировать GLB");
+  }
+});
+
+addEventListener("resize", () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// ——— animate ———
+const clock = new THREE.Clock();
+function tick() {
+  requestAnimationFrame(tick);
+  const t = clock.getElapsedTime();
+  if (autoRotate) panda.rotation.y = t * 0.28;
+  panda.position.y = baseY + Math.sin(t * 1.4) * 0.018;
+  panda.rotation.z = Math.sin(t * 0.9) * 0.015;
+  ring.rotation.z = t * 0.15;
+  controls.update();
+  renderer.render(scene, camera);
+}
+tick();
+
+document.getElementById("loader").classList.add("hide");
+  </script>
+</body>
+</html>
