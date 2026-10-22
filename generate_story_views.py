@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parent
 ORIG = ROOT / "assets" / "story-original.jpg"
 FONT_NUM = ROOT / "fonts" / "Oswald-Bold.ttf"
 FONT_DATE = ROOT / "fonts" / "SourceCodePro-Regular.ttf"
-OUT_JPG = ROOT / "story-views-3.5mln.jpg"
+OUT_JPG = ROOT / "story-views-5.1mln.jpg"
 OUT_PNG = ROOT / "output" / "story-views-updated.png"
 
 CX, CY, R = 654, 212, 202
@@ -51,7 +51,7 @@ def main() -> None:
     x0, y0 = int(xs.min()), int(ys.min())
     box_w, box_h = int(xs.max() - xs.min()) + 1, int(ys.max() - ys.min()) + 1
 
-    text = "3,5 МЛН"
+    text = "5,1 млн"
     scale = 6
     font = ImageFont.truetype(str(FONT_NUM), box_h * scale)
     bb = ImageDraw.Draw(Image.new("L", (1, 1))).textbbox((0, 0), text, font=font)
@@ -81,7 +81,7 @@ def main() -> None:
     d_h = int(dys.max() - dys.min()) + 1
     days = orig[940:962, 117:290]
     col = tuple(int(c) for c in days[days.mean(2) > 180].mean(0))
-    date_text = "16.09 — 15.10"
+    date_text = "15.10 — 22.10"
     font = ImageFont.truetype(str(FONT_DATE), d_h * scale)
     bb = ImageDraw.Draw(Image.new("L", (1, 1))).textbbox((0, 0), date_text, font=font)
     g = Image.new("L", (bb[2] - bb[0] + 4 * scale, bb[3] - bb[1] + 4 * scale), 0)
