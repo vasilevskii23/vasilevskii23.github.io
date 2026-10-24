@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Lifotronic · креативная карусель</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg0: #0e0c10;
+  --bg1: #17141c;
+  --ink: #f4efe8;
+  --mute: #9a9086;
+  --red: #c62828;
+  --line: rgba(244, 239, 232, 0.14);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; }
+body {
+  font-family: "Space Mono", ui-monospace, monospace;
+  color: var(--ink);
+  background:
+    radial-gradient(90% 60% at 50% -10%, #2a1a1c 0%, transparent 55%),
+    radial-gradient(70% 50% at 100% 100%, #1a1424 0%, transparent 45%),
+    var(--bg0);
+  display: grid;
+  place-items: center;
+  padding: 20px 14px 32px;
+}
+
+.app {
+  width: min(420px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.brand {
+  text-align: center;
+}
+.brand h1 {
+  font-family: "Syne", sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.55rem, 6vw, 1.95rem);
+  letter-spacing: 0.04em;
+}
+.brand p {
+  margin-top: 6px;
+  color: var(--mute);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.brand em {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-style: italic;
+  color: #e8cfc8;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 1.05rem;
+}
+
+.phone {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #111;
+  border: 1px solid var(--line);
+}
+
+.track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.55s cubic-bezier(0.22, 0.9, 0.28, 1);
+  will-change: transform;
+  touch-action: pan-y;
+}
+
+.slide {
+  flex: 0 0 100%;
+  height: 100%;
+  position: relative;
+  background: #0a0a0a;
+}
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--bg1);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 12px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+.btn:hover { border-color: rgba(244,239,232,0.35); }
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.35; cursor: default; transform: none; }
+.btn-primary {
+  background: var(--red);
+  border-color: transparent;
+  color: #fff;
+}
+
+.dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(244,239,232,0.25);
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+.dot.active {
+  background: var(--ink);
+  transform: scale(1.35);
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  color: var(--mute);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.caption {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-style: italic;
+  font-size: 1.15rem;
+  color: #efe6dc;
+  text-align: center;
+  min-height: 1.4em;
+}
+
+.downloads {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.downloads a {
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+  background: rgba(255,255,255,0.03);
+}
+.downloads a:hover { border-color: rgba(244,239,232,0.4); }
+
+@media (prefers-reduced-motion: reduce) {
+  .track { transition: none; }
+}
+</style>
+</head>
+<body>
+  <div class="app">
+    <header class="brand">
+      <h1>LIFOTRONIC</h1>
+      <p>креативная карусель · <em>pair programmer</em></p>
+    </header>
+
+    <div class="phone" id="phone" aria-roledescription="carousel">
+      <div class="track" id="track">
+        <div class="slide"><img src="slides/carousel_01.jpg" alt="Lifotronic — Pair Programmer" /></div>
+        <div class="slide"><img src="slides/carousel_02.jpg" alt="Debug Buddy" /></div>
+        <div class="slide"><img src="slides/carousel_03.jpg" alt="CODE — ship late, stay soft" /></div>
+        <div class="slide"><img src="slides/carousel_04.jpg" alt="On call — watching the build" /></div>
+        <div class="slide"><img src="slides/carousel_05.jpg" alt="Soft mascot. Serious tools." /></div>
+      </div>
+    </div>
+
+    <p class="caption" id="caption">Pair Programmer</p>
+
+    <div class="dots" id="dots" role="tablist" aria-label="Слайды"></div>
+
+    <div class="nav">
+      <button class="btn" id="prev" type="button">← назад</button>
+      <button class="btn btn-primary" id="next" type="button">дальше →</button>
+    </div>
+
+    <div class="meta">
+      <span id="counter">01 / 05</span>
+      <span>1080×1350 · IG 4:5</span>
+    </div>
+
+    <div class="downloads" aria-label="Скачать слайды">
+      <a href="slides/carousel_01.jpg" download>01 · hero</a>
+      <a href="slides/carousel_02.jpg" download>02 · detail</a>
+      <a href="slides/carousel_03.jpg" download>03 · code</a>
+      <a href="slides/carousel_04.jpg" download>04 · on call</a>
+      <a href="slides/carousel_05.jpg" download>05 · lockup</a>
+      <a href="slides/carousel_preview.jpg" download style="grid-column: 1 / -1">preview · все слайды</a>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const captions = [
+    "Pair Programmer",
+    "Debug Buddy",
+    "ship late. stay soft.",
+    "watching the build",
+    "Soft mascot. Serious tools."
+  ];
+  const track = document.getElementById("track");
+  const phone = document.getElementById("phone");
+  const dotsEl = document.getElementById("dots");
+  const prev = document.getElementById("prev");
+  const next = document.getElementById("next");
+  const counter = document.getElementById("counter");
+  const caption = document.getElementById("caption");
+  const total = captions.length;
+  let i = 0;
+  let startX = 0;
+  let dx = 0;
+  let dragging = false;
+
+  for (let n = 0; n < total; n++) {
+    const b = document.createElement("button");
+    b.className = "dot" + (n === 0 ? " active" : "");
+    b.type = "button";
+    b.setAttribute("aria-label", `Слайд ${n + 1}`);
+    b.addEventListener("click", () => go(n));
+    dotsEl.appendChild(b);
+  }
+
+  function go(n) {
+    i = Math.max(0, Math.min(total - 1, n));
+    track.style.transform = `translateX(${-i * 100}%)`;
+    [...dotsEl.children].forEach((d, k) => d.classList.toggle("active", k === i));
+    prev.disabled = i === 0;
+    next.disabled = i === total - 1;
+    counter.textContent = `${String(i + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
+    caption.textContent = captions[i];
+  }
+
+  prev.addEventListener("click", () => go(i - 1));
+  next.addEventListener("click", () => go(i + 1));
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") go(i - 1);
+    if (e.key === "ArrowRight") go(i + 1);
+  });
+
+  phone.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    startX = e.clientX;
+    dx = 0;
+    phone.setPointerCapture(e.pointerId);
+    track.style.transition = "none";
+  });
+  phone.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    dx = e.clientX - startX;
+    const pct = (dx / phone.clientWidth) * 100;
+    track.style.transform = `translateX(${-i * 100 + pct}%)`;
+  });
+  phone.addEventListener("pointerup", () => {
+    if (!dragging) return;
+    dragging = false;
+    track.style.transition = "";
+    if (Math.abs(dx) > 50) go(i + (dx < 0 ? 1 : -1));
+    else go(i);
+  });
+
+  go(0);
+})();
+</script>
+</body>
+</html>
