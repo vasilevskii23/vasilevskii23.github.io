@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>/maps — Петербургский Мистериум</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #05070c;
+  --panel: #0c1018;
+  --gold: #d4b56a;
+  --gold-soft: #f0dfb0;
+  --muted: #8a8f9c;
+  --line: rgba(212,181,106,.18);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; background: var(--bg); color: var(--gold-soft); }
+body {
+  font-family: Manrope, sans-serif;
+  background:
+    radial-gradient(ellipse at 50% 0%, #121826 0%, var(--bg) 55%),
+    var(--bg);
+}
+.wrap {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 28px 18px 48px;
+}
+.kicker {
+  font-size: 11px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(28px, 5vw, 44px);
+  letter-spacing: .02em;
+  line-height: 1.1;
+  color: var(--gold-soft);
+}
+.sub {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 42rem;
+}
+.hero {
+  margin-top: 22px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 30px 80px rgba(0,0,0,.45);
+}
+.hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.meta strong { color: var(--gold); font-weight: 700; }
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+a.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13px;
+  border: 1px solid var(--line);
+  color: var(--gold-soft);
+  background: rgba(212,181,106,.06);
+}
+a.btn.primary {
+  background: linear-gradient(135deg, #d4b56a, #a8883d);
+  color: #1a1206;
+  border-color: transparent;
+}
+.refs {
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 640px) { .refs { grid-template-columns: 1fr; } }
+.ref {
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--panel);
+}
+.ref img { width: 100%; display: block; aspect-ratio: 3/4; object-fit: cover; }
+.ref figcaption {
+  padding: 10px 12px;
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="kicker">/maps</div>
+    <h1>Петербургский Мистериум</h1>
+    <p class="sub">Стилизованная ночная карта: Моховая ул. → Петербургский Мистериум (Биржевой проезд, 2). География и подписи сверены по OSRM/OpenStreetMap; стиль — как у постера /journey.</p>
+
+    <figure class="hero">
+      <img src="mysterium-route-map.jpg" alt="Стилизованная карта маршрута до Петербургского Мистериума"/>
+    </figure>
+
+    <div class="meta">
+      <span><strong>3 км</strong> · 8 мин</span>
+      <span>Откуда: Моховая ул.</span>
+      <span>Куда: Петербургский Мистериум</span>
+    </div>
+
+    <div class="actions">
+      <a class="btn primary" href="mysterium-route-map.jpg" download>Скачать карту</a>
+      <a class="btn" href="https://yandex.ru/maps/?text=%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%D1%81%D0%BA%D0%B8%D0%B9%20%D0%9C%D0%B8%D1%81%D1%82%D0%B5%D1%80%D0%B8%D1%83%D0%BC" target="_blank" rel="noopener">Открыть в Яндекс.Картах</a>
+    </div>
+
+    <div class="refs">
+      <figure class="ref">
+        <img src="reference.jpg" alt="Исходный скриншот Яндекс.Карт"/>
+        <figcaption>INPUT — скрин маршрута</figcaption>
+      </figure>
+      <figure class="ref">
+        <img src="style-reference.jpg" alt="Референс стиля /journey"/>
+        <figcaption>STYLE — /journey Сапёрное</figcaption>
+      </figure>
+    </div>
+  </div>
+</body>
+</html>
