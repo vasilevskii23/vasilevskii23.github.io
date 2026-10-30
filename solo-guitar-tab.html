@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SOLO — гитарная табулатура</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1814;
+      --paper: #f3efe6;
+      --rule: #c9c0b0;
+      --accent: #0f6b5c;
+      --muted: #6b6358;
+      --chord: #8a3b12;
+      --spot: #e7dfd0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "DM Sans", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse 80% 50% at 10% 0%, #dfe9e4 0%, transparent 55%),
+        radial-gradient(ellipse 70% 45% at 100% 10%, #ebe3d4 0%, transparent 50%),
+        var(--paper);
+      line-height: 1.45;
+    }
+    main {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    header {
+      margin-bottom: 2rem;
+      animation: rise 0.7s ease both;
+    }
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 3.6rem);
+      letter-spacing: -0.04em;
+      margin: 0 0 0.35rem;
+      font-weight: 700;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 38rem;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      margin-top: 1rem;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+    .meta span {
+      background: var(--spot);
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+    }
+    section {
+      margin: 1.75rem 0;
+      animation: rise 0.7s ease both;
+      animation-delay: 0.08s;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 0 0 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+    .chord {
+      color: var(--chord);
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin: 0.85rem 0 0.25rem;
+      font-family: "IBM Plex Mono", monospace;
+    }
+    pre.tab {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: clamp(0.72rem, 1.7vw, 0.92rem);
+      line-height: 1.35;
+      background: #fffdf8;
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      overflow-x: auto;
+      margin: 0.35rem 0 0;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+    }
+    .notes {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.84rem;
+      color: var(--muted);
+      margin: 0.35rem 0 0;
+    }
+    .legend {
+      background: #fffdf8;
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      padding: 1rem 1.15rem;
+    }
+    .legend ul {
+      margin: 0.4rem 0 0;
+      padding-left: 1.15rem;
+    }
+    .legend li { margin: 0.25rem 0; }
+    .warn {
+      margin-top: 1.5rem;
+      padding: 0.9rem 1rem;
+      border-left: 3px solid var(--chord);
+      background: rgba(138, 59, 18, 0.06);
+      font-size: 0.95rem;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>SOLO</h1>
+      <p class="sub">Гитарная табулатура по нотной записи: блюзовый лик поверх D7 / C7 с уходом в Bb7.</p>
+      <div class="meta">
+        <span>4/4 · шестнадцатые</span>
+        <span>Тональность: 1 диез (F#)</span>
+        <span>Строй: E A D G B e</span>
+      </div>
+    </header>
+
+    <section>
+      <h2>Как читать</h2>
+      <div class="legend">
+        <ul>
+          <li>Каждая колонка — одна шестнадцатая. Точка <code>.</code> — пауза (шестнадцатая).</li>
+          <li>Аппликатура подобрана вокруг I–III позиции + скачки на <code>e</code>-струне до 10 лада (D5).</li>
+          <li>F♮ — «синяя» терция к D7; F# — мажорная терция (из ключевых знаков / бемолей-диезов в такте).</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Табулатура</h2>
+
+      <p class="chord">т.1 — затакт</p>
+      <pre class="tab">e|--------|
+B|--------|
+G|--------|
+D|--------|
+A|--------|
+E|--------|
+   (паузы)   затем F♮4:
+
+e|--1--|
+B|-----|
+G|-----|
+D|-----|
+A|-----|
+E|-----|
+   F♮</pre>
+      <p class="notes">Ноты: F♮4</p>
+
+      <p class="chord">т.2 · D7  <span style="font-weight:500;color:var(--muted)">(также т.4, 6, 8)</span></p>
+      <pre class="tab">e|--2--10--3--1--|--2--10--.--1--|--2--1--3--1--|--2--10--.-----|
+B|---------------|---------------|--------------|------------4--|
+G|---------------|---------------|--------------|---------------|
+D|---------------|---------------|--------------|---------------|
+A|---------------|---------------|--------------|---------------|
+E|---------------|---------------|--------------|---------------|
+   F#  D5  G  F♮    F#  D5     F♮    F# F♮ G F♮    F#  D5     D#</pre>
+      <p class="notes">F#4 D5 G4 F♮4 | F#4 D5 𝄽 F♮4 | F#4 F♮4 G4 F♮4 | F#4 D5 𝄽 D#4</p>
+
+      <p class="chord">т.3 · C7  <span style="font-weight:500;color:var(--muted)">(также т.5, 7)</span></p>
+      <pre class="tab">e|--2--------8--|--------2-----|--------8--.--|--2--.---.---.--|
+B|-----3--5-----|--3--5-----7--|--3--5---------|----------------|
+G|--------------|--------------|---------------|----------------|
+D|--------------|--------------|---------------|----------------|
+A|--------------|--------------|---------------|----------------|
+E|--------------|--------------|---------------|----------------|
+   F#  D  E  C5    D  E  D  F#    D  E  C5        F#</pre>
+      <p class="notes">F#4 D4 E4 C5 | D4 E4 D4 F#4 | D4 E4 C5 𝄽 | F#4 (и паузы до следующего D7)</p>
+
+      <p class="chord">т.9 · C7 → подход к Bb7</p>
+      <pre class="tab">e|--2--------8--|--------------|
+B|-----3--5-----|--------------|
+G|--------------|--------------|
+D|--------------|--------0-----|  «хвост» фразы уходит вниз
+A|--------------|-----1--------|  (низкий регистр к Bb7)
+E|--------------|--------------|
+   начало как C7, затем паузы и низкие ноты к Bb7</pre>
+      <p class="notes">Первая половина — тот же C7-лик; дальше паузы и низкий подход (около C4/D4 / Bb-зоны).</p>
+
+      <p class="chord">т.10 · Bb7</p>
+      <pre class="tab">e|---------------------|
+B|---------------------|
+G|---------------------|
+D|--0--.--0--.--0--.--|
+A|--------1-----------|
+E|---------------------|
+   D   .  D   .  D   .   C   D   …</pre>
+      <p class="notes">Редкие удары в низком регистре (D4 / C4) над Bb7, затем двойная черта.</p>
+    </section>
+
+    <section>
+      <h2>Компактная схема (только D7 / C7 риффы)</h2>
+      <pre class="tab">D7 riff (повтор)
+e|-2-10-3-1-2-10-.-1-2-1-3-1-2-10-.-|
+B|------------------------------4--|
+
+C7 riff
+e|-2---8-----2-----8-.-2-|
+B|---3-5-3-5---7-3-5-----|</pre>
+    </section>
+
+    <p class="warn">
+      Распознавание сделано по скану: высоты D7-лика (F#/F♮–D5–G) и C7-лика (F#–D–E–C5) уверенные;
+      точные длительности пауз в конце т.3/9–10 и часть альтераций F♮/F# стоит сверить на слух с оригиналом.
+    </p>
+  </main>
+</body>
+</html>
