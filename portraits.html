@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Портреты — Василевский</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink: #12100e;
+  --paper: #f2ebe0;
+  --paper-deep: #e4d8c4;
+  --accent: #c43b2a;
+  --accent-deep: #8e2418;
+  --steel: #2a3a4a;
+  --mute: #6b6358;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "IBM Plex Sans", sans-serif;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% 0%, rgba(196,59,42,0.12), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 90% 20%, rgba(42,58,74,0.1), transparent 50%),
+    linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%);
+  color: var(--ink);
+  min-height: 100vh;
+}
+.noise {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index: 0;
+}
+.wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 28px 20px 72px; }
+.top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.brand {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(40px, 8vw, 72px);
+  letter-spacing: 0.04em;
+  line-height: 0.92;
+  color: var(--ink);
+}
+.brand span { color: var(--accent); }
+.back {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--steel);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s, color 0.2s;
+}
+.back:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.lede {
+  max-width: 36rem;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--mute);
+  margin-bottom: 40px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 36px;
+}
+@media (min-width: 860px) {
+  .grid { grid-template-columns: repeat(3, 1fr); gap: 22px; align-items: start; }
+}
+.piece { animation: rise 0.7s ease both; }
+.piece:nth-child(2) { animation-delay: 0.12s; }
+.piece:nth-child(3) { animation-delay: 0.24s; }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.frame {
+  position: relative;
+  overflow: hidden;
+  background: #0f0e0c;
+  border: 3px solid var(--ink);
+  aspect-ratio: 3 / 4;
+}
+.frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.55s ease;
+}
+.piece:hover .frame img { transform: scale(1.03); }
+.meta { margin-top: 14px; }
+.meta h2 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 28px;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.meta p { font-size: 13px; line-height: 1.45; color: var(--mute); }
+.tag {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+.footer {
+  margin-top: 48px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(18,16,14,0.15);
+  font-size: 12px;
+  color: var(--mute);
+}
+</style>
+</head>
+<body>
+<div class="noise" aria-hidden="true"></div>
+<main class="wrap">
+  <header class="top">
+    <h1 class="brand">ВАСИЛЕВСКИЙ <span>PORTRAITS</span></h1>
+    <a class="back" href="index.html">← АКТЕРИЩЕ</a>
+  </header>
+  <p class="lede">Три стилизации лица по референсам: чистый comic-book, magazine collage и дада-коллаж.</p>
+  <section class="grid" aria-label="Галерея портретов">
+    <article class="piece">
+      <div class="frame">
+        <img src="portraits/portrait-comic-clean.jpg" alt="Comic-book портрет Василевского у Летнего сада" loading="eager"/>
+      </div>
+      <div class="meta">
+        <div class="tag">Референс 1</div>
+        <h2>Comic Book</h2>
+        <p>Жирный контур, cell shading, осень у канала — чистый кадр без UI Reels.</p>
+      </div>
+    </article>
+    <article class="piece">
+      <div class="frame">
+        <img src="portraits/portrait-magazine-collage.jpg" alt="Magazine collage портрет Василевского" loading="lazy"/>
+      </div>
+      <div class="meta">
+        <div class="tag">Референс 2</div>
+        <h2>Magazine Collage</h2>
+        <p>Лицо из обрезков журналов, типографика и логотипы по объёму лица.</p>
+      </div>
+    </article>
+    <article class="piece">
+      <div class="frame">
+        <img src="portraits/portrait-dadaism-collage.jpg" alt="Дадаистский коллаж-портрет Василевского" loading="lazy"/>
+      </div>
+      <div class="meta">
+        <div class="tag">Референс 3</div>
+        <h2>Dadaism</h2>
+        <p>Разрезанное фото, ransom-note буквы, чёрно-бело-красный коллаж.</p>
+      </div>
+    </article>
+  </section>
+  <p class="footer">Сгенерировано по референсам · vasilevskii23.github.io</p>
+</main>
+</body>
+</html>
