@@ -32,15 +32,24 @@ def paste_at(base, overlay, left, top):
 def main():
     img = Image.open(SRC).convert("RGBA")
     font_dates = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf", 34)
-    # 2x previous size (22 -> 44)
+    # Was 22 originally; 2x = 44. Keep that size, with matching padding.
     font_lim = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf", 44)
 
     dates = make_plate("12 декабря, 23 декабря", font_dates, YELLOW, pad_x=18, pad_y=9, angle=-8)
-    limited = make_plate("количество мест ограничено", font_lim, WHITE, pad_x=26, pad_y=14, angle=6)
+    limited = make_plate(
+        "количество мест ограничено",
+        font_lim,
+        WHITE,
+        pad_x=28,
+        pad_y=16,
+        angle=6,
+        outline=BLACK,
+        outline_w=4,
+    )
 
     paste_at(img, dates, 24, 148)
-    # Shift left a bit so the larger plate still fits on the red field
-    paste_at(img, limited, 40, 1125)
+    # Larger plate: keep on red field above title, left-aligned
+    paste_at(img, limited, 28, 1105)
 
     img.convert("RGB").save(OUT, quality=95, optimize=True)
     print("Wrote", OUT)
