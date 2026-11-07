@@ -1,0 +1,6 @@
+{
+  "timestampsPath": "output/content-machine/audio/timestamps.json",
+  "outputPath": "output/content-machine/visuals/visuals.json",
+  "provider": "pexels",
+  "orientation": "portrait"
+}

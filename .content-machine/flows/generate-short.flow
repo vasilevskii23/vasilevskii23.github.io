@@ -1,0 +1,61 @@
+name: generate-short
+description: Execute the default topic-to-video path over the shipped skills and write run-scoped files under runs/{runId}.
+entrySkill: generate-short
+operatorNotes: .content-machine/flows/generate-short.md
+defaultOutputDir: runs/{runId}
+inputs:
+  - name: topic
+    description: Topic or brief to turn into a short.
+    required: true
+  - name: archetype
+    description: Optional archetype override such as listicle or versus.
+    required: false
+  - name: laneId
+    description: Optional concrete lane id such as reddit-post-over-gameplay.
+    required: false
+  - name: targetDuration
+    description: Optional target duration in seconds.
+    required: false
+  - name: llmProvider
+    description: "Optional provider selector: default, openai, anthropic, or gemini."
+    required: false
+  - name: referenceVideoPath
+    description: Optional reference short to ingest before generation.
+    required: false
+  - name: ingest
+    description: Optional reference ingest settings.
+    required: false
+  - name: audio
+    description: Optional voice, mock, music, and audio-generation settings.
+    required: false
+  - name: visuals
+    description: Optional visual provider, mock, asset, and orientation settings.
+    required: false
+  - name: render
+    description: Optional render and caption settings.
+    required: false
+  - name: publishPrep
+    description: Optional publish-prep review settings.
+    required: false
+  - name: outputDir
+    description: Optional explicit output root; otherwise the flow binds runs/{runId}.
+    required: false
+outputs:
+  - name: script/script.json
+    description: Generated script file.
+    required: true
+  - name: audio/audio.wav
+    description: Generated voiceover file.
+    required: true
+  - name: audio/timestamps.json
+    description: Generated timestamps file.
+    required: true
+  - name: visuals/visuals.json
+    description: Generated visuals file.
+    required: true
+  - name: render/video.mp4
+    description: Final rendered short.
+    required: true
+  - name: publish-prep/
+    description: Publish-prep bundle when the review gate is enabled.
+    required: false

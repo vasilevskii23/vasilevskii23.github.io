@@ -1,0 +1,7 @@
+{
+  "scriptPath": "output/content-machine/script/script.json",
+  "outputDir": "output/content-machine/audio",
+  "voice": "af_heart",
+  "ttsSpeed": 1,
+  "outputMetadataPath": "output/content-machine/audio/audio.json"
+}

@@ -1,0 +1,24 @@
+{
+  "name": "vasilevskii23.github.io",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal site + Content Machine (Reels Machine) short-form video pack",
+  "scripts": {
+    "postinstall": "node scripts/build-content-machine.mjs",
+    "cm:build": "node scripts/build-content-machine.mjs",
+    "cm:doctor": "printf '%s\\n' '{\"strict\":false}' | npx --no-install cm-agent doctor-report",
+    "cm:list": "npx --no-install cm-agent list",
+    "cm:skills": "printf '%s\\n' '{\"skillsDir\":\".content-machine/skills\",\"includeExamples\":true}' | npx --no-install cm-agent skill-catalog",
+    "cm:flows": "printf '%s\\n' '{\"flowsDir\":\".content-machine/flows\"}' | npx --no-install cm-agent flow-catalog",
+    "cm:refresh-pack": "npx cm-install --target .content-machine --overwrite --write-instructions"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vasilevskii23/vasilevskii23.github.io.git"
+  },
+  "license": "ISC",
+  "homepage": "https://github.com/vasilevskii23/vasilevskii23.github.io#readme",
+  "devDependencies": {
+    "@45ck/content-machine": "github:45ck/content-machine#master"
+  }
+}
