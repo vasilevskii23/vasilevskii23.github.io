@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALTER EGO — glazed ceramic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --clay: #c4a484;
+      --kiln: #2a211c;
+      --glaze: #f3ebe1;
+      --ink: #241914;
+      --mute: #6e5d52;
+      --panel: rgba(255, 248, 240, 0.58);
+      --line: rgba(36, 25, 20, 0.14);
+      --spec: rgba(255, 255, 255, 0.55);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100dvh;
+      font-family: Manrope, system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse 55% 45% at 18% 12%, rgba(255, 250, 242, 0.95) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 88% 78%, rgba(148, 168, 156, 0.28) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 35% at 70% 18%, rgba(196, 164, 132, 0.22) 0%, transparent 50%),
+        linear-gradient(165deg, #e8ddd0 0%, #d7c6b4 48%, #c9b7a4 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.18;
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+    }
+
+    .stage {
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: 40px 20px 64px;
+      position: relative;
+    }
+
+    .frame {
+      width: min(880px, 100%);
+      display: grid;
+      gap: 20px;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .brand {
+      font-family: Fraunces, Georgia, serif;
+      font-optical-sizing: auto;
+      font-size: clamp(34px, 6vw, 52px);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      animation: rise 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+
+    .sub {
+      max-width: 42ch;
+      color: var(--mute);
+      font-size: 15px;
+      line-height: 1.5;
+      margin-top: -4px;
+      animation: rise 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 80ms both;
+    }
+
+    .logo-wrap {
+      width: min(520px, 88vw);
+      aspect-ratio: 1;
+      position: relative;
+      perspective: 900px;
+      animation: float 7s ease-in-out infinite, rise 1000ms cubic-bezier(0.2, 0.8, 0.2, 1) 140ms both;
+    }
+
+    .logo-wrap::after {
+      content: "";
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      bottom: 2%;
+      height: 18%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center, rgba(36, 25, 20, 0.28), transparent 70%);
+      filter: blur(10px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .logo-wrap img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+      transition: transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      filter: drop-shadow(0 22px 34px rgba(36, 25, 20, 0.22));
+      will-change: transform;
+    }
+
+    .sheen {
+      position: absolute;
+      inset: 8%;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 2;
+      background: linear-gradient(
+        120deg,
+        transparent 30%,
+        var(--spec) 48%,
+        transparent 62%
+      );
+      mix-blend-mode: soft-light;
+      opacity: 0;
+      transform: translateX(-40%) rotate(8deg);
+      animation: glazeSweep 5.5s ease-in-out 1.2s infinite;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      animation: rise 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 220ms both;
+    }
+
+    .btn {
+      appearance: none;
+      text-decoration: none;
+      color: var(--ink);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px 16px;
+      font: 600 13px/1 Manrope, system-ui, sans-serif;
+      letter-spacing: 0.02em;
+      backdrop-filter: blur(10px);
+      transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    }
+
+    .btn:hover {
+      background: rgba(255, 252, 246, 0.88);
+      transform: translateY(-1px);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        0 8px 18px rgba(36, 25, 20, 0.1);
+    }
+
+    .compare {
+      width: min(640px, 100%);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 4px;
+      animation: rise 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 280ms both;
+    }
+
+    .compare figure {
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(255, 248, 240, 0.42);
+      text-align: left;
+      backdrop-filter: blur(8px);
+    }
+
+    .compare img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: contain;
+      display: block;
+      background:
+        linear-gradient(45deg, rgba(36,25,20,0.06) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(36,25,20,0.06) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(36,25,20,0.06) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(36,25,20,0.06) 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+      background-color: #efe6db;
+      padding: 10px;
+    }
+
+    .compare figcaption {
+      padding: 10px 12px 12px;
+      font-size: 12px;
+      color: var(--mute);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes glazeSweep {
+      0%, 18% { opacity: 0; transform: translateX(-45%) rotate(8deg); }
+      35% { opacity: 0.55; }
+      55% { opacity: 0.2; transform: translateX(35%) rotate(8deg); }
+      70%, 100% { opacity: 0; transform: translateX(45%) rotate(8deg); }
+    }
+
+    @media (max-width: 640px) {
+      .compare { grid-template-columns: 1fr; }
+      .brand { letter-spacing: 0.02em; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .logo-wrap, .brand, .sub, .actions, .compare, .sheen {
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <div class="frame">
+      <h1 class="brand">ALTER EGO</h1>
+      <p class="sub">Логотип как глазурованный керамический медальон: рельеф, мокрый блеск глазури, тёплый biscuit. PNG с прозрачным фоном.</p>
+
+      <div class="logo-wrap" id="logoTilt">
+        <img
+          id="heroLogo"
+          src="assets/alter-ego-logo-ceramic.png"
+          alt="ALTER EGO — glazed ceramic logo"
+          width="1024"
+          height="1024"
+        />
+        <span class="sheen" aria-hidden="true"></span>
+      </div>
+
+      <div class="actions">
+        <a class="btn" href="assets/alter-ego-logo-ceramic.png" download>Cream glaze PNG</a>
+        <a class="btn" href="assets/alter-ego-logo-ceramic-ink.png" download>Ink glaze PNG</a>
+        <a class="btn" href="assets/alter-ego-logo-original.jpg" download>Оригинал</a>
+        <button class="btn" type="button" id="swapBtn">Сменить версию</button>
+      </div>
+
+      <div class="compare">
+        <figure>
+          <img src="assets/alter-ego-logo-ceramic.png" alt="Cream glazed ceramic version" />
+          <figcaption>Cream glaze</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/alter-ego-logo-ceramic-ink.png" alt="Ink glazed ceramic version" />
+          <figcaption>Ink on porcelain</figcaption>
+        </figure>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const wrap = document.getElementById("logoTilt");
+    const img = document.getElementById("heroLogo");
+    const swapBtn = document.getElementById("swapBtn");
+    const versions = [
+      "assets/alter-ego-logo-ceramic.png",
+      "assets/alter-ego-logo-ceramic-ink.png",
+    ];
+    let versionIndex = 0;
+    let targetX = 0, targetY = 0, curX = 0, curY = 0;
+
+    swapBtn.addEventListener("click", () => {
+      versionIndex = (versionIndex + 1) % versions.length;
+      img.src = versions[versionIndex];
+    });
+
+    wrap.addEventListener("pointermove", (e) => {
+      const r = wrap.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width - 0.5;
+      const ny = (e.clientY - r.top) / r.height - 0.5;
+      targetX = nx * 14;
+      targetY = -ny * 10;
+    });
+
+    wrap.addEventListener("pointerleave", () => {
+      targetX = 0;
+      targetY = 0;
+    });
+
+    function tick() {
+      curX += (targetX - curX) * 0.14;
+      curY += (targetY - curY) * 0.14;
+      img.style.transform = `rotateX(${curY}deg) rotateY(${curX}deg)`;
+      requestAnimationFrame(tick);
+    }
+    tick();
+  </script>
+</body>
+</html>
