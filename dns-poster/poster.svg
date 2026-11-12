@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 794 1123" width="794" height="1123" role="img" aria-labelledby="title desc">
+  <title id="title">!  803=>AB8:0 =5>B;>6=KE A>AB>O=89</title>
+  <desc id="desc">>AB5@ =0 425@L >B45;0 4803=>AB8:8 =5>B;>6=KE A>AB>O=89</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0%" stop-color="#0E2A36"/>
+      <stop offset="42%" stop-color="#0B1F2A"/>
+      <stop offset="100%" stop-color="#07151C"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="28%" r="48%">
+      <stop offset="0%" stop-color="#2FA8B8" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="#1A5F6C" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#0B1F2A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5AD4DF"/>
+      <stop offset="100%" stop-color="#2A9AA8"/>
+    </linearGradient>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&amp;family=Unbounded:wght@700;800&amp;display=swap');
+      .brand { font-family: 'Unbounded', 'Arial Black', sans-serif; font-weight: 800; fill: #F4FBFC; letter-spacing: -4px; }
+      .title { font-family: 'Manrope', 'Segoe UI', sans-serif; font-weight: 700; fill: #F4FBFC; }
+      .tag { font-family: 'Manrope', 'Segoe UI', sans-serif; font-weight: 500; fill: #7BC9D2; letter-spacing: 1.2px; }
+      .foot { font-family: 'Manrope', 'Segoe UI', sans-serif; font-weight: 500; fill: #6A8F98; letter-spacing: 2.5px; text-transform: uppercase; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="794" height="1123" fill="url(#bg)"/>
+  <rect width="794" height="1123" fill="url(#glow)"/>
+
+  <!-- Soft ECG atmosphere (upper field) -->
+  <g opacity="0.14" fill="none" stroke="#7EDCE6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M40 210 H180 L198 178 L220 268 L244 150 L266 230 H420 L438 198 L460 288 L484 170 L506 250 H754"/>
+    <path d="M40 330 H150 L168 300 L190 380 L214 270 L236 350 H360 L378 318 L400 400 L424 290 L446 360 H754" opacity="0.55"/>
+    <path d="M40 470 H220 L238 445 L260 520 L284 420 L306 495 H500 L518 470 L540 545 L564 440 L586 510 H754" opacity="0.35"/>
+  </g>
+
+  <!-- Brand block -->
+  <text class="brand" x="397" y="250" text-anchor="middle" font-size="168">!</text>
+  <rect x="292" y="278" width="210" height="3.5" rx="2" fill="#3DB8C5"/>
+
+  <text class="title" x="397" y="340" text-anchor="middle" font-size="34">803=>AB8:0</text>
+  <text class="title" x="397" y="384" text-anchor="middle" font-size="34">=5>B;>6=KE A>AB>O=89</text>
+  <text class="tag" x="397" y="430" text-anchor="middle" font-size="15">A@>G=0O 4803=>AB8:0 · <>=8B>@8=3 · @5H5=85</text>
+
+  <!-- Diagnostic lens + ECG spike -->
+  <g transform="translate(397 730)">
+    <circle r="148" fill="none" stroke="url(#ring)" stroke-width="4.5" opacity="0.95"/>
+    <circle r="118" fill="none" stroke="#3DB8C5" stroke-width="2.2" opacity="0.55"/>
+    <circle r="78" fill="#0B2430" stroke="#2A8F9C" stroke-width="1.5" opacity="0.55"/>
+
+    <!-- ECG through lens -->
+    <path d="M-170 0 H-58 L-36 -78 L-8 92 L28 -110 L54 0 H170"
+          fill="none" stroke="#E07A5F" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- soft under-glow for spike -->
+    <path d="M-58 0 L-36 -78 L-8 92 L28 -110 L54 0"
+          fill="none" stroke="#E07A5F" stroke-width="16" opacity="0.12" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Footer -->
+  <rect x="72" y="1008" width="650" height="1.5" fill="#3DB8C5" opacity="0.55"/>
+  <text class="foot" x="72" y="1048" font-size="16">>B45;5=85</text>
+</svg>

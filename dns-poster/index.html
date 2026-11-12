@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ДНС — 6 лёгких постеров на дверь</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Unbounded:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg0: #0d1c22;
+      --bg1: #143039;
+      --cyan: #3db8c5;
+      --coral: #e07a5f;
+      --text: #f2f7f8;
+      --muted: #9bb8bf;
+      --card: #10262e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Manrope, system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 15% -10%, rgba(61, 184, 197, 0.22), transparent 42%),
+        radial-gradient(ellipse at 90% 10%, rgba(224, 122, 95, 0.12), transparent 35%),
+        linear-gradient(165deg, var(--bg0), var(--bg1) 55%, #0a171c);
+      min-height: 100vh;
+      padding: 28px 18px 64px;
+    }
+    .wrap { width: min(1180px, 100%); margin: 0 auto; }
+    header {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 28px;
+      animation: in 700ms ease both;
+    }
+    .eyebrow {
+      color: var(--cyan);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    h1 {
+      margin: 0;
+      font-family: Unbounded, Manrope, sans-serif;
+      font-size: clamp(28px, 5vw, 44px);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+    .lead {
+      margin: 0;
+      max-width: 46ch;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    article {
+      background: color-mix(in srgb, var(--card) 88%, black);
+      border: 1px solid color-mix(in srgb, var(--cyan) 18%, transparent);
+      border-radius: 18px;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      animation: in 800ms ease both;
+      transition: transform 220ms ease, border-color 220ms ease;
+    }
+    article:nth-child(1) { animation-delay: 40ms; }
+    article:nth-child(2) { animation-delay: 90ms; }
+    article:nth-child(3) { animation-delay: 140ms; }
+    article:nth-child(4) { animation-delay: 190ms; }
+    article:nth-child(5) { animation-delay: 240ms; }
+    article:nth-child(6) { animation-delay: 290ms; }
+    article:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in srgb, var(--cyan) 45%, transparent);
+    }
+    article a.preview {
+      display: block;
+      aspect-ratio: 3 / 4;
+      background: #081418;
+      overflow: hidden;
+    }
+    article img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 420ms ease;
+    }
+    article:hover img { transform: scale(1.03); }
+    .meta {
+      padding: 14px 16px 16px;
+      display: grid;
+      gap: 8px;
+    }
+    .meta h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .meta p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .meta .joke {
+      color: var(--text);
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .btn {
+      text-decoration: none;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--cyan) 35%, transparent);
+      background: color-mix(in srgb, var(--cyan) 14%, transparent);
+    }
+    .btn:hover { background: color-mix(in srgb, var(--cyan) 28%, transparent); }
+    .note {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    @keyframes in {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">Отдел ДНС · постеры на дверь</div>
+      <h1>6 лёгких вариантов с юмором</h1>
+      <p class="lead">Без пафоса и страшилок — спокойный юмор для коридора. Выберите тон, который зайдёт команде и пациентам.</p>
+    </header>
+
+    <section class="grid" aria-label="Варианты постеров">
+      <article>
+        <a class="preview" href="variants/dns-v1-standing.jpg" target="_blank" rel="noopener">
+          <img src="variants/dns-v1-standing.jpg" alt="Вариант 1: Если читаете стоя — уже хороший знак" />
+        </a>
+        <div class="meta">
+          <h2>1 · Хороший знак</h2>
+          <p class="joke">«Если читаете стоя — уже хороший знак»</p>
+          <p>Мягкий мятный тон. Успокаивает ещё до входа.</p>
+          <div class="actions">
+            <a class="btn" href="variants/dns-v1-standing.jpg" download>Скачать JPG</a>
+          </div>
+        </div>
+      </article>
+
+      <article>
+        <a class="preview" href="variants/dns-v2-panic-together.jpg" target="_blank" rel="noopener">
+          <img src="variants/dns-v2-panic-together.jpg" alt="Вариант 2: Паниковать будем вместе" />
+        </a>
+        <div class="meta">
+          <h2>2 · Паника под контролем</h2>
+          <p class="joke">«Паниковать будем вместе»</p>
+          <p>ЭКГ улыбается. Командный юмор для срочности без крика.</p>
+          <div class="actions">
+            <a class="btn" href="variants/dns-v2-panic-together.jpg" download>Скачать JPG</a>
+          </div>
+        </div>
+      </article>
+
+      <article>
+        <a class="preview" href="variants/dns-v3-backronym.jpg" target="_blank" rel="noopener">
+          <img src="variants/dns-v3-backronym.jpg" alt="Вариант 3: Доктор Найдёт Симптом" />
+        </a>
+        <div class="meta">
+          <h2>3 · Детектив ДНС</h2>
+          <p class="joke">«Доктор Найдёт Симптом»</p>
+          <p>Игра с аббревиатурой. Для тех, кто любит умный каламбур.</p>
+          <div class="actions">
+            <a class="btn" href="variants/dns-v3-backronym.jpg" download>Скачать JPG</a>
+          </div>
+        </div>
+      </article>
+
+      <article>
+        <a class="preview" href="variants/dns-v4-quiet-urgent.jpg" target="_blank" rel="noopener">
+          <img src="variants/dns-v4-quiet-urgent.jpg" alt="Вариант 4: Неотложное — не значит громкое" />
+        </a>
+        <div class="meta">
+          <h2>4 · Тихая срочность</h2>
+          <p class="joke">«Неотложное — не значит громкое»</p>
+          <p>Шёпот и монитор. Самый «кабинетный» мягкий юмор.</p>
+          <div class="actions">
+            <a class="btn" href="variants/dns-v4-quiet-urgent.jpg" download>Скачать JPG</a>
+          </div>
+        </div>
+      </article>
+
+      <article>
+        <a class="preview" href="variants/dns-v5-calmer-inside.jpg" target="_blank" rel="noopener">
+          <img src="variants/dns-v5-calmer-inside.jpg" alt="Вариант 5: Внутри спокойнее" />
+        </a>
+        <div class="meta">
+          <h2>5 · Спокойнее внутри</h2>
+          <p class="joke">«Внутри спокойнее, чем кажется снаружи»</p>
+          <p>Дверь как портал из тревоги в ясность.</p>
+          <div class="actions">
+            <a class="btn" href="variants/dns-v5-calmer-inside.jpg" download>Скачать JPG</a>
+          </div>
+        </div>
+      </article>
+
+      <article>
+        <a class="preview" href="variants/dns-v6-menu.jpg" target="_blank" rel="noopener">
+          <img src="variants/dns-v6-menu.jpg" alt="Вариант 6: Сегодня в меню — ясность" />
+        </a>
+        <div class="meta">
+          <h2>6 · Меню ясности</h2>
+          <p class="joke">«Сегодня в меню — ясность»</p>
+          <p>Кафешный вайб. Самый тёплый и «домашний» из шести.</p>
+          <div class="actions">
+            <a class="btn" href="variants/dns-v6-menu.jpg" download>Скачать JPG</a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <p class="note">Формат 3:4, удобно на дверь / A4. Серьёзный «клинический» макет тоже лежит рядом: <a href="poster.svg" style="color:var(--cyan)">poster.svg</a>.</p>
+  </div>
+</body>
+</html>
