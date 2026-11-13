@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DNS — шильдики на дверь</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Unbounded:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#101418; --text:#f3f5f6; --muted:#9aa7ad; --line:#2a343a; --accent:#6ec4cf; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--text);
+      font-family: Manrope, system-ui, sans-serif;
+      background: #101418;
+      padding: 28px 18px 64px;
+    }
+    .wrap { width: min(1100px, 100%); margin: 0 auto; }
+    h1 { margin: 0 0 8px; font-family: Unbounded, Manrope, sans-serif; font-size: clamp(24px, 4vw, 36px); letter-spacing: -0.03em; }
+    h2 { margin: 28px 0 12px; font-size: 16px; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; }
+    .lead { margin: 0 0 20px; color: var(--muted); max-width: 52ch; line-height: 1.45; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+    }
+    a.card {
+      display: grid; gap: 8px; text-decoration: none; color: inherit;
+      border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+      background: #161b1f; transition: border-color .2s, transform .2s;
+    }
+    a.card:hover { border-color: color-mix(in srgb, var(--accent) 50%, var(--line)); transform: translateY(-2px); }
+    a.card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: #0c1013; }
+    .cap { padding: 0 10px 12px; font-size: 13px; color: var(--muted); }
+    .cap strong { display: block; color: var(--text); margin-bottom: 2px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>DNS · шильдики на дверь</h1>
+    <p class="lead">Лаконично, но не пусто: буква + лёгкий акцент (линия, пульс, рамка, подпись).</p>
+
+    <h2>С акцентом · 10 шт.</h2>
+    <section class="grid">
+      <a class="card" href="dns-mark-01-line.jpg"><img src="dns-mark-01-line.jpg" alt="DNS + line" /><div class="cap"><strong>01 · Line</strong>линия + diagnostics</div></a>
+      <a class="card" href="dns-mark-02-pulse.jpg"><img src="dns-mark-02-pulse.jpg" alt="DNS + pulse" /><div class="cap"><strong>02 · Pulse</strong>ЭКГ-штрих</div></a>
+      <a class="card" href="dns-mark-03-badge.jpg"><img src="dns-mark-03-badge.jpg" alt="DNS badge" /><div class="cap"><strong>03 · Badge</strong>овал / dept.</div></a>
+      <a class="card" href="dns-mark-04-two-line.jpg"><img src="dns-mark-04-two-line.jpg" alt="DNS Diagnostics" /><div class="cap"><strong>04 · Two-line</strong>DNS + DIAGNOSTICS</div></a>
+      <a class="card" href="dns-mark-05-dotgrid.jpg"><img src="dns-mark-05-dotgrid.jpg" alt="DNS dotgrid" /><div class="cap"><strong>05 · Dotgrid</strong>сетка + акцент</div></a>
+      <a class="card" href="dns-mark-06-ring.jpg"><img src="dns-mark-06-ring.jpg" alt="DNS ring" /><div class="cap"><strong>06 · Ring</strong>эмблема в кольце</div></a>
+      <a class="card" href="dns-mark-07-slash.jpg"><img src="dns-mark-07-slash.jpg" alt="DNS slash" /><div class="cap"><strong>07 · Slash</strong>диагональ + TEAM</div></a>
+      <a class="card" href="dns-mark-08-ru.jpg"><img src="dns-mark-08-ru.jpg" alt="ДНС диагностика" /><div class="cap"><strong>08 · ДНС</strong>кириллица + подпись</div></a>
+      <a class="card" href="dns-mark-09-monogram.jpg"><img src="dns-mark-09-monogram.jpg" alt="DNS monogram" /><div class="cap"><strong>09 · Monogram</strong>переплетённый знак</div></a>
+      <a class="card" href="dns-mark-10-frame.jpg"><img src="dns-mark-10-frame.jpg" alt="DNS frame" /><div class="cap"><strong>10 · Frame</strong>рамка + подпись</div></a>
+    </section>
+
+    <h2>Только буквы · архив</h2>
+    <section class="grid">
+      <a class="card" href="dns-logo-01-serif.jpg"><img src="dns-logo-01-serif.jpg" alt="serif" /><div class="cap"><strong>A1 Serif</strong></div></a>
+      <a class="card" href="dns-logo-02-geometric.jpg"><img src="dns-logo-02-geometric.jpg" alt="geometric" /><div class="cap"><strong>A2 Geometric</strong></div></a>
+      <a class="card" href="dns-logo-03-outline.jpg"><img src="dns-logo-03-outline.jpg" alt="outline" /><div class="cap"><strong>A3 Outline</strong></div></a>
+      <a class="card" href="dns-logo-09-dot.jpg"><img src="dns-logo-09-dot.jpg" alt="dot" /><div class="cap"><strong>A9 Dot</strong></div></a>
+      <a class="card" href="dns-logo-10-cyrillic.jpg"><img src="dns-logo-10-cyrillic.jpg" alt="cyrillic" /><div class="cap"><strong>A10 ДНС</strong></div></a>
+    </section>
+  </div>
+</body>
+</html>
