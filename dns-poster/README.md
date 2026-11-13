@@ -1,8 +1,27 @@
-# Постеры на дверь: ДНС
+# Постеры / лого на дверь: ДНС
 
-Отдел **Диагностики неотложных состояний** — 21 юмористический вариант на офисную дверь + SVG-макет.
+## Лаконичные логотипы (рекомендуется на дверь)
 
-Серия **16–21** — единый стиль: тёмный офис, клипборд-триаж, «принимаем / не принимаем».
+Только буквы, как шильдик: [`logos/`](./logos/) · галерея [`logos/index.html`](./logos/index.html)
+
+| # | Стиль | Файл |
+|---|-------|------|
+| 1 | Serif | `logos/dns-logo-01-serif.jpg` |
+| 2 | Geometric | `logos/dns-logo-02-geometric.jpg` |
+| 3 | Outline | `logos/dns-logo-03-outline.jpg` |
+| 4 | Mono | `logos/dns-logo-04-mono.jpg` |
+| 5 | Rounded | `logos/dns-logo-05-rounded.jpg` |
+| 6 | Condensed | `logos/dns-logo-06-condensed.jpg` |
+| 7 | Hairline | `logos/dns-logo-07-light.jpg` |
+| 8 | Stacked | `logos/dns-logo-08-stacked.jpg` |
+| 9 | Dot accent | `logos/dns-logo-09-dot.jpg` |
+| 10 | Кириллица ДНС | `logos/dns-logo-10-cyrillic.jpg` |
+
+Вектор: `logos/dns-mark.svg`
+
+## Юмористические постеры (архив идей)
+
+Серия **16–21** — тёмный офис, клипборд-триаж, «принимаем / не принимаем».
 
 ## Варианты
 
