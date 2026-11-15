@@ -1,0 +1,10 @@
+{
+  "visualsPath": "output/visuals.json",
+  "timestampsPath": "output/timestamps.json",
+  "audioPath": "output/audio.wav",
+  "outputPath": "output/content-machine/render/video.mp4",
+  "orientation": "portrait",
+  "fps": 30,
+  "downloadAssets": true,
+  "outputMetadataPath": "output/content-machine/render/render.json"
+}

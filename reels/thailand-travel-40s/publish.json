@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.0.0",
+  "platform": "reels",
+  "title": "Таиланд за 40 секунд: как ехать правильно",
+  "description": "Таиланд за 40 секунд: как ехать правильно\n\nВ Таиланд едут за морем. Но поездку решает не только пляж.\n\nЛёгкий рюкзак, открытый график и один день без планов.",
+  "hashtags": [
+    "тайланд",
+    "путешествия",
+    "reels",
+    "travel",
+    "thailand",
+    "пхукет",
+    "бангкок"
+  ],
+  "checklist": [
+    {
+      "id": "render-quality",
+      "label": "Video passes cm validate (resolution/format)",
+      "required": true
+    },
+    {
+      "id": "captions",
+      "label": "Captions are readable on a phone",
+      "required": true
+    },
+    {
+      "id": "cover-text",
+      "label": "Cover text is 2-6 words and legible",
+      "required": true
+    },
+    {
+      "id": "hook",
+      "label": "First 2 seconds match the hook promise",
+      "required": true
+    },
+    {
+      "id": "hashtag-sanity",
+      "label": "Hashtags are relevant (no spam)",
+      "required": false
+    }
+  ],
+  "createdAt": "2026-11-07T21:29:47.915Z"
+}
