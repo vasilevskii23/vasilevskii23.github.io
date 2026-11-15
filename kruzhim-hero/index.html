@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru" translate="no">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="google" content="notranslate"/>
+<title>КРУЖИМ — Кружки рядом</title>
+<meta name="description" content="Кружки, секции и лагеря для детей в Санкт-Петербурге — без недели поисков."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bd: #1A3A8F;
+  --bm: #2968D4;
+  --bl: #3D8EF0;
+  --or: #F4621F;
+  --or-hot: #FF7A3D;
+  --ink-soft: rgba(255, 255, 255, 0.84);
+  --veil: linear-gradient(
+    112deg,
+    rgba(10, 24, 72, 0.82) 0%,
+    rgba(26, 58, 143, 0.66) 38%,
+    rgba(41, 104, 212, 0.32) 68%,
+    rgba(41, 104, 212, 0.14) 100%
+  );
+  --font-display: "Unbounded", sans-serif;
+  --font-body: "Golos Text", sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { min-height: 100%; height: 100%; }
+
+body {
+  font-family: var(--font-body);
+  color: #fff;
+  background: var(--bd);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.hero {
+  position: relative;
+  min-height: 100dvh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 42%;
+  transform: scale(1.02);
+  animation: kenBurns 11s ease-out forwards;
+  will-change: transform;
+}
+
+.hero-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--veil);
+}
+
+.nav {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px clamp(18px, 4vw, 48px);
+}
+
+.nav-mark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  opacity: 0.8;
+}
+
+.nav-link {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.2s;
+}
+
+.nav-link:hover { color: #fff; }
+
+.hero-content {
+  position: relative;
+  z-index: 4;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(20px, 5vh, 56px) clamp(18px, 5vw, 72px) clamp(36px, 8vh, 72px);
+  max-width: 880px;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.75rem, 9vw, 5.6rem);
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  margin-bottom: clamp(16px, 2.8vh, 26px);
+  text-shadow: 0 10px 42px rgba(8, 24, 80, 0.35);
+}
+
+.headline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.4rem, 3.7vw, 2.4rem);
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+  max-width: 15ch;
+  margin-bottom: 14px;
+}
+
+.support {
+  font-size: clamp(1.02rem, 1.7vw, 1.22rem);
+  line-height: 1.45;
+  color: var(--ink-soft);
+  max-width: 32ch;
+  margin-bottom: clamp(22px, 4vh, 34px);
+}
+
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 26px;
+  border-radius: 14px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--or), var(--or-hot));
+  color: #fff;
+  box-shadow: 0 12px 32px rgba(244, 98, 31, 0.34);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.cta:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: 0 16px 36px rgba(244, 98, 31, 0.42);
+}
+
+.cta:active { transform: translateY(0); }
+
+.cta-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 20px;
+  border-radius: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  transition: background 0.18s, border-color 0.18s, transform 0.18s;
+}
+
+.cta-ghost:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.48);
+  transform: translateY(-1px);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: riseIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.brand.reveal {
+  animation-name: brandIn;
+  animation-delay: 0.04s;
+  animation-duration: 0.6s;
+}
+
+.headline.reveal { animation-delay: 0.16s; }
+.support.reveal { animation-delay: 0.3s; }
+.cta-row.reveal { animation-delay: 0.42s; }
+
+@keyframes riseIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes brandIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    letter-spacing: 0.1em;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: -0.03em;
+  }
+}
+
+@keyframes kenBurns {
+  from { transform: scale(1); }
+  to { transform: scale(1.07); }
+}
+
+@media (max-width: 720px) {
+  .headline { max-width: 13ch; }
+  .cta-row { width: 100%; }
+  .cta, .cta-ghost { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .hero-media img {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+</style>
+</head>
+<body>
+<section class="hero" id="hero" aria-label="КРУЖИМ — главный экран">
+  <div class="hero-media" aria-hidden="true">
+    <img
+      src="hero.jpg"
+      alt=""
+      width="2000"
+      height="1333"
+      fetchpriority="high"
+    />
+  </div>
+  <div class="hero-veil" aria-hidden="true"></div>
+
+  <nav class="nav">
+    <div class="nav-mark">кружим.рф</div>
+    <a class="nav-link" href="https://kruzhim.ru/" target="_blank" rel="noopener">Открыть сайт</a>
+  </nav>
+
+  <div class="hero-content">
+    <h1 class="brand reveal">КРУЖИМ</h1>
+    <p class="headline reveal">Кружки рядом — без недели поисков</p>
+    <p class="support reveal">Район и возраст — и готовый список занятий для детей в Санкт-Петербурге.</p>
+    <div class="cta-row reveal">
+      <a class="cta" href="https://kruzhim.ru/" target="_blank" rel="noopener">Найти кружок</a>
+      <a class="cta-ghost" href="https://kruzhim.ru/" target="_blank" rel="noopener">По району</a>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const hero = document.getElementById("hero");
+  const media = hero?.querySelector(".hero-media img");
+  if (!hero || !media) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  let ticking = false;
+  window.addEventListener("scroll", () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = Math.min(window.scrollY || 0, 260);
+      media.style.transform = `scale(${1.02 + y / 4200}) translateY(${y * 0.1}px)`;
+      ticking = false;
+    });
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
