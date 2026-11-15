@@ -1,0 +1,12 @@
+{
+  "name": "apple-launch-film-demo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "preview": "npx --yes serve -l 5179 .",
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "puppeteer-core": "^24.2.0"
+  }
+}

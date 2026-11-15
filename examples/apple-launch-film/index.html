@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aura — Apple-style launch film</title>
+<style>
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  #stage {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    transform-origin: top left;
+    overflow: hidden;
+    background: #000;
+  }
+  #wallpaper-a, #wallpaper-b {
+    position: absolute;
+    inset: 0;
+    transition: none;
+  }
+  #wallpaper-b { opacity: 0; }
+  #menubar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    z-index: 40;
+    pointer-events: none;
+  }
+  #menubar .left, #menubar .right {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+  }
+  #menubar .apple {
+    font-size: 15px;
+    line-height: 1;
+  }
+  #notch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000;
+    border-radius: 0 0 22px 22px;
+    z-index: 50;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 10px 40px rgba(0, 0, 0, 0.35);
+  }
+  #widget-host {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+  }
+  #caption {
+    position: absolute;
+    left: 50%;
+    top: 58%;
+    transform: translateX(-50%);
+    width: min(920px, 80%);
+    text-align: center;
+    font-size: 54px;
+    font-weight: 560;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: rgba(255, 255, 255, 0.96);
+    z-index: 30;
+    opacity: 0;
+    text-wrap: balance;
+  }
+  #caption .tint {
+    color: var(--tint, rgba(255, 255, 255, 0.72));
+  }
+  #hello {
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    transform: translate(-50%, -50%);
+    font-family: "Segoe Script", "Apple Chancery", "Brush Script MT", cursive;
+    font-size: 96px;
+    font-weight: 400;
+    color: #fff;
+    z-index: 35;
+    opacity: 0;
+    letter-spacing: 0.02em;
+  }
+  .widget {
+    width: 100%;
+    height: 100%;
+    padding: 28px 32px;
+    box-sizing: border-box;
+    color: #fff;
+  }
+  .w-title {
+    font-size: 15px;
+    font-weight: 600;
+    opacity: 0.55;
+    margin-bottom: 14px;
+    letter-spacing: 0.02em;
+  }
+  .w-lines { display: flex; flex-direction: column; gap: 10px; }
+  .w-line {
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+  }
+  .w-line.short { width: 62%; }
+  .w-line.mid { width: 78%; }
+  .w-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .w-chip {
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .w-lock {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.12);
+    display: grid;
+    place-items: center;
+    margin: 8px auto 16px;
+  }
+  .w-lock svg { width: 34px; height: 34px; fill: none; stroke: #fff; stroke-width: 2.2; }
+  .w-cards { display: grid; gap: 10px; }
+  .w-card {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 12px 14px;
+  }
+  .w-card .h { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .w-devices {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 18px;
+    height: calc(100% - 28px);
+    padding-top: 8px;
+  }
+  .dev {
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .dev.mac { width: 120px; height: 78px; border-radius: 10px; }
+  .dev.phone { width: 34px; height: 68px; border-radius: 8px; }
+  .dev.pad { width: 70px; height: 92px; border-radius: 10px; }
+  #hud {
+    position: fixed;
+    right: 12px;
+    bottom: 12px;
+    color: #aaa;
+    font: 12px/1.4 ui-monospace, monospace;
+    z-index: 100;
+    background: rgba(0,0,0,0.55);
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
+  body.export #hud { display: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="wallpaper-a"></div>
+  <div id="wallpaper-b"></div>
+  <div id="menubar">
+    <div class="left">
+      <span class="apple" aria-label="Apple">&#63743;</span>
+      <span>Aura</span>
+      <span>File</span>
+      <span>Edit</span>
+      <span>View</span>
+    </div>
+    <div class="right">
+      <span>Wed 9:41</span>
+    </div>
+  </div>
+  <div id="notch">
+    <div id="widget-host"></div>
+  </div>
+  <div id="hello">hello</div>
+  <div id="caption"></div>
+</div>
+<div id="hud">t=<span id="t">0.00</span>s · seek via window.seek(seconds)</div>
+<script>
+(() => {
+  const W = 1920, H = 1080;
+  const FPS = 30;
+  const SCENE = 2.5;
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches
+    || new URLSearchParams(location.search).has("reduced");
+
+  // Demo product brief (example montage)
+  const PRODUCT = "Aura";
+  const TAGLINE = "Clarity for every conversation.";
+  const FACTS = [
+    "Live transcription",
+    "40 languages",
+    "Private on-device processing",
+    "Instant meeting summaries",
+    "Works offline",
+    "Syncs across Mac, iPhone, and iPad",
+  ];
+
+  const scenes = [
+    {
+      id: "hello",
+      wallpaper: "#000000",
+      tint: "#ffffff",
+      caption: null,
+      hello: true,
+      notch: { w: 520, h: 280 },
+      widget: null,
+    },
+    {
+      id: "voice",
+      wallpaper: "linear-gradient(160deg, #0b1c3a 0%, #1a4b8c 45%, #3d7ecf 100%)",
+      tint: "#9ec5ff",
+      caption: ["Your voice lives", "here."],
+      notch: { w: 640, h: 360 },
+      widget: "voice",
+    },
+    {
+      id: "languages",
+      wallpaper: "linear-gradient(150deg, #24103a 0%, #5b2d8e 50%, #8f5cc8 100%)",
+      tint: "#d7b7ff",
+      caption: ["Forty languages.", "Instantly."],
+      notch: { w: 680, h: 380 },
+      widget: "languages",
+    },
+    {
+      id: "private",
+      wallpaper: "linear-gradient(155deg, #06281f 0%, #0f6a52 48%, #2db88a 100%)",
+      tint: "#9ef0d0",
+      caption: ["Private.", "On device."],
+      notch: { w: 560, h: 340 },
+      widget: "private",
+    },
+    {
+      id: "summaries",
+      wallpaper: "linear-gradient(155deg, #3a1808 0%, #b85a22 48%, #f0a05a 100%)",
+      tint: "#ffd2a8",
+      caption: ["Meetings,", "distilled."],
+      notch: { w: 700, h: 400 },
+      widget: "summaries",
+    },
+    {
+      id: "everywhere",
+      wallpaper: "linear-gradient(160deg, #1a2330 0%, #3a4d66 50%, #7f93ad 100%)",
+      tint: "#c9d7ea",
+      caption: ["Everywhere", "you work."],
+      notch: { w: 620, h: 360 },
+      widget: "everywhere",
+    },
+    {
+      id: "close",
+      wallpaper: "#000000",
+      tint: "#ffffff",
+      caption: [PRODUCT + ".", TAGLINE],
+      notch: { w: 180, h: 34 },
+      widget: null,
+      resting: true,
+    },
+  ];
+
+  const DURATION = scenes.length * SCENE;
+
+  const stage = document.getElementById("stage");
+  const wallAel = document.getElementById("wallpaper-a");
+  const wallBel = document.getElementById("wallpaper-b");
+  const notch = document.getElementById("notch");
+  const widgetHost = document.getElementById("widget-host");
+  const caption = document.getElementById("caption");
+  const hello = document.getElementById("hello");
+  const tEl = document.getElementById("t");
+
+  function fit() {
+    if (document.body.classList.contains("export") || new URLSearchParams(location.search).has("still")) {
+      stage.style.transform = "none";
+      stage.style.marginLeft = "0";
+      stage.style.marginTop = "0";
+      return;
+    }
+    const sx = innerWidth / W;
+    const sy = innerHeight / H;
+    const s = Math.min(sx, sy);
+    stage.style.transform = `scale(${s})`;
+    stage.style.marginLeft = `${(innerWidth - W * s) / 2}px`;
+    stage.style.marginTop = `${(innerHeight - H * s) / 2}px`;
+  }
+  addEventListener("resize", fit);
+  fit();
+
+  function widgetHTML(kind) {
+    if (kind === "voice") {
+      return `<div class="widget">
+        <div class="w-title">Live transcription</div>
+        <div class="w-lines">
+          <div class="w-line mid"></div>
+          <div class="w-line"></div>
+          <div class="w-line short"></div>
+          <div class="w-line mid"></div>
+          <div class="w-line short"></div>
+        </div>
+      </div>`;
+    }
+    if (kind === "languages") {
+      return `<div class="widget">
+        <div class="w-title">40 languages</div>
+        <div class="w-chips">
+          <span class="w-chip">EN</span><span class="w-chip">ES</span>
+          <span class="w-chip">FR</span><span class="w-chip">DE</span>
+          <span class="w-chip">JA</span><span class="w-chip">KO</span>
+          <span class="w-chip">PT</span><span class="w-chip">+33</span>
+        </div>
+      </div>`;
+    }
+    if (kind === "private") {
+      return `<div class="widget" style="text-align:center">
+        <div class="w-lock" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        </div>
+        <div class="w-title" style="margin:0">Private on-device processing</div>
+        <div class="w-lines" style="margin-top:14px">
+          <div class="w-line mid" style="margin:0 auto"></div>
+          <div class="w-line short" style="margin:0 auto"></div>
+        </div>
+      </div>`;
+    }
+    if (kind === "summaries") {
+      return `<div class="widget">
+        <div class="w-title">Instant meeting summaries</div>
+        <div class="w-cards">
+          <div class="w-card"><div class="h">Key points</div><div class="w-line mid"></div><div class="w-line short" style="margin-top:8px"></div></div>
+          <div class="w-card"><div class="h">Action items</div><div class="w-line"></div><div class="w-line mid" style="margin-top:8px"></div></div>
+        </div>
+      </div>`;
+    }
+    if (kind === "everywhere") {
+      return `<div class="widget">
+        <div class="w-title">Mac · iPhone · iPad</div>
+        <div class="w-devices">
+          <div class="dev mac"></div>
+          <div class="dev phone"></div>
+          <div class="dev pad"></div>
+        </div>
+      </div>`;
+    }
+    return "";
+  }
+
+  // Critically damped spring step (damping≈1, response in seconds)
+  function springIntegrate(state, target, response, dt) {
+    const damping = 1.0;
+    const omega = (2 * Math.PI) / Math.max(0.05, response);
+    const stiffness = omega * omega;
+    const damp = 2 * damping * omega;
+    const x = state.v;
+    const a = -stiffness * (state.p - target) - damp * state.v;
+    // semi-implicit Euler
+    state.v += a * dt;
+    state.p += state.v * dt;
+    return state;
+  }
+
+  function simulateTo(time) {
+    const dt = 1 / 120;
+    let w = { p: 180, v: 0 };
+    let h = { p: 34, v: 0 };
+    let wallA = { p: 1, v: 0 };
+    let captA = { p: 0, v: 0 };
+    let helloA = { p: 0, v: 0 };
+    let widgetA = { p: 0, v: 0 };
+
+    let wallFrom = "#000000";
+    let wallTo = "#000000";
+    let wallMix = 1;
+    let captionParts = null;
+    let tint = "#ffffff";
+    let widgetKind = null;
+    let showHello = false;
+
+    for (let t = 0; t <= time + 1e-9; t += dt) {
+      const idx = Math.min(scenes.length - 1, Math.floor(t / SCENE));
+      const local = t - idx * SCENE;
+      const scene = scenes[idx];
+      const prev = scenes[Math.max(0, idx - 1)];
+
+      // Targets
+      const openResp = scene.resting ? 0.55 : 0.42;
+      const closeSoft = scene.resting ? 0.55 : 0.38;
+      springIntegrate(w, scene.notch.w, scene.resting ? closeSoft : openResp, dt);
+      springIntegrate(h, scene.notch.h, scene.resting ? closeSoft : 0.48, dt);
+
+      // Wallpaper crossfade at scene start
+      if (local < dt) {
+        wallFrom = idx === 0 ? scene.wallpaper : prev.wallpaper;
+        wallTo = scene.wallpaper;
+        wallA.p = idx === 0 ? 1 : 0;
+        wallA.v = 0;
+      }
+      const wallTarget = 1;
+      if (reduced) {
+        wallMix = local < 0.2 ? local / 0.2 : 1;
+      } else {
+        springIntegrate(wallA, wallTarget, 0.35, dt);
+        wallMix = Math.min(1, Math.max(0, wallA.p));
+      }
+
+      showHello = !!scene.hello;
+      const captT = scene.caption && local >= 0.4 && local <= SCENE - 0.35 ? 1 : 0;
+      const helloT = scene.hello ? (local > 0.2 ? 1 : 0) : 0;
+      const widgetT = scene.widget ? (local > 0.25 ? 1 : 0) : 0;
+
+      if (reduced) {
+        helloA.p = helloT;
+        captA.p = captT;
+        widgetA.p = widgetT;
+      } else {
+        springIntegrate(helloA, helloT, 0.45, dt);
+        springIntegrate(captA, captT, 0.5, dt);
+        springIntegrate(widgetA, widgetT, 0.4, dt);
+      }
+
+      captionParts = scene.caption;
+      tint = scene.tint;
+      widgetKind = scene.widget;
+      wallTo = scene.wallpaper;
+      if (idx === 0) wallFrom = scene.wallpaper;
+    }
+
+    return {
+      notchW: Math.max(120, w.p),
+      notchH: Math.max(28, h.p),
+      wallFrom,
+      wallTo,
+      wallMix,
+      captionParts,
+      tint,
+      widgetKind,
+      widgetA: Math.min(1, Math.max(0, widgetA.p)),
+      captA: Math.min(1, Math.max(0, captA.p)),
+      helloA: Math.min(1, Math.max(0, helloA.p)),
+      showHello,
+    };
+  }
+
+  let currentWidget = null;
+
+  function paint(state) {
+    wallAel.style.background = state.wallFrom;
+    wallBel.style.background = state.wallTo;
+    wallBel.style.opacity = String(state.wallMix);
+
+    notch.style.width = `${state.notchW}px`;
+    notch.style.height = `${state.notchH}px`;
+
+    if (state.widgetKind !== currentWidget) {
+      currentWidget = state.widgetKind;
+      widgetHost.innerHTML = state.widgetKind ? widgetHTML(state.widgetKind) : "";
+    }
+    const widgetFade = state.notchH > 80 ? 1 : Math.max(0, (state.notchH - 40) / 40);
+    widgetHost.style.opacity = String(state.widgetA * widgetFade);
+
+    if (state.captionParts) {
+      const [a, b] = state.captionParts;
+      caption.innerHTML = `${escapeHtml(a)} <span class="tint">${escapeHtml(b)}</span>`;
+      caption.style.setProperty("--tint", state.tint);
+      caption.style.opacity = String(state.captA);
+      caption.style.top = state.notchH < 80 ? "46%" : "58%";
+      caption.style.fontSize = state.captionParts[1] && state.captionParts[1].length > 20 ? "44px" : "54px";
+    } else {
+      caption.style.opacity = "0";
+    }
+
+    hello.style.opacity = String(state.helloA);
+    const mb = document.getElementById("menubar");
+    mb.style.opacity = state.wallTo === "#000000" && state.notchH < 80 ? "0.35" : "0.95";
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+  }
+
+  let lastT = 0;
+  function seek(seconds) {
+    const t = Math.max(0, Math.min(DURATION, Number(seconds) || 0));
+    lastT = t;
+    const state = simulateTo(t);
+    paint(state);
+    tEl.textContent = t.toFixed(2);
+    return {
+      time: t,
+      duration: DURATION,
+      fps: FPS,
+      width: W,
+      height: H,
+      product: PRODUCT,
+      tagline: TAGLINE,
+      facts: FACTS,
+      scene: Math.min(scenes.length - 1, Math.floor(t / SCENE)),
+    };
+  }
+
+  // Preview loop
+  let playing = !new URLSearchParams(location.search).has("still");
+  let start = performance.now();
+  let offset = 0;
+
+  function frame(now) {
+    if (playing) {
+      const t = ((now - start) / 1000 + offset) % DURATION;
+      seek(t);
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  addEventListener("keydown", (e) => {
+    if (e.code === "Space") {
+      e.preventDefault();
+      if (playing) {
+        playing = false;
+        offset = lastT;
+      } else {
+        playing = true;
+        start = performance.now();
+      }
+    }
+  });
+
+  // Public API required by skill
+  window.seek = seek;
+  window.__FILM__ = {
+    duration: DURATION,
+    fps: FPS,
+    width: W,
+    height: H,
+    scenes: scenes.length,
+    product: PRODUCT,
+    tagline: TAGLINE,
+    facts: FACTS,
+  };
+
+  // initial
+  seek(0);
+})();
+</script>
+</body>
+</html>
