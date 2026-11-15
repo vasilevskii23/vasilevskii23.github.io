@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D план загородного дома</title>
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1c1914;
+      --muted: #6b6458;
+      --paper: #f3efe6;
+      --panel: rgba(28, 25, 20, 0.78);
+      --line: rgba(255, 248, 235, 0.14);
+      --accent: #2f6b4f;
+      --accent-2: #c46a2f;
+      --glow: rgba(243, 239, 230, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background:
+        radial-gradient(1200px 700px at 12% 0%, #3a4a3d 0%, transparent 55%),
+        radial-gradient(900px 600px at 100% 100%, #5a3a24 0%, transparent 50%),
+        linear-gradient(160deg, #1a221c 0%, #12151a 55%, #1c1713 100%);
+      color: var(--paper);
+      font-family: Manrope, sans-serif;
+    }
+
+    #canvas-wrap {
+      position: absolute;
+      inset: 0;
+    }
+
+    canvas { display: block; width: 100%; height: 100%; }
+
+    .hud {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .topbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 24px 0;
+      background: linear-gradient(180deg, rgba(10, 12, 14, 0.55), transparent);
+    }
+
+    .brand {
+      max-width: min(520px, 70vw);
+    }
+
+    .brand h1 {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(1.45rem, 2.4vw, 2.1rem);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
+    }
+
+    .brand p {
+      margin-top: 8px;
+      color: rgba(243, 239, 230, 0.72);
+      font-size: 0.92rem;
+      line-height: 1.45;
+      max-width: 42ch;
+    }
+
+    .panel {
+      pointer-events: auto;
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+      min-width: 180px;
+    }
+
+    .controls label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.82rem;
+      color: rgba(243, 239, 230, 0.88);
+    }
+
+    .controls input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+    }
+
+    .controls button,
+    .legend button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--paper);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .controls button:hover,
+    .legend button:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .controls button:active,
+    .legend button:active {
+      transform: translateY(1px);
+    }
+
+    .legend {
+      position: absolute;
+      left: 24px;
+      bottom: 24px;
+      width: min(340px, calc(100vw - 48px));
+      padding: 16px 16px 14px;
+      pointer-events: auto;
+    }
+
+    .legend h2 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .rooms {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .room-item {
+      display: grid;
+      grid-template-columns: 12px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      font-size: 0.84rem;
+    }
+
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+    }
+
+    .dim {
+      color: rgba(243, 239, 230, 0.55);
+      font-variant-numeric: tabular-nums;
+      font-size: 0.78rem;
+    }
+
+    .hint {
+      color: rgba(243, 239, 230, 0.55);
+      font-size: 0.75rem;
+      line-height: 1.4;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+
+    .views {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      position: absolute;
+      right: 24px;
+      bottom: 24px;
+      padding: 10px 14px;
+      font-size: 0.75rem;
+      color: rgba(243, 239, 230, 0.7);
+      pointer-events: none;
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px 14px 0;
+      }
+
+      .controls {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .legend {
+        left: 14px;
+        bottom: 14px;
+        width: calc(100vw - 28px);
+      }
+
+      .badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="canvas-wrap"></div>
+
+  <div class="hud">
+    <div class="topbar">
+      <div class="brand">
+        <h1>Загородный дом — 3D план</h1>
+        <p>Фрагмент по обмерному чертежу: стены, проёмы, печь и размеры комнат в метрах.</p>
+      </div>
+      <div class="panel controls">
+        <label>Крыша <input id="toggle-roof" type="checkbox" /></label>
+        <label>Подписи <input id="toggle-labels" type="checkbox" checked /></label>
+        <label>Размеры <input id="toggle-dims" type="checkbox" checked /></label>
+        <label>Мебель <input id="toggle-furniture" type="checkbox" checked /></label>
+        <button type="button" id="btn-reset">Сбросить камеру</button>
+      </div>
+    </div>
+
+    <div class="panel legend">
+      <h2>Помещения</h2>
+      <div class="views">
+        <button type="button" data-view="iso">Изометрия</button>
+        <button type="button" data-view="top">Сверху</button>
+        <button type="button" data-view="front">С фасада</button>
+        <button type="button" data-view="side">С торца</button>
+      </div>
+      <div class="rooms" id="room-list"></div>
+      <p class="hint">Тяните мышью для вращения · колесо — масштаб · ПКМ — панорама. Правая часть плана на исходном чертеже обрезана. <a href="floor-plan.jpg" target="_blank" rel="noopener" style="color:#c8e6d4">Исходный чертёж</a> · <a href="artdeco.html" style="color:#c8e6d4">Арт-деко 2026</a></p>
+    </div>
+
+    <div class="panel badge">Высота потолка 2,70 м · наружные стены 0,38 м</div>
+  </div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+    // ── Plan geometry (meters, interior clear spans from drawing) ─────────────
+    // Origin: SW corner of bottom-left room interior. X → east, Z → north, Y ↑
+    const H = 2.70;
+    const W_EXT = 0.38;
+    const W_INT = 0.12;
+
+    const rooms = [
+      {
+        id: 'bottom',
+        name: 'Комната 1',
+        color: '#8f6a45',
+        floor: '#b08968',
+        dims: '5,15 × 2,60',
+        shape: [
+          [0, 0], [5.15, 0], [5.15, 2.60], [0, 2.60],
+        ],
+      },
+      {
+        id: 'corridor',
+        name: 'Коридор',
+        color: '#6d7a6a',
+        floor: '#9aa894',
+        dims: '0,92 × 2,60',
+        shape: [
+          [5.15, 0], [6.07, 0], [6.07, 2.60], [5.15, 2.60],
+        ],
+      },
+      {
+        id: 'kitchen',
+        name: 'Кухня',
+        color: '#3f6d57',
+        floor: '#7fa892',
+        dims: '4,0 × 3,05',
+        // L-cutout 0.5 × 1.0 in SE corner
+        shape: [
+          [0, 2.60], [3.50, 2.60], [3.50, 3.60], [4.00, 3.60],
+          [4.00, 5.65], [0, 5.65],
+        ],
+      },
+      {
+        id: 'midRight',
+        name: 'Комната 2',
+        color: '#4a6280',
+        floor: '#8aa0b8',
+        dims: '2,50 × 3,0',
+        shape: [
+          [4.00, 2.60], [6.50, 2.60], [6.50, 5.60], [4.00, 5.60],
+        ],
+      },
+      {
+        id: 'top',
+        name: 'Комната 3',
+        color: '#7a4e3a',
+        floor: '#c49274',
+        dims: '5,05 × 3,0',
+        shape: [
+          [0, 5.65], [5.05, 5.65], [5.05, 8.65], [0, 8.65],
+        ],
+      },
+      {
+        id: 'topRight',
+        name: 'Фрагмент (обрез)',
+        color: '#5a5560',
+        floor: '#9a959e',
+        dims: '≈4,0+',
+        shape: [
+          [5.05, 5.65], [7.20, 5.65], [7.20, 8.65], [5.05, 8.65],
+        ],
+        partial: true,
+      },
+    ];
+
+    // Wall segments as [x1,z1,x2,z2], exterior vs interior
+    // Built from room edges + explicit openings
+    const openings = [
+      // windows: type, wall key reference used below
+      { type: 'window', x1: 0, z1: 0.55, x2: 0, z2: 1.75, sill: 0.9, height: 1.2 }, // bottom left wall
+      { type: 'window', x1: 1.4, z1: 0, x2: 2.8, z2: 0, sill: 0.9, height: 1.2 }, // bottom south
+      { type: 'window', x1: 0, z1: 3.2, x2: 0, z2: 4.5, sill: 0.9, height: 1.2 }, // kitchen west
+      { type: 'window', x1: 0, z1: 6.3, x2: 0, z2: 7.7, sill: 0.9, height: 1.2 }, // top west
+      { type: 'window', x1: 1.2, z1: 8.65, x2: 2.6, z2: 8.65, sill: 0.9, height: 1.2 }, // top north
+      { type: 'window', x1: 3.2, z1: 8.65, x2: 4.4, z2: 8.65, sill: 0.9, height: 1.2 },
+      // doors
+      { type: 'door', x1: 4.00, z1: 4.15, x2: 4.00, z2: 5.15, sill: 0, height: 2.1 }, // kitchen ↔ mid-right
+      { type: 'door', x1: 5.15, z1: 0.9, x2: 5.15, z2: 1.8, sill: 0, height: 2.1 }, // bottom ↔ corridor
+      { type: 'door', x1: 2.2, z1: 2.60, x2: 3.2, z2: 2.60, sill: 0, height: 2.1 }, // bottom ↔ kitchen
+      { type: 'door', x1: 1.8, z1: 5.65, x2: 2.9, z2: 5.65, sill: 0, height: 2.1 }, // kitchen ↔ top (beside stove)
+    ];
+
+    const wallThickness = (exterior) => (exterior ? W_EXT : W_INT);
+
+    // ── Scene setup ──────────────────────────────────────────────────────────
+    const wrap = document.getElementById('canvas-wrap');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x15181c, 0.018);
+
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    wrap.appendChild(renderer.domElement);
+
+    const labelRenderer = new CSS2DRenderer();
+    labelRenderer.domElement.style.position = 'absolute';
+    labelRenderer.domElement.style.inset = '0';
+    labelRenderer.domElement.style.pointerEvents = 'none';
+    wrap.appendChild(labelRenderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.maxPolarAngle = Math.PI * 0.49;
+    controls.minDistance = 4;
+    controls.maxDistance = 40;
+    controls.target.set(3.4, 0.6, 4.2);
+
+    // Lights
+    scene.add(new THREE.AmbientLight(0xfff2e0, 0.45));
+    const hemi = new THREE.HemisphereLight(0xdde8ff, 0x3a2a18, 0.55);
+    scene.add(hemi);
+    const sun = new THREE.DirectionalLight(0xffe6c8, 1.35);
+    sun.position.set(-8, 14, 6);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(2048, 2048);
+    sun.shadow.camera.near = 1;
+    sun.shadow.camera.far = 40;
+    sun.shadow.camera.left = -12;
+    sun.shadow.camera.right = 12;
+    sun.shadow.camera.top = 12;
+    sun.shadow.camera.bottom = -12;
+    scene.add(sun);
+    const fill = new THREE.DirectionalLight(0xb8d4ff, 0.35);
+    fill.position.set(10, 6, -4);
+    scene.add(fill);
+
+    // Ground
+    const ground = new THREE.Mesh(
+      new THREE.CircleGeometry(28, 64),
+      new THREE.MeshStandardMaterial({
+        color: 0x2a3328,
+        roughness: 0.95,
+        metalness: 0.0,
+      })
+    );
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -0.02;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    const grid = new THREE.GridHelper(20, 20, 0x4a5a48, 0x303a32);
+    grid.position.y = 0.001;
+    for (const mat of [].concat(grid.material)) {
+      mat.transparent = true;
+      mat.opacity = 0.35;
+    }
+    scene.add(grid);
+
+    const house = new THREE.Group();
+    scene.add(house);
+
+    const labelGroup = new THREE.Group();
+    const dimGroup = new THREE.Group();
+    const furnitureGroup = new THREE.Group();
+    const roofGroup = new THREE.Group();
+    house.add(labelGroup, dimGroup, furnitureGroup, roofGroup);
+
+    function shapeFromPoints(pts) {
+      const shape = new THREE.Shape();
+      shape.moveTo(pts[0][0], pts[0][1]);
+      for (let i = 1; i < pts.length; i++) shape.lineTo(pts[i][0], pts[i][1]);
+      shape.closePath();
+      return shape;
+    }
+
+    function centroid(pts) {
+      let x = 0, z = 0;
+      for (const p of pts) { x += p[0]; z += p[1]; }
+      return [x / pts.length, z / pts.length];
+    }
+
+    function makeFloor(room) {
+      const shape = shapeFromPoints(room.shape);
+      const geo = new THREE.ShapeGeometry(shape);
+      const mat = new THREE.MeshStandardMaterial({
+        color: new THREE.Color(room.floor),
+        roughness: 0.85,
+        metalness: 0.02,
+        transparent: !!room.partial,
+        opacity: room.partial ? 0.45 : 1,
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.rotation.x = -Math.PI / 2;
+      mesh.position.y = 0.01;
+      mesh.receiveShadow = true;
+      return mesh;
+    }
+
+    // Extrude walls along edges, skipping openings
+    function edgeKey(a, b) {
+      const r = (n) => Math.round(n * 100) / 100;
+      return `${r(a[0])},${r(a[1])}->${r(b[0])},${r(b[1])}`;
+    }
+
+    function pointOnSegment(px, pz, x1, z1, x2, z2, tol = 0.08) {
+      const dx = x2 - x1, dz = z2 - z1;
+      const len2 = dx * dx + dz * dz;
+      if (len2 < 1e-8) return false;
+      let t = ((px - x1) * dx + (pz - z1) * dz) / len2;
+      if (t < -0.02 || t > 1.02) return false;
+      const qx = x1 + t * dx, qz = z1 + t * dz;
+      return Math.hypot(px - qx, pz - qz) < tol;
+    }
+
+    function openingsOnEdge(x1, z1, x2, z2) {
+      return openings.filter((o) =>
+        pointOnSegment(o.x1, o.z1, x1, z1, x2, z2) &&
+        pointOnSegment(o.x2, o.z2, x1, z1, x2, z2)
+      );
+    }
+
+    function isExteriorEdge(x1, z1, x2, z2) {
+      // Rough exterior: left x=0, bottom z=0, top z=8.65, and right outer extents
+      const midX = (x1 + x2) / 2;
+      const midZ = (z1 + z2) / 2;
+      if (Math.abs(midX) < 0.05) return true;
+      if (Math.abs(midZ) < 0.05) return true;
+      if (Math.abs(midZ - 8.65) < 0.05) return true;
+      if (midX > 6.4 && Math.abs(x1 - x2) < 0.05) return true;
+      if (midX > 7.0) return true;
+      return false;
+    }
+
+    function addWallSegment(x1, z1, x2, z2, exterior) {
+      const dx = x2 - x1, dz = z2 - z1;
+      const len = Math.hypot(dx, dz);
+      if (len < 0.05) return;
+
+      const opens = openingsOnEdge(x1, z1, x2, z2);
+      const thick = wallThickness(exterior);
+      const angle = Math.atan2(dz, dx);
+
+      // Parameterize openings along edge
+      const parts = [];
+      const params = opens.map((o) => {
+        const t1 = ((o.x1 - x1) * dx + (o.z1 - z1) * dz) / (len * len);
+        const t2 = ((o.x2 - x1) * dx + (o.z2 - z1) * dz) / (len * len);
+        return {
+          t0: Math.min(t1, t2),
+          t1: Math.max(t1, t2),
+          sill: o.sill,
+          height: o.height,
+          type: o.type,
+        };
+      }).sort((a, b) => a.t0 - b.t0);
+
+      let cursor = 0;
+      for (const op of params) {
+        if (op.t0 > cursor + 0.01) parts.push({ t0: cursor, t1: op.t0, full: true });
+        parts.push({ t0: op.t0, t1: op.t1, full: false, sill: op.sill, height: op.height, type: op.type });
+        cursor = op.t1;
+      }
+      if (cursor < 1 - 0.01) parts.push({ t0: cursor, t1: 1, full: true });
+      if (!params.length) parts.push({ t0: 0, t1: 1, full: true });
+
+      const wallMat = new THREE.MeshStandardMaterial({
+        color: exterior ? 0xe7dfd0 : 0xf2ebe1,
+        roughness: 0.9,
+        metalness: 0.02,
+      });
+      const trimMat = new THREE.MeshStandardMaterial({
+        color: 0x5c4634,
+        roughness: 0.7,
+      });
+
+      for (const part of parts) {
+        const segLen = (part.t1 - part.t0) * len;
+        if (segLen < 0.04) continue;
+        const cx = x1 + ((part.t0 + part.t1) / 2) * dx;
+        const cz = z1 + ((part.t0 + part.t1) / 2) * dz;
+
+        if (part.full) {
+          const mesh = new THREE.Mesh(
+            new THREE.BoxGeometry(segLen, H, thick),
+            wallMat
+          );
+          mesh.position.set(cx, H / 2, cz);
+          mesh.rotation.y = -angle;
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+          house.add(mesh);
+        } else {
+          // below opening
+          if (part.sill > 0.05) {
+            const below = new THREE.Mesh(
+              new THREE.BoxGeometry(segLen, part.sill, thick),
+              wallMat
+            );
+            below.position.set(cx, part.sill / 2, cz);
+            below.rotation.y = -angle;
+            below.castShadow = true;
+            below.receiveShadow = true;
+            house.add(below);
+          }
+          // above opening
+          const topY = part.sill + part.height;
+          const aboveH = Math.max(0.05, H - topY);
+          const above = new THREE.Mesh(
+            new THREE.BoxGeometry(segLen, aboveH, thick),
+            wallMat
+          );
+          above.position.set(cx, topY + aboveH / 2, cz);
+          above.rotation.y = -angle;
+          above.castShadow = true;
+          above.receiveShadow = true;
+          house.add(above);
+
+          if (part.type === 'window') {
+            const glass = new THREE.Mesh(
+              new THREE.BoxGeometry(segLen * 0.92, part.height * 0.9, 0.04),
+              new THREE.MeshPhysicalMaterial({
+                color: 0xbdd8ef,
+                transmission: 0.7,
+                transparent: true,
+                opacity: 0.55,
+                roughness: 0.15,
+                thickness: 0.2,
+              })
+            );
+            glass.position.set(cx, part.sill + part.height / 2, cz);
+            glass.rotation.y = -angle;
+            house.add(glass);
+
+            const frame = new THREE.Mesh(
+              new THREE.BoxGeometry(segLen, part.height, thick * 0.55),
+              trimMat
+            );
+            frame.position.set(cx, part.sill + part.height / 2, cz);
+            frame.rotation.y = -angle;
+            house.add(frame);
+          }
+
+          if (part.type === 'door') {
+            const door = new THREE.Mesh(
+              new THREE.BoxGeometry(segLen * 0.92, part.height * 0.96, 0.05),
+              new THREE.MeshStandardMaterial({ color: 0x6b4a32, roughness: 0.65 })
+            );
+            // ajar
+            const nx = -Math.sin(angle);
+            const nz = Math.cos(angle);
+            door.position.set(cx + nx * 0.35, part.height / 2, cz + nz * 0.35);
+            door.rotation.y = -angle + 0.7;
+            door.castShadow = true;
+            house.add(door);
+          }
+        }
+      }
+    }
+
+    // Collect unique wall edges from room polygons
+    const edgeSet = new Map();
+    function addEdge(a, b) {
+      const k1 = edgeKey(a, b);
+      const k2 = edgeKey(b, a);
+      if (edgeSet.has(k2)) {
+        edgeSet.get(k2).shared = true;
+        return;
+      }
+      if (!edgeSet.has(k1)) {
+        edgeSet.set(k1, { a, b, shared: false });
+      }
+    }
+
+    for (const room of rooms) {
+      if (room.partial) continue; // skip incomplete outer fragment walls except shared
+      const pts = room.shape;
+      for (let i = 0; i < pts.length; i++) {
+        addEdge(pts[i], pts[(i + 1) % pts.length]);
+      }
+    }
+    // Explicit outer edges for top-right partial north/east cut
+    addEdge([5.05, 8.65], [7.20, 8.65]);
+    addEdge([7.20, 5.65], [7.20, 8.65]);
+    addEdge([6.50, 2.60], [6.50, 5.60]);
+    addEdge([6.07, 0], [6.07, 2.60]);
+    addEdge([5.15, 0], [6.07, 0]);
+    // kitchen/mid-right shared + jog
+    addEdge([3.50, 2.60], [3.50, 3.60]);
+    addEdge([3.50, 3.60], [4.00, 3.60]);
+    // mid-right south along corridor/kitchen interface already from shapes
+    addEdge([4.00, 2.60], [5.15, 2.60]);
+    addEdge([5.15, 2.60], [6.07, 2.60]);
+    addEdge([6.07, 2.60], [6.50, 2.60]);
+
+    for (const { a, b, shared } of edgeSet.values()) {
+      const exterior = !shared && isExteriorEdge(a[0], a[1], b[0], b[1]);
+      addWallSegment(a[0], a[1], b[0], b[1], exterior || !shared && (
+        Math.abs(a[0]) < 0.05 && Math.abs(b[0]) < 0.05 ||
+        Math.abs(a[1]) < 0.05 && Math.abs(b[1]) < 0.05 ||
+        Math.abs(a[1] - 8.65) < 0.05 && Math.abs(b[1] - 8.65) < 0.05
+      ));
+    }
+
+    // Floors
+    for (const room of rooms) {
+      house.add(makeFloor(room));
+    }
+
+    // Stove / печь on wall between kitchen and top room (~x=2.5)
+    function addStove() {
+      const base = new THREE.Mesh(
+        new THREE.BoxGeometry(1.1, 1.55, 0.75),
+        new THREE.MeshStandardMaterial({ color: 0x8a8f96, roughness: 0.75 })
+      );
+      base.position.set(2.55, 0.775, 5.65);
+      base.castShadow = true;
+      furnitureGroup.add(base);
+
+      const top = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.22, 0.26, 1.2, 20),
+        new THREE.MeshStandardMaterial({ color: 0x4a4e54, metalness: 0.4, roughness: 0.45 })
+      );
+      top.position.set(2.55, 2.0, 5.65);
+      top.castShadow = true;
+      furnitureGroup.add(top);
+
+      const glow = new THREE.PointLight(0xff7a3a, 0.55, 5, 2);
+      glow.position.set(2.55, 0.9, 5.2);
+      furnitureGroup.add(glow);
+    }
+    addStove();
+
+    // Simple furniture hints
+    function boxAt(x, y, z, w, h, d, color) {
+      const m = new THREE.Mesh(
+        new THREE.BoxGeometry(w, h, d),
+        new THREE.MeshStandardMaterial({ color, roughness: 0.7 })
+      );
+      m.position.set(x, y, z);
+      m.castShadow = true;
+      furnitureGroup.add(m);
+    }
+    // Bottom room table + chairs vibe
+    boxAt(2.4, 0.38, 1.25, 1.4, 0.76, 0.8, 0x6b4e34);
+    // Kitchen counter
+    boxAt(0.55, 0.45, 4.1, 0.6, 0.9, 2.2, 0x5c6d62);
+    // Mid-right bed/wardrobe block
+    boxAt(5.35, 0.35, 4.1, 1.8, 0.7, 1.1, 0x3d4f66);
+    // Top room sofa
+    boxAt(2.4, 0.35, 7.4, 2.2, 0.7, 0.9, 0x7a5544);
+
+    // Roof (toggleable)
+    function buildRoof() {
+      const footprint = [
+        [-W_EXT, -W_EXT],
+        [6.50 + W_EXT, -W_EXT],
+        [6.50 + W_EXT, 5.60],
+        [7.20 + W_EXT, 5.60],
+        [7.20 + W_EXT, 8.65 + W_EXT],
+        [-W_EXT, 8.65 + W_EXT],
+      ];
+      // Simple gable along X using two planes over bounding box for clarity
+      const minX = -W_EXT, maxX = 7.20 + W_EXT;
+      const minZ = -W_EXT, maxZ = 8.65 + W_EXT;
+      const midZ = (minZ + maxZ) / 2;
+      const ridgeY = H + 1.55;
+      const eaveY = H + 0.08;
+
+      const roofMat = new THREE.MeshStandardMaterial({
+        color: 0x6a3a28,
+        roughness: 0.85,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.92,
+      });
+
+      const makeSlope = (zA, yA, zB, yB) => {
+        const geo = new THREE.BufferGeometry();
+        const vertices = new Float32Array([
+          minX, yA, zA,
+          maxX, yA, zA,
+          maxX, yB, zB,
+          minX, yA, zA,
+          maxX, yB, zB,
+          minX, yB, zB,
+        ]);
+        geo.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        geo.computeVertexNormals();
+        const mesh = new THREE.Mesh(geo, roofMat);
+        mesh.castShadow = true;
+        roofGroup.add(mesh);
+      };
+      makeSlope(minZ, eaveY, midZ, ridgeY);
+      makeSlope(maxZ, eaveY, midZ, ridgeY);
+
+      // Gable ends
+      const gableMat = new THREE.MeshStandardMaterial({ color: 0xe7dfd0, roughness: 0.9, side: THREE.DoubleSide });
+      for (const x of [minX, maxX]) {
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+          x, eaveY, minZ,
+          x, eaveY, maxZ,
+          x, ridgeY, midZ,
+        ]), 3));
+        geo.computeVertexNormals();
+        roofGroup.add(new THREE.Mesh(geo, gableMat));
+      }
+    }
+    buildRoof();
+    roofGroup.visible = false;
+
+    // Labels
+    function addLabel(text, x, y, z, className = 'room-label') {
+      const el = document.createElement('div');
+      el.className = className;
+      el.textContent = text;
+      el.style.cssText = `
+        font-family: Manrope, sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        color: #1c1914;
+        background: rgba(243,239,230,0.88);
+        border: 1px solid rgba(28,25,20,0.12);
+        padding: 4px 8px;
+        border-radius: 8px;
+        white-space: nowrap;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+        transform: translate(-50%, -50%);
+      `;
+      const obj = new CSS2DObject(el);
+      obj.position.set(x, y, z);
+      labelGroup.add(obj);
+    }
+
+    for (const room of rooms) {
+      const [cx, cz] = centroid(room.shape);
+      addLabel(`${room.name}\n${room.dims}`.replace('\n', ' · '), cx, 1.15, cz);
+    }
+
+    // Dimension lines (simple floating marks)
+    const dimMarks = [
+      { text: '5,15 м', x: 2.575, z: -0.45 },
+      { text: '0,92 м', x: 5.61, z: -0.45 },
+      { text: '2,60 м', x: -0.55, z: 1.3 },
+      { text: '4,0 м', x: 2.0, z: 2.95 },
+      { text: '3,05 м', x: -0.55, z: 4.1 },
+      { text: '2,50 м', x: 5.25, z: 2.95 },
+      { text: '5,05 м', x: 2.525, z: 8.95 },
+      { text: '3,0 м', x: -0.55, z: 7.15 },
+      { text: '0,5×1,0', x: 3.75, z: 3.1 },
+    ];
+    for (const d of dimMarks) {
+      const el = document.createElement('div');
+      el.textContent = d.text;
+      el.style.cssText = `
+        font-family: Manrope, sans-serif;
+        font-size: 11px;
+        font-weight: 600;
+        color: #f3efe6;
+        background: rgba(47,107,79,0.85);
+        padding: 3px 7px;
+        border-radius: 999px;
+        white-space: nowrap;
+        transform: translate(-50%, -50%);
+      `;
+      const obj = new CSS2DObject(el);
+      obj.position.set(d.x, 0.35, d.z);
+      dimGroup.add(obj);
+    }
+
+    // Room list UI
+    const list = document.getElementById('room-list');
+    for (const room of rooms) {
+      const row = document.createElement('div');
+      row.className = 'room-item';
+      row.innerHTML = `<span class="swatch" style="background:${room.color}"></span><span>${room.name}</span><span class="dim">${room.dims}</span>`;
+      list.appendChild(row);
+    }
+
+    // Camera presets with smooth tween
+    const viewTargets = {
+      iso: { pos: new THREE.Vector3(12, 10, 12), target: new THREE.Vector3(3.4, 0.5, 4.2) },
+      top: { pos: new THREE.Vector3(3.4, 18, 4.3), target: new THREE.Vector3(3.4, 0, 4.2) },
+      front: { pos: new THREE.Vector3(3.4, 3.2, -10), target: new THREE.Vector3(3.4, 1.2, 4) },
+      side: { pos: new THREE.Vector3(-10, 4, 4.2), target: new THREE.Vector3(3, 1.2, 4.2) },
+    };
+    let camAnim = null;
+
+    function setView(name) {
+      const v = viewTargets[name] || viewTargets.iso;
+      camAnim = {
+        fromPos: camera.position.clone(),
+        toPos: v.pos.clone(),
+        fromTarget: controls.target.clone(),
+        toTarget: v.target.clone(),
+        t0: performance.now(),
+        dur: 700,
+      };
+    }
+    camera.position.copy(viewTargets.iso.pos);
+    controls.target.copy(viewTargets.iso.target);
+    controls.update();
+
+    document.querySelectorAll('[data-view]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        setView(btn.dataset.view);
+      });
+    });
+    document.getElementById('btn-reset').addEventListener('click', (e) => {
+      e.preventDefault();
+      setView('iso');
+    });
+
+    document.getElementById('toggle-roof').addEventListener('change', (e) => {
+      roofGroup.visible = e.target.checked;
+    });
+    document.getElementById('toggle-labels').addEventListener('change', (e) => {
+      labelGroup.visible = e.target.checked;
+    });
+    document.getElementById('toggle-dims').addEventListener('change', (e) => {
+      dimGroup.visible = e.target.checked;
+    });
+    document.getElementById('toggle-furniture').addEventListener('change', (e) => {
+      furnitureGroup.visible = e.target.checked;
+    });
+
+    function resize() {
+      const w = wrap.clientWidth;
+      const h = wrap.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false);
+      labelRenderer.setSize(w, h);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function easeInOut(t) {
+      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    }
+
+    function animate(now) {
+      requestAnimationFrame(animate);
+      if (camAnim) {
+        const u = Math.min(1, (now - camAnim.t0) / camAnim.dur);
+        const e = easeInOut(u);
+        camera.position.lerpVectors(camAnim.fromPos, camAnim.toPos, e);
+        controls.target.lerpVectors(camAnim.fromTarget, camAnim.toTarget, e);
+        if (u >= 1) camAnim = null;
+      }
+      controls.update();
+      furnitureGroup.traverse((obj) => {
+        if (obj.isPointLight) obj.intensity = 0.45 + Math.sin(now * 0.004) * 0.12;
+      });
+      renderer.render(scene, camera);
+      labelRenderer.render(scene, camera);
+    }
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
