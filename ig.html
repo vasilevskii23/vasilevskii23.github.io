@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="IG Скачать"/>
+<meta name="theme-color" content="#0c0b12"/>
+<title>Скачать видео Instagram</title>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0c0b12;
+  --bg2: #13121c;
+  --bg3: #1a192a;
+  --border: #252338;
+  --text: #ede9ff;
+  --text2: #8b82a0;
+  --text3: #4d4860;
+  --accent: #7c5cbf;
+  --accent-light: #c9b8ff;
+  --green: #4ec96a;
+  --amber: #c89030;
+  --red: #e05555;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { min-height: 100%; }
+body {
+  font-family: Manrope, -apple-system, BlinkMacSystemFont, sans-serif;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(124,92,191,0.28), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(30,80,90,0.18), transparent 50%),
+    var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.45;
+}
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  padding: 28px 18px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  animation: rise 0.55s ease both;
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pulse-border {
+  0%, 100% { border-color: var(--border); }
+  50% { border-color: rgba(124,92,191,0.55); }
+}
+.brand {
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-light);
+  opacity: 0.85;
+}
+h1 {
+  font-size: clamp(28px, 8vw, 36px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--text);
+}
+.lead {
+  color: var(--text2);
+  font-size: 15px;
+  max-width: 34ch;
+}
+.panel {
+  background: rgba(19,18,28,0.92);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  animation: pulse-border 3.5s ease-in-out infinite;
+}
+.panel-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.row { display: flex; flex-direction: column; gap: 10px; }
+input[type="url"], input[type="text"] {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 14px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 16px;
+  outline: none;
+}
+input:focus { border-color: var(--accent); }
+.btn {
+  border: none;
+  border-radius: 12px;
+  padding: 15px 16px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.btn:active { transform: scale(0.98); opacity: 0.85; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-secondary {
+  background: var(--bg3);
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+.btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.status {
+  min-height: 1.2em;
+  font-size: 13px;
+  color: var(--text2);
+  margin-top: 10px;
+}
+.status.ok { color: var(--green); }
+.status.err { color: var(--red); }
+.status.warn { color: var(--amber); }
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.step {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 14px 14px 16px;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 12px;
+  align-items: start;
+  opacity: 0;
+  animation: rise 0.5s ease forwards;
+}
+.step:nth-child(1) { animation-delay: 0.08s; }
+.step:nth-child(2) { animation-delay: 0.16s; }
+.step:nth-child(3) { animation-delay: 0.24s; }
+.step:nth-child(4) { animation-delay: 0.32s; }
+.step:nth-child(5) { animation-delay: 0.40s; }
+.num {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: rgba(124,92,191,0.18);
+  color: var(--accent-light);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 800;
+}
+.step h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.step p { font-size: 13px; color: var(--text2); }
+code, .mono {
+  font-family: "Courier Prime", ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--accent-light);
+  background: rgba(124,92,191,0.12);
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+.section-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.note {
+  font-size: 12px;
+  color: var(--text3);
+  line-height: 1.5;
+}
+.home-tip {
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  color: var(--text2);
+  font-size: 13px;
+}
+a { color: var(--accent-light); }
+</style>
+</head>
+<body>
+  <div class="app">
+    <div class="brand">Команда · iPhone</div>
+    <h1>Скачать видео из Instagram</h1>
+    <p class="lead">Вставь ссылку на Reel, пост или IGTV — видео сохранится через загрузчик, а на iPhone можно повесить это в «Команды» и Share Sheet.</p>
+
+    <div class="panel">
+      <div class="panel-label">Ссылка Instagram</div>
+      <div class="row">
+        <input id="url" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://www.instagram.com/reel/…"/>
+        <button class="btn btn-primary" id="go" type="button">Скачать видео</button>
+        <div class="btn-row">
+          <button class="btn btn-secondary" id="paste" type="button">Вставить</button>
+          <button class="btn btn-secondary" id="copy" type="button">Копировать ссылку</button>
+        </div>
+      </div>
+      <div class="status" id="status">Публичные Reel / посты. Приватные не скачиваются.</div>
+    </div>
+
+    <div>
+      <div class="section-title">Команда для iPhone · автосохранение в Фото</div>
+      <p class="lead" style="margin: 6px 0 12px; font-size: 14px;">Один раз собери ярлык — дальше: Instagram → Поделиться → <span class="mono">IG Скачать</span>. Или Siri: «IG Скачать».</p>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <div>
+            <h3>Новая команда</h3>
+            <p>Открой приложение «Команды» → <span class="mono">+</span> → имя <span class="mono">IG Скачать</span>.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <div>
+            <h3>Меню «Поделиться»</h3>
+            <p>Кнопка <span class="mono">ⓘ</span> → «Показывать в меню Поделиться» → типы: URL и Текст.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <div>
+            <h3>«Получить содержимое URL»</h3>
+            <p>URL: <code>https://api.pulldl.com/api/shortcut/resolve</code><br/>
+            Ещё → Метод: <span class="mono">POST</span> → Тело: <span class="mono">JSON</span> → поле <span class="mono">url</span> = переменная <span class="mono">Содержимое команды</span>.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="num">4</div>
+          <div>
+            <h3>Достань ссылки на файлы</h3>
+            <p>«Получить значение словаря» → ключ <span class="mono">media_urls</span> из ответа предыдущего шага.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="num">5</div>
+          <div>
+            <h3>Скачай и сохрани</h3>
+            <p>«Повторить с каждым» по этому списку → внутри: «Получить содержимое URL» (элемент повтора) → «Сохранить в альбом Фото».</p>
+          </div>
+        </div>
+      </div>
+      <p class="note" style="margin-top:12px">Если API временно не отвечает — пользуйся формой выше: она откроет веб-загрузчик с твоей ссылкой. Запасной шаблон URL: <code>https://pulldl.com/?url=</code> + содержимое команды.</p>
+    </div>
+
+    <div class="home-tip">
+      <strong style="color:var(--text)">На экран «Домой»:</strong>
+      Safari → кнопка «Поделиться» → «На экран Домой» → назови «IG Скачать». Откроется эта страница как мини-приложение.
+    </div>
+
+    <p class="note">Скачивай только свои ролики или контент, на который у тебя есть право. Чужие видео защищены авторским правом — не выкладывай их как свои и не используй коммерчески без разрешения автора.</p>
+  </div>
+
+<script>
+(function () {
+  const input = document.getElementById('url');
+  const status = document.getElementById('status');
+  const IG = /instagram\.com\/(reel|p|tv|stories)\//i;
+
+  function setStatus(text, kind) {
+    status.textContent = text;
+    status.className = 'status' + (kind ? ' ' + kind : '');
+  }
+
+  function normalize(raw) {
+    let s = (raw || '').trim();
+    if (!s) return '';
+    const m = s.match(/https?:\/\/(?:www\.)?instagram\.com\/[^\s?]+/i);
+    if (m) s = m[0];
+    s = s.split('?')[0].replace(/\/+$/, '') + '/';
+    return s;
+  }
+
+  function download() {
+    const url = normalize(input.value);
+    if (!url) {
+      setStatus('Вставь ссылку на пост или Reel.', 'err');
+      input.focus();
+      return;
+    }
+    if (!IG.test(url) && !/instagram\.com\//i.test(url)) {
+      setStatus('Нужна ссылка именно на Instagram.', 'err');
+      return;
+    }
+    setStatus('Открываю загрузчик…', 'ok');
+    const target = 'https://pulldl.com/?url=' + encodeURIComponent(url);
+    window.location.href = target;
+  }
+
+  document.getElementById('go').addEventListener('click', download);
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') download();
+  });
+
+  document.getElementById('paste').addEventListener('click', async function () {
+    try {
+      const text = await navigator.clipboard.readText();
+      input.value = normalize(text) || text.trim();
+      setStatus('Ссылка вставлена из буфера.', 'ok');
+    } catch (e) {
+      setStatus('Разреши доступ к буферу или вставь вручную.', 'warn');
+      input.focus();
+    }
+  });
+
+  document.getElementById('copy').addEventListener('click', async function () {
+    const url = normalize(input.value);
+    if (!url) {
+      setStatus('Нечего копировать — сначала вставь ссылку.', 'err');
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setStatus('Ссылка скопирована.', 'ok');
+    } catch (e) {
+      setStatus('Не удалось скопировать.', 'err');
+    }
+  });
+
+  // Prefill from ?url=
+  const params = new URLSearchParams(location.search);
+  if (params.get('url')) {
+    input.value = normalize(params.get('url'));
+  }
+})();
+</script>
+</body>
+</html>
