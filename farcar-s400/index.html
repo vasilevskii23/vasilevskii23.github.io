@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>FarCar S400 — Темы</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --accent: #c99436;
+  --accent2: #5a7846;
+  --fg: #e6dcbd;
+  --muted: rgba(230,220,190,.55);
+  --panel: rgba(8,10,8,.78);
+  --line: rgba(201,148,54,.45);
+  --danger: #c42a30;
+  --ok: #4ec96a;
+  --bg-url: url("assets/wallpapers/bg-pajero4.jpg");
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; background: #050505; color: var(--fg); font-family: Manrope, system-ui, sans-serif; overflow: hidden; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+.app {
+  width: 100vw; height: 100dvh; height: 100vh;
+  display: grid; place-items: center;
+  background: #000;
+}
+.stage {
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: min(100vh, calc(100vw * 9 / 16));
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.35) 30%, rgba(0,0,0,.7)),
+    var(--bg-url) center/cover no-repeat;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.06);
+}
+.stage::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 70%, transparent 20%, rgba(0,0,0,.55) 80%),
+    linear-gradient(90deg, rgba(0,0,0,.35), transparent 18%, transparent 82%, rgba(0,0,0,.35));
+  pointer-events: none;
+}
+.hud { position: relative; z-index: 2; width: 100%; height: 100%; display: grid; grid-template-rows: auto 1fr auto; padding: 1.4% 1.6% 1.2%; gap: 1.2%; }
+
+/* TOP */
+.top {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
+}
+.clock-block { display: flex; align-items: baseline; gap: 12px; }
+.clock { font-family: Oswald, sans-serif; font-size: clamp(28px, 4.2vh, 42px); font-weight: 700; letter-spacing: .04em; }
+.date { color: var(--accent); font-size: clamp(12px, 1.6vh, 16px); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.brand {
+  justify-self: center; text-align: center;
+}
+.brand-title { font-family: Oswald, sans-serif; font-size: clamp(20px, 3vh, 32px); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; text-shadow: 0 0 24px color-mix(in srgb, var(--accent) 50%, transparent); }
+.brand-sub { font-size: 11px; letter-spacing: .22em; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+.status { justify-self: end; display: flex; gap: 10px; align-items: center; }
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 10px; border-radius: 999px;
+  background: var(--panel); border: 1px solid var(--line);
+  font-size: 12px; font-weight: 600; color: var(--muted);
+}
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+.dot.warn { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+/* MID */
+.mid {
+  display: grid; grid-template-columns: 24% 1fr 24%; gap: 1.4%; min-height: 0;
+}
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  backdrop-filter: blur(10px);
+  padding: 12px;
+  display: flex; flex-direction: column; min-height: 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+}
+.panel-head {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+}
+.panel-head h2 { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.cycle-btn {
+  width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--line);
+  display: grid; place-items: center; color: var(--fg); opacity: .85;
+}
+.cycle-btn:active { opacity: 1; background: color-mix(in srgb, var(--accent) 20%, transparent); }
+.panel-body { flex: 1; display: grid; place-items: center; min-height: 0; position: relative; }
+
+/* SPEED */
+.gauge { width: min(100%, 220px); aspect-ratio: 1; position: relative; }
+.gauge svg { width: 100%; height: 100%; transform: rotate(-120deg); }
+.gauge-center {
+  position: absolute; inset: 22%;
+  display: grid; place-items: center; text-align: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 30%, rgba(255,255,255,.06), transparent 55%), rgba(0,0,0,.35);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.speed-val { font-family: Oswald, sans-serif; font-size: clamp(36px, 5.5vh, 56px); font-weight: 700; line-height: 1; }
+.speed-unit { font-size: 12px; letter-spacing: .14em; color: var(--accent); margin-top: 2px; }
+.speed-bar {
+  width: 100%; height: 6px; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden; margin-top: 10px;
+}
+.speed-bar > i { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent2), var(--accent)); transition: width .25s ease; }
+
+/* COMPASS / SHORTCUTS */
+.compass {
+  width: min(100%, 180px); aspect-ratio: 1; border-radius: 50%;
+  border: 2px solid var(--line);
+  display: grid; place-items: center; position: relative;
+  background: radial-gradient(circle, rgba(255,255,255,.04), transparent 60%);
+}
+.compass-needle {
+  width: 4px; height: 42%; border-radius: 4px;
+  background: linear-gradient(180deg, var(--danger), var(--fg));
+  transform-origin: 50% 80%;
+  transition: transform .4s ease;
+}
+.compass-n { position: absolute; top: 8px; font-size: 12px; font-weight: 700; color: var(--accent); }
+.shortcuts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+.shortcuts button, .apps-row button, .dock button {
+  border: 1px solid var(--line);
+  background: rgba(0,0,0,.35);
+  border-radius: 14px;
+  padding: 12px 8px;
+  font-weight: 700; letter-spacing: .06em; text-transform: uppercase; font-size: 12px;
+  transition: transform .12s ease, background .15s ease, border-color .15s;
+}
+.shortcuts button:active, .apps-row button:active, .dock button:active { transform: scale(.96); }
+.shortcuts button:hover, .apps-row button:hover, .dock button:hover {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: var(--accent);
+}
+
+/* CENTER ROAD */
+.center {
+  position: relative; border-radius: 18px; overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  background: rgba(0,0,0,.28);
+  display: grid; grid-template-rows: auto 1fr auto;
+}
+.nav-hint {
+  margin: 10px; padding: 10px 14px; border-radius: 12px;
+  background: rgba(0,0,0,.55); border: 1px solid var(--line);
+  display: flex; gap: 12px; align-items: center;
+}
+.nav-arrow {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: grid; place-items: center;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--accent); font-size: 22px; font-weight: 700;
+}
+.nav-text strong { display: block; font-size: 15px; }
+.nav-text span { color: var(--muted); font-size: 12px; }
+.road {
+  position: relative; overflow: hidden; margin: 0 18px;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, transparent, rgba(0,0,0,.45)),
+    linear-gradient(90deg, transparent 38%, rgba(40,40,45,.85) 38%, rgba(40,40,45,.85) 62%, transparent 62%);
+}
+.road-lines {
+  position: absolute; left: 50%; top: -40%; width: 10px; height: 180%;
+  transform: translateX(-50%);
+  background: repeating-linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 70%, white) 0 22px,
+    transparent 22px 48px
+  );
+  opacity: .55;
+  animation: none;
+}
+.road.driving .road-lines { animation: roadMove .55s linear infinite; }
+@keyframes roadMove { from { transform: translate(-50%, 0); } to { transform: translate(-50%, 48px); } }
+.car {
+  position: absolute; left: 50%; bottom: 8%;
+  width: min(46%, 280px); transform: translateX(-50%);
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,.65));
+  transition: filter .3s ease;
+}
+.car.lit { filter: drop-shadow(0 0 16px color-mix(in srgb, var(--accent) 55%, transparent)) drop-shadow(0 10px 18px rgba(0,0,0,.65)); }
+.center-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px;
+}
+.stat {
+  background: rgba(0,0,0,.45); border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  border-radius: 12px; padding: 8px 10px; text-align: center;
+}
+.stat b { display: block; font-family: Oswald, sans-serif; font-size: 18px; }
+.stat span { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+
+/* RIGHT PANEL */
+.music-art {
+  width: min(78%, 170px); aspect-ratio: 1; border-radius: 16px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 30% 25%, color-mix(in srgb, var(--accent) 55%, transparent), transparent 50%),
+    linear-gradient(145deg, rgba(255,255,255,.08), rgba(0,0,0,.4));
+  display: grid; place-items: center; font-size: 42px; margin-bottom: 10px;
+  animation: none;
+}
+.music-art.pulse { animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+.track-title { font-family: Oswald, sans-serif; font-size: 22px; text-align: center; }
+.track-artist { color: var(--muted); font-size: 13px; text-align: center; margin-top: 4px; }
+.progress {
+  width: 90%; height: 4px; border-radius: 99px; background: rgba(255,255,255,.1); margin: 12px auto;
+  overflow: hidden;
+}
+.progress > i { display: block; height: 100%; width: 35%; background: var(--accent); }
+.transport { display: flex; gap: 10px; justify-content: center; margin-top: 6px; }
+.transport button {
+  width: 48px; height: 48px; border-radius: 50%;
+  border: 1px solid var(--line); background: rgba(0,0,0,.4);
+  font-size: 18px;
+}
+.transport button.primary {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+  border-color: var(--accent);
+}
+.analog {
+  width: min(85%, 190px); aspect-ratio: 1; border-radius: 50%;
+  border: 3px solid var(--line); position: relative;
+  background: radial-gradient(circle at 40% 30%, rgba(255,255,255,.08), rgba(0,0,0,.4));
+}
+.hand { position: absolute; left: 50%; bottom: 50%; transform-origin: 50% 100%; background: var(--fg); border-radius: 4px; }
+.hand.hour { width: 4px; height: 26%; margin-left: -2px; }
+.hand.minute { width: 3px; height: 36%; margin-left: -1.5px; background: var(--accent); }
+.hand.second { width: 2px; height: 40%; margin-left: -1px; background: var(--danger); }
+.analog-cap { position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px; border-radius: 50%; background: var(--accent); }
+
+/* BOTTOM */
+.bottom {
+  display: grid; grid-template-columns: 1.1fr .9fr; gap: 1.2%;
+}
+.dock {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;
+}
+.dock button { min-height: 58px; }
+.tools {
+  display: grid; grid-template-columns: 1.2fr .8fr .8fr auto; gap: 8px; align-items: center;
+}
+.slider-wrap {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px;
+}
+.slider-wrap label { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.theme-select, .drive-btn, .fs-btn {
+  height: 100%; min-height: 58px; border-radius: 14px; border: 1px solid var(--line);
+  background: var(--panel); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; font-size: 12px; padding: 0 12px;
+}
+.theme-select { appearance: none; color: var(--fg); }
+.drive-btn.on { background: color-mix(in srgb, var(--accent) 25%, transparent); border-color: var(--accent); color: var(--fg); }
+.toast {
+  position: absolute; left: 50%; bottom: 12%; transform: translateX(-50%) translateY(20px);
+  background: rgba(0,0,0,.85); border: 1px solid var(--line); color: var(--fg);
+  padding: 10px 16px; border-radius: 12px; opacity: 0; pointer-events: none;
+  transition: .25s ease; z-index: 20; font-size: 14px; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* GALLERY overlay */
+.gallery {
+  position: absolute; inset: 0; z-index: 30;
+  background: rgba(0,0,0,.88);
+  display: none; flex-direction: column; padding: 24px;
+  overflow: auto;
+}
+.gallery.open { display: flex; }
+.gallery h1 { font-family: Oswald, sans-serif; font-size: 34px; letter-spacing: .08em; margin-bottom: 6px; }
+.gallery p { color: var(--muted); max-width: 820px; margin-bottom: 18px; line-height: 1.5; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.card {
+  border: 1px solid rgba(255,255,255,.1); border-radius: 16px; overflow: hidden; background: #111; text-align: left;
+}
+.card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+.card .body { padding: 12px; }
+.card h3 { font-family: Oswald, sans-serif; letter-spacing: .08em; margin-bottom: 4px; }
+.card .body p { font-size: 12px; margin: 0 0 10px; }
+.card .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.card .actions a, .card .actions button {
+  padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,.15);
+  background: rgba(255,255,255,.06); font-size: 12px; font-weight: 700; text-decoration: none; color: inherit;
+}
+.close-gal {
+  align-self: flex-start; margin-bottom: 14px; padding: 10px 14px; border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.08); font-weight: 700;
+}
+.help {
+  margin-top: 18px; padding: 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.04); font-size: 13px; line-height: 1.55; color: #ccc;
+}
+.help code { color: #fff; background: rgba(255,255,255,.08); padding: 1px 6px; border-radius: 6px; }
+.dimmer { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; z-index: 15; }
+
+@media (max-width: 900px) {
+  .mid { grid-template-columns: 1fr; grid-template-rows: 180px 1fr 180px; }
+  .bottom { grid-template-columns: 1fr; }
+  .dock { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="stage" id="stage">
+    <div class="dimmer" id="dimmer"></div>
+    <div class="hud">
+      <header class="top">
+        <div class="clock-block">
+          <div class="clock" id="clock">--:--</div>
+          <div class="date" id="date">—</div>
+        </div>
+        <div class="brand">
+          <div class="brand-title" id="themeTitle">Pajero 4</div>
+          <div class="brand-sub">FarCar S400 · Dashboard</div>
+        </div>
+        <div class="status">
+          <div class="pill"><span class="dot" id="gpsDot"></span><span id="gpsLabel">GPS</span></div>
+          <div class="pill"><span class="dot warn"></span>BT</div>
+          <div class="pill" id="restPill">Отдых 0:00</div>
+        </div>
+      </header>
+
+      <main class="mid">
+        <section class="panel" id="leftPanel">
+          <div class="panel-head">
+            <h2 id="leftLabel">Спидометр</h2>
+            <button class="cycle-btn" id="leftCycle" title="Сменить виджет">↻</button>
+          </div>
+          <div class="panel-body" id="leftBody"></div>
+        </section>
+
+        <section class="center">
+          <div class="nav-hint">
+            <div class="nav-arrow" id="navArrow">↗</div>
+            <div class="nav-text">
+              <strong id="navMain">Через 400 м направо</strong>
+              <span id="navSub">Ленинский проспект · Яндекс.Навигатор</span>
+            </div>
+          </div>
+          <div class="road" id="road">
+            <div class="road-lines"></div>
+            <img class="car" id="carImg" alt="car" src="assets/cars/pajero4/car_stop.png"/>
+          </div>
+          <div class="center-stats">
+            <div class="stat"><b id="tripKm">12.4</b><span>км поездки</span></div>
+            <div class="stat"><b id="avgSpd">48</b><span>средняя</span></div>
+            <div class="stat"><b id="sats">11</b><span>спутники</span></div>
+          </div>
+        </section>
+
+        <section class="panel" id="rightPanel">
+          <div class="panel-head">
+            <h2 id="rightLabel">Музыка</h2>
+            <button class="cycle-btn" id="rightCycle" title="Сменить виджет">↻</button>
+          </div>
+          <div class="panel-body" id="rightBody"></div>
+        </section>
+      </main>
+
+      <footer class="bottom">
+        <div class="dock" id="dock"></div>
+        <div class="tools">
+          <div class="slider-wrap">
+            <label><span>Яркость</span><span id="brightVal">80%</span></label>
+            <input type="range" id="brightness" min="30" max="100" value="80"/>
+          </div>
+          <button class="drive-btn" id="driveBtn">Поездка</button>
+          <select class="theme-select" id="themeSelect" aria-label="Тема"></select>
+          <button class="fs-btn" id="galleryBtn">Пакеты</button>
+        </div>
+      </footer>
+    </div>
+    <div class="toast" id="toast"></div>
+
+    <div class="gallery" id="gallery">
+      <button class="close-gal" id="closeGal">← К дашборду</button>
+      <h1>Темы FarCar S400</h1>
+      <p>
+        Пять тёмных тем в духе популярных платных скинов CarWebGuru (Dashboard DX / Captain / Offroad / Alien):
+        мультивиджеты слева и справа, музыка, навигация, спидометр, дорога с машиной, ярлыки, яркость и таймер отдыха.
+        Открывайте дашборд на весь экран на магнитоле или ставьте обои / лого / машинку в CarWebGuru.
+      </p>
+      <div class="cards" id="cards"></div>
+      <div class="help">
+        <strong>Как поставить на FarCar S400</strong><br/>
+        1) Установите <code>CarWebGuru</code> с Play Market / RuStore / APK.<br/>
+        2) Скачайте ZIP-пакет темы → распакуйте на USB.<br/>
+        3) Скопируйте PNG из <code>CarWebGuru/cfg</code> в папку <code>/CarWebGuru/cfg</code> на магнитоле (путь смотрите в CWG → О программе → Папки).<br/>
+        4) Обои: в теме Tools → Background → выберите <code>wallpaper.jpg</code>.<br/>
+        5) Boot-лого: на USB положите <code>logo.bmp</code> + <code>bootanimation.zip</code> + <code>lsec6315update</code> (UIS7862) → вставьте USB → подтвердите обновление.<br/>
+        6) Либо откройте этот дашборд в Chrome на весь экран и назначьте браузер домашним приложением (код Homelauncher <code>8086</code>).
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const THEMES = {
+  pajero4: {
+    title: "Pajero 4",
+    tag: "OFFROAD",
+    accent: "#c99436",
+    accent2: "#5a7846",
+    fg: "#e6dcbd",
+    panel: "rgba(8,10,8,.78)",
+    line: "rgba(201,148,54,.45)",
+    wall: "assets/wallpapers/bg-pajero4.jpg",
+    carStop: "assets/cars/pajero4/car_stop.png",
+    carMove: "assets/cars/pajero4/car_move.png",
+    pack: "packs/pajero4-farcar-s400.zip",
+    preview: "assets/previews/pajero4/dashboard.jpg",
+    blurb: "Тёмный оффроуд-скин под Pajero IV: янтарь, грязь и ночная трасса.",
+  },
+  avengers: {
+    title: "Мстители",
+    tag: "HEROES",
+    accent: "#c42a30",
+    accent2: "#2850b4",
+    fg: "#dce4f0",
+    panel: "rgba(6,8,18,.8)",
+    line: "rgba(196,42,48,.5)",
+    wall: "assets/wallpapers/bg-avengers.jpg",
+    carStop: "assets/cars/avengers/car_stop.png",
+    carMove: "assets/cars/avengers/car_move.png",
+    pack: "packs/avengers-farcar-s400.zip",
+    preview: "assets/previews/avengers/dashboard.jpg",
+    blurb: "Героический тёмный дашборд: алый акцент, щит и ночной мегаполис.",
+  },
+  venom: {
+    title: "Веном",
+    tag: "SYMBIOTE",
+    accent: "#dce6eb",
+    accent2: "#28b4a0",
+    fg: "#ebf0f5",
+    panel: "rgba(4,4,6,.82)",
+    line: "rgba(220,230,235,.35)",
+    wall: "assets/wallpapers/bg-venom.jpg",
+    carStop: "assets/cars/venom/car_stop.png",
+    carMove: "assets/cars/venom/car_move.png",
+    pack: "packs/venom-farcar-s400.zip",
+    preview: "assets/previews/venom/dashboard.jpg",
+    blurb: "Симбиот: чёрный глянец, белые клыки света и бирюзовые всполохи.",
+  },
+  gangsterland: {
+    title: "Ганстерленд",
+    tag: "NOIR",
+    accent: "#d4af37",
+    accent2: "#961e28",
+    fg: "#f0e6c8",
+    panel: "rgba(8,6,4,.8)",
+    line: "rgba(212,175,55,.45)",
+    wall: "assets/wallpapers/bg-gangsterland.jpg",
+    carStop: "assets/cars/gangsterland/car_stop.png",
+    carMove: "assets/cars/gangsterland/car_move.png",
+    pack: "packs/gangsterland-farcar-s400.zip",
+    preview: "assets/previews/gangsterland/dashboard.jpg",
+    blurb: "Нуар и арт-деко: золото, дождь и ночной город гангстеров.",
+  },
+  "black-dragon": {
+    title: "Чёрный Дракон",
+    tag: "DRAGON",
+    accent: "#be1e28",
+    accent2: "#d4af37",
+    fg: "#f5e6d2",
+    panel: "rgba(6,4,4,.82)",
+    line: "rgba(190,30,40,.5)",
+    wall: "assets/wallpapers/bg-black-dragon.jpg",
+    carStop: "assets/cars/black-dragon/car_stop.png",
+    carMove: "assets/cars/black-dragon/car_move.png",
+    pack: "packs/black-dragon-farcar-s400.zip",
+    preview: "assets/previews/black-dragon/dashboard.jpg",
+    blurb: "Лак, багровый дракон и золотые искры — премиальный тёмный скин.",
+  },
+};
+
+const DOCK = [
+  { id: "nav", label: "Нави" },
+  { id: "radio", label: "Радио" },
+  { id: "music", label: "Музыка" },
+  { id: "bt", label: "BT" },
+  { id: "apps", label: "Проги" },
+  { id: "settings", label: "Настр" },
+];
+
+const TRACKS = [
+  { title: "Night Drive", artist: "Theme Pack" },
+  { title: "Black Highway", artist: "S400 Mix" },
+  { title: "Low Beam", artist: "Dashboard DX style" },
+  { title: "After Midnight", artist: "Gangster Radio" },
+];
+
+const state = {
+  theme: localStorage.getItem("s400-theme") || "pajero4",
+  leftMode: 0, // 0 speed 1 compass 2 shortcuts
+  rightMode: 0, // 0 music 1 clock 2 shortcuts
+  playing: false,
+  track: 0,
+  speed: 0,
+  heading: 20,
+  driving: false,
+  tripStart: Date.now(),
+  restSec: 0,
+};
+
+const leftModes = ["Спидометр", "Компас", "Ярлыки"];
+const rightModes = ["Музыка", "Часы", "Ярлыки"];
+
+function $(id) { return document.getElementById(id); }
+
+function applyTheme(key) {
+  const t = THEMES[key];
+  if (!t) return;
+  state.theme = key;
+  localStorage.setItem("s400-theme", key);
+  const root = document.documentElement;
+  root.style.setProperty("--accent", t.accent);
+  root.style.setProperty("--accent2", t.accent2);
+  root.style.setProperty("--fg", t.fg);
+  root.style.setProperty("--panel", t.panel);
+  root.style.setProperty("--line", t.line);
+  root.style.setProperty("--bg-url", `url("${t.wall}")`);
+  $("themeTitle").textContent = t.title;
+  $("themeSelect").value = key;
+  updateCar();
+  renderLeft();
+  renderRight();
+}
+
+function toast(msg) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove("show"), 1800);
+}
+
+function updateClock() {
+  const now = new Date();
+  $("clock").textContent = now.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+  const days = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
+  const months = ["ЯНВ","ФЕВ","МАР","АПР","МАЙ","ИЮН","ИЮЛ","АВГ","СЕН","ОКТ","НОЯ","ДЕК"];
+  $("date").textContent = `${days[now.getDay()]}  ·  ${now.getDate()} ${months[now.getMonth()]}`;
+  // analog hands if present
+  const hour = $("handHour"), minute = $("handMinute"), second = $("handSecond");
+  if (hour) {
+    const h = now.getHours() % 12;
+    const m = now.getMinutes();
+    const s = now.getSeconds();
+    hour.style.transform = `rotate(${h * 30 + m * 0.5}deg)`;
+    minute.style.transform = `rotate(${m * 6}deg)`;
+    second.style.transform = `rotate(${s * 6}deg)`;
+  }
+}
+
+function renderLeft() {
+  $("leftLabel").textContent = leftModes[state.leftMode];
+  const body = $("leftBody");
+  if (state.leftMode === 0) {
+    body.innerHTML = `
+      <div class="gauge">
+        <svg viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="8" stroke-dasharray="272" stroke-dashoffset="0"/>
+          <circle id="speedArc" cx="60" cy="60" r="52" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linecap="round" stroke-dasharray="272" stroke-dashoffset="272"/>
+        </svg>
+        <div class="gauge-center">
+          <div>
+            <div class="speed-val" id="speedVal">0</div>
+            <div class="speed-unit">км/ч</div>
+          </div>
+        </div>
+      </div>
+      <div class="speed-bar" style="width:90%"><i id="speedBar"></i></div>`;
+    updateSpeedUI();
+  } else if (state.leftMode === 1) {
+    body.innerHTML = `
+      <div class="compass">
+        <div class="compass-n">N</div>
+        <div class="compass-needle" id="needle"></div>
+      </div>
+      <div style="margin-top:10px;color:var(--muted);font-size:12px;letter-spacing:.12em">КУРС <b style="color:var(--fg)" id="headingVal">—</b></div>`;
+    updateCompass();
+  } else {
+    body.innerHTML = `<div class="shortcuts">
+      <button data-act="nav">Нави</button>
+      <button data-act="cam">Камера</button>
+      <button data-act="phone">Звонок</button>
+      <button data-act="obd">OBD</button>
+    </div>`;
+    body.querySelectorAll("button").forEach(b => b.onclick = () => toast(`Ярлык: ${b.textContent}`));
+  }
+}
+
+function renderRight() {
+  $("rightLabel").textContent = rightModes[state.rightMode];
+  const body = $("rightBody");
+  if (state.rightMode === 0) {
+    const tr = TRACKS[state.track];
+    body.innerHTML = `
+      <div>
+        <div class="music-art ${state.playing ? "pulse" : ""}" id="musicArt">♪</div>
+        <div class="track-title">${tr.title}</div>
+        <div class="track-artist">${tr.artist}</div>
+        <div class="progress"><i id="musicProg" style="width:${state.playing ? 55 : 35}%"></i></div>
+        <div class="transport">
+          <button id="prevBtn">⏮</button>
+          <button class="primary" id="playBtn">${state.playing ? "⏸" : "▶"}</button>
+          <button id="nextBtn">⏭</button>
+        </div>
+      </div>`;
+    $("prevBtn").onclick = () => { state.track = (state.track + TRACKS.length - 1) % TRACKS.length; renderRight(); toast(TRACKS[state.track].title); };
+    $("nextBtn").onclick = () => { state.track = (state.track + 1) % TRACKS.length; renderRight(); toast(TRACKS[state.track].title); };
+    $("playBtn").onclick = () => { state.playing = !state.playing; renderRight(); toast(state.playing ? "Play" : "Pause"); };
+  } else if (state.rightMode === 1) {
+    body.innerHTML = `
+      <div class="analog">
+        <div class="hand hour" id="handHour"></div>
+        <div class="hand minute" id="handMinute"></div>
+        <div class="hand second" id="handSecond"></div>
+        <div class="analog-cap"></div>
+      </div>`;
+    updateClock();
+  } else {
+    body.innerHTML = `<div class="shortcuts">
+      <button data-act="maps">Карты</button>
+      <button data-act="weather">Погода</button>
+      <button data-act="files">Файлы</button>
+      <button data-act="eq">EQ / DSP</button>
+    </div>`;
+    body.querySelectorAll("button").forEach(b => b.onclick = () => toast(`Ярлык: ${b.textContent}`));
+  }
+}
+
+function updateSpeedUI() {
+  const v = Math.round(state.speed);
+  const speedVal = $("speedVal");
+  const arc = $("speedArc");
+  const bar = $("speedBar");
+  if (!speedVal) return;
+  speedVal.textContent = String(v);
+  // 0..180 km/h mapped to ~272 dash (240deg of 360)
+  const max = 180;
+  const frac = Math.min(1, v / max);
+  const dash = 272;
+  arc.style.strokeDashoffset = String(dash * (1 - frac * 0.66));
+  bar.style.width = `${frac * 100}%`;
+  // overspeed tint
+  speedVal.style.color = v > 110 ? "var(--danger)" : "var(--fg)";
+}
+
+function updateCompass() {
+  const needle = $("needle");
+  const hv = $("headingVal");
+  if (needle) needle.style.transform = `rotate(${state.heading}deg)`;
+  if (hv) hv.textContent = `${Math.round(state.heading)}°`;
+}
+
+function updateCar() {
+  const t = THEMES[state.theme];
+  const img = $("carImg");
+  const road = $("road");
+  img.src = state.driving ? t.carMove : t.carStop;
+  img.classList.toggle("lit", state.driving);
+  road.classList.toggle("driving", state.driving);
+}
+
+function tickDrive() {
+  if (state.driving) {
+    state.speed += (Math.random() * 8 - 2);
+    state.speed = Math.max(35, Math.min(128, state.speed));
+    state.heading = (state.heading + (Math.random() * 4 - 2) + 360) % 360;
+    state.restSec += 1;
+    const tripMin = (Date.now() - state.tripStart) / 60000;
+    $("tripKm").textContent = (tripMin * 0.7).toFixed(1);
+    $("avgSpd").textContent = String(Math.round(48 + Math.random() * 6));
+    $("sats").textContent = String(9 + Math.floor(Math.random() * 5));
+    $("gpsDot").style.background = "var(--ok)";
+    $("gpsLabel").textContent = "GPS OK";
+  } else {
+    state.speed *= 0.85;
+    if (state.speed < 1) state.speed = 0;
+  }
+  const rs = state.restSec;
+  const mm = String(Math.floor(rs / 60)).padStart(1, "0");
+  const ss = String(rs % 60).padStart(2, "0");
+  $("restPill").textContent = `Отдых ${mm}:${ss}`;
+  if (rs > 0 && rs % 7200 === 0) toast("Пора отдохнуть — 2 часа за рулём");
+  updateSpeedUI();
+  updateCompass();
+  if (state.playing && $("musicProg")) {
+    const w = 20 + ((Date.now() / 100) % 70);
+    $("musicProg").style.width = `${w}%`;
+  }
+}
+
+function buildDock() {
+  const dock = $("dock");
+  dock.innerHTML = DOCK.map(d => `<button data-id="${d.id}">${d.label}</button>`).join("");
+  dock.querySelectorAll("button").forEach(b => {
+    b.onclick = () => toast(`${b.textContent}: назначьте действие в CarWebGuru / ярлык приложения`);
+  });
+}
+
+function buildThemeSelect() {
+  const sel = $("themeSelect");
+  sel.innerHTML = Object.entries(THEMES).map(([k, t]) => `<option value="${k}">${t.title}</option>`).join("");
+  sel.value = state.theme;
+  sel.onchange = () => applyTheme(sel.value);
+}
+
+function buildGallery() {
+  const cards = $("cards");
+  cards.innerHTML = Object.entries(THEMES).map(([k, t]) => `
+    <article class="card">
+      <img src="${t.preview}" alt="${t.title}" onerror="this.src='${t.wall}'"/>
+      <div class="body">
+        <h3>${t.title}</h3>
+        <p>${t.blurb}</p>
+        <div class="actions">
+          <button data-apply="${k}">Открыть</button>
+          <a href="${t.pack}" download>ZIP пакет</a>
+          <a href="${t.wall}" download>Обои</a>
+        </div>
+      </div>
+    </article>`).join("");
+  cards.querySelectorAll("[data-apply]").forEach(btn => {
+    btn.onclick = () => {
+      applyTheme(btn.dataset.apply);
+      $("gallery").classList.remove("open");
+      toast(`Тема: ${THEMES[btn.dataset.apply].title}`);
+    };
+  });
+}
+
+function wire() {
+  $("leftCycle").onclick = () => { state.leftMode = (state.leftMode + 1) % 3; renderLeft(); };
+  $("rightCycle").onclick = () => { state.rightMode = (state.rightMode + 1) % 3; renderRight(); };
+  $("driveBtn").onclick = () => {
+    state.driving = !state.driving;
+    $("driveBtn").classList.toggle("on", state.driving);
+    $("driveBtn").textContent = state.driving ? "В пути" : "Поездка";
+    if (state.driving && state.speed < 20) state.speed = 42;
+    updateCar();
+    toast(state.driving ? "Анимация дороги / фар" : "Стоянка");
+  };
+  $("brightness").oninput = (e) => {
+    const v = Number(e.target.value);
+    $("brightVal").textContent = `${v}%`;
+    $("dimmer").style.opacity = String((100 - v) / 100 * 0.7);
+  };
+  $("galleryBtn").onclick = () => $("gallery").classList.add("open");
+  $("closeGal").onclick = () => $("gallery").classList.remove("open");
+
+  // GPS if available
+  if (navigator.geolocation) {
+    navigator.geolocation.watchPosition((pos) => {
+      if (pos.coords.speed != null && pos.coords.speed >= 0) {
+        state.speed = pos.coords.speed * 3.6;
+        state.driving = state.speed > 3;
+        updateCar();
+      }
+      if (pos.coords.heading != null) state.heading = pos.coords.heading;
+      $("gpsDot").style.background = "var(--ok)";
+      $("gpsLabel").textContent = "GPS";
+    }, () => {
+      $("gpsLabel").textContent = "GPS demo";
+    }, { enableHighAccuracy: true, maximumAge: 1000 });
+  }
+
+  if (window.DeviceOrientationEvent) {
+    window.addEventListener("deviceorientation", (e) => {
+      if (e.alpha != null && !state.driving) state.heading = e.alpha;
+    });
+  }
+}
+
+buildDock();
+buildThemeSelect();
+buildGallery();
+wire();
+applyTheme(state.theme);
+renderLeft();
+renderRight();
+updateClock();
+setInterval(updateClock, 1000);
+setInterval(tickDrive, 1000);
+</script>
+</body>
+</html>
