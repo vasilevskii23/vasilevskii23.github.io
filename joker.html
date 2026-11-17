@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#1a0508"/>
+<title>По референсу — АКТЕРИЩЕ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Geist:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #120406;
+  --crimson: #b01028;
+  --crimson-hot: #e83248;
+  --ember: #ff6b4a;
+  --smoke: #c8c2bc;
+  --ink: #080203;
+  --text: #f4ebe6;
+  --muted: #a89490;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: Geist, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.45;
+  overflow-x: hidden;
+}
+
+.hero {
+  position: relative;
+  min-height: 100dvh;
+  min-height: 100vh;
+  display: grid;
+  align-items: end;
+  isolation: isolate;
+}
+.hero-visual {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+}
+.hero-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  transform: scale(1.04);
+  animation: drift 14s ease-in-out infinite alternate;
+}
+.hero-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(18,4,6,0.15) 0%, rgba(18,4,6,0.2) 42%, rgba(18,4,6,0.92) 78%, var(--bg) 100%),
+    linear-gradient(90deg, rgba(18,4,6,0.55) 0%, transparent 38%, transparent 62%, rgba(18,4,6,0.35) 100%),
+    radial-gradient(ellipse 70% 50% at 70% 20%, rgba(176,16,40,0.28), transparent 60%);
+}
+.shards {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.45;
+  background:
+    linear-gradient(125deg, transparent 40%, rgba(232,50,72,0.18) 41%, transparent 42%),
+    linear-gradient(155deg, transparent 58%, rgba(255,107,74,0.12) 59%, transparent 60%),
+    linear-gradient(95deg, transparent 72%, rgba(176,16,40,0.2) 73%, transparent 74%);
+  animation: shard-pulse 6s ease-in-out infinite;
+}
+.hero-copy {
+  width: min(720px, 100%);
+  padding: clamp(24px, 5vw, 48px);
+  padding-bottom: clamp(40px, 8vh, 72px);
+  animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.brand {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: clamp(28px, 7vw, 48px);
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  color: var(--text);
+  text-shadow: 0 2px 24px rgba(0,0,0,0.55);
+}
+.brand span {
+  display: block;
+  color: var(--crimson-hot);
+}
+h1 {
+  margin-top: 18px;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 700;
+  font-size: clamp(20px, 4.2vw, 28px);
+  letter-spacing: -0.02em;
+  max-width: 18ch;
+}
+.lead {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: clamp(14px, 2.8vw, 16px);
+  max-width: 32ch;
+}
+.cta-row {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.cta:active { transform: scale(0.98); }
+.cta-primary {
+  background: var(--crimson);
+  color: var(--text);
+}
+.cta-primary:hover { background: var(--crimson-hot); }
+.cta-ghost {
+  background: transparent;
+  color: var(--smoke);
+  border: 1px solid rgba(200,194,188,0.28);
+}
+.cta-ghost:hover { border-color: var(--smoke); color: var(--text); }
+
+.compare {
+  padding: clamp(48px, 10vh, 96px) clamp(20px, 5vw, 48px) 80px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.compare-head {
+  margin-bottom: 28px;
+  animation: rise 0.8s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.compare-head h2 {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: clamp(22px, 4vw, 32px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.compare-head p {
+  margin-top: 8px;
+  color: var(--muted);
+  max-width: 42ch;
+}
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(12px, 2vw, 20px);
+  align-items: stretch;
+}
+@media (max-width: 720px) {
+  .pair { grid-template-columns: 1fr; }
+}
+.shot {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--ink);
+  min-height: 280px;
+  animation: rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.shot:nth-child(2) { animation-delay: 0.12s; }
+.shot img {
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+.shot:hover img { transform: scale(1.03); }
+.shot-label {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  background: rgba(8,2,3,0.72);
+  color: var(--smoke);
+  backdrop-filter: blur(6px);
+}
+.shot.result .shot-label {
+  color: var(--ember);
+}
+.footer {
+  padding: 0 clamp(20px, 5vw, 48px) 48px;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 13px;
+}
+.footer a {
+  color: var(--crimson-hot);
+  text-decoration: none;
+}
+.footer a:hover { text-decoration: underline; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes drift {
+  from { transform: scale(1.04) translate3d(0, 0, 0); }
+  to { transform: scale(1.08) translate3d(-1.2%, -0.8%, 0); }
+}
+@keyframes shard-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.55; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+</style>
+</head>
+<body>
+  <section class="hero" aria-label="Портрет по референсу">
+    <div class="hero-visual">
+      <img src="assets/joker-portrait.jpg" alt="Портрет в стиле toonish crimson по референсу Джокера" width="1024" height="1365"/>
+    </div>
+    <div class="shards" aria-hidden="true"></div>
+    <div class="hero-copy">
+      <div class="brand">АКТЕРИЩЕ<span>по референсу</span></div>
+      <h1>Toonish crimson. Тот же кадр — другой мир.</h1>
+      <p class="lead">Селфи из машины пересобрано в геометричный crimson-портрет в духе референса.</p>
+      <div class="cta-row">
+        <a class="cta cta-primary" href="#compare">Сравнить кадры</a>
+        <a class="cta cta-ghost" href="index.html">К планировщику</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="compare" id="compare">
+    <div class="compare-head">
+      <h2>Было → стало</h2>
+      <p>Исходник и результат в одной плоскости: лицо, очки, борода — на месте, атмосфера — из референса.</p>
+    </div>
+    <div class="pair">
+      <figure class="shot">
+        <img src="assets/selfie.jpg" alt="Исходное селфи" width="1200" height="1600"/>
+        <figcaption class="shot-label">Исходник</figcaption>
+      </figure>
+      <figure class="shot result">
+        <img src="assets/joker-portrait.jpg" alt="Результат по референсу" width="1024" height="1365"/>
+        <figcaption class="shot-label">По референсу</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span>АКТЕРИЩЕ · toonish crimson study</span>
+    <a href="assets/joker-portrait.jpg" download>Скачать портрет</a>
+  </footer>
+</body>
+</html>
