@@ -1,0 +1,24 @@
+# Binary / large data — keep out of indexing and accidental @ context
+*.xlsx
+*.xls
+*.csv
+*.pdf
+*.zip
+*.tar
+*.gz
+*.mp4
+*.mov
+*.webm
+
+# Dependencies and build output
+node_modules/
+dist/
+build/
+.venv/
+__pycache__/
+*.pyc
+
+# Logs and caches
+*.log
+.cache/
+.DS_Store

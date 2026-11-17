@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "skills": {
+    "token-saver-cursor": {
+      "source": "otnc/skills_ai-agent-saving-tech",
+      "commit": "7849faab4cf917ce6312cc949946f1cb8fce18ae",
+      "sourceType": "github",
+      "skillPath": "skills/token-saver-cursor/SKILL.md",
+      "computedHash": "aee4ec13f8056f78afaf3630d870b1476c70f14c7a8f49529c96a30c7840c7d5"
+    }
+  }
+}
