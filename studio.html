@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Плёнка"/>
+<meta name="theme-color" content="#0c0b12"/>
+<meta name="description" content="Плёночные фильтры и ретро-эффекты для фото — прямо в браузере"/>
+<title>Плёнка — фильтры для фото</title>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0c0b12;
+  --bg2: #13121c;
+  --bg3: #1a192a;
+  --border: #252338;
+  --text: #ede9ff;
+  --text2: #8b82a0;
+  --text3: #4d4860;
+  --accent: #7c5cbf;
+  --accent-light: #c9b8ff;
+  --warm: #c89030;
+  --green: #4ec96a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: Manrope, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+}
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  height: 100vh;
+  max-width: 560px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* HEADER */
+.header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(19,18,28,0.92);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  z-index: 5;
+}
+.brand {
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent-light);
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.brand span {
+  display: block;
+  font-family: Manrope, sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-top: 3px;
+}
+.header-actions { display: flex; gap: 8px; }
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.btn:active { opacity: 0.75; transform: scale(0.97); }
+.btn:disabled { opacity: 0.35; cursor: default; transform: none; }
+.btn-ghost {
+  background: var(--bg3);
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+.btn-primary { background: var(--accent); color: #fff; }
+
+/* STAGE */
+.stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(124,92,191,0.16), transparent 55%),
+    #08070e;
+  overflow: hidden;
+}
+.dropzone {
+  position: absolute;
+  inset: 16px;
+  border: 1.5px dashed var(--border);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 24px;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: pointer;
+}
+.dropzone.drag {
+  border-color: var(--accent);
+  background: rgba(124,92,191,0.08);
+}
+.dropzone.hidden { display: none; }
+.drop-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  color: var(--accent-light);
+  animation: float 3.2s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.drop-title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.drop-sub { color: var(--text2); font-size: 13px; max-width: 28ch; line-height: 1.45; }
+.canvas-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+.canvas-wrap.hidden { display: none; }
+#preview {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 4px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+  background: #111;
+  animation: fadeIn 0.35s ease both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+.busy {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8,7,14,0.45);
+  z-index: 3;
+  pointer-events: none;
+}
+.busy.show { display: flex; }
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent-light);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* DOCK */
+.dock {
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 10px 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cats {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 0 14px;
+  scrollbar-width: none;
+}
+.cats::-webkit-scrollbar { display: none; }
+.cat {
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text3);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.cat.active {
+  color: var(--accent-light);
+  border-color: var(--accent);
+  background: rgba(124,92,191,0.15);
+}
+.filters {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 2px 14px 4px;
+  scrollbar-width: none;
+}
+.filters::-webkit-scrollbar { display: none; }
+.filter {
+  flex-shrink: 0;
+  width: 72px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  text-align: center;
+}
+.filter:disabled { opacity: 0.4; cursor: default; }
+.thumb {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: var(--bg3);
+  position: relative;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.filter.active .thumb {
+  border-color: var(--accent-light);
+  transform: translateY(-2px);
+}
+.thumb canvas,
+.thumb img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  pointer-events: none;
+}
+.filter-name {
+  margin-top: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+.filter.active .filter-name { color: var(--accent-light); }
+
+.controls {
+  padding: 0 16px;
+  display: grid;
+  gap: 8px;
+}
+.control-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.control-label {
+  width: 72px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.control-val {
+  width: 36px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text2);
+  font-variant-numeric: tabular-nums;
+}
+input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bg3);
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  cursor: pointer;
+  border: 2px solid var(--bg2);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+input[type="range"]:disabled { opacity: 0.35; }
+
+.hint {
+  padding: 0 16px;
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.4;
+}
+.hint a { color: var(--accent-light); text-decoration: none; }
+
+#fileInput, #videoInput { display: none; }
+
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: 210px;
+  transform: translateX(-50%) translateY(8px);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 20;
+  white-space: nowrap;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (min-width: 560px) {
+  .app {
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="brand">ПЛЁНКА<span>фильтры · фото · ретро</span></div>
+    <div class="header-actions">
+      <button class="btn btn-ghost" id="btnOpen" type="button">Фото</button>
+      <button class="btn btn-primary" id="btnSave" type="button" disabled>Сохранить</button>
+    </div>
+  </header>
+
+  <main class="stage" id="stage">
+    <div class="dropzone" id="dropzone">
+      <div class="drop-icon">◎</div>
+      <div class="drop-title">Загрузите фото</div>
+      <div class="drop-sub">Оригинальные плёночные пресеты в духе ретро-камер — всё обрабатывается локально в браузере</div>
+    </div>
+    <div class="canvas-wrap hidden" id="canvasWrap">
+      <canvas id="preview"></canvas>
+    </div>
+    <div class="busy" id="busy"><div class="spinner"></div></div>
+  </main>
+
+  <section class="dock">
+    <div class="cats" id="cats"></div>
+    <div class="filters" id="filters"></div>
+    <div class="controls">
+      <div class="control-row">
+        <div class="control-label">Сила</div>
+        <input type="range" id="intensity" min="0" max="100" value="100" disabled/>
+        <div class="control-val" id="intensityVal">100</div>
+      </div>
+      <div class="control-row">
+        <div class="control-label">Зерно</div>
+        <input type="range" id="grain" min="0" max="100" value="25" disabled/>
+        <div class="control-val" id="grainVal">25</div>
+      </div>
+    </div>
+    <p class="hint">Не копия Esti/Prequel — свои алгоритмы. <a href="index.html">← АКТЕРИЩЕ</a> · <a href="ig.html">IG скачать</a></p>
+  </section>
+
+  <div class="toast" id="toast"></div>
+  <input type="file" id="fileInput" accept="image/*"/>
+</div>
+
+<script>
+(() => {
+  const CATEGORIES = [
+    { id: "classic", label: "Classic" },
+    { id: "blurry", label: "Blurry" },
+    { id: "edgy", label: "Edgy" },
+    { id: "light", label: "Light" },
+  ];
+
+  const FILTERS = [
+    { id: "none", name: "Original", cat: "classic", tint: [128,128,128] },
+    { id: "velvet", name: "Velvet", cat: "classic", tint: [120,110,130] },
+    { id: "golden", name: "Golden", cat: "classic", tint: [210,160,80] },
+    { id: "brownie", name: "Brownie", cat: "classic", tint: [150,100,60] },
+    { id: "pola", name: "Pola", cat: "classic", tint: [200,180,150] },
+    { id: "muse", name: "Muse", cat: "blurry", tint: [180,160,190] },
+    { id: "field", name: "Field", cat: "blurry", tint: [140,150,100] },
+    { id: "softglow", name: "Glow", cat: "blurry", tint: [190,170,160] },
+    { id: "g7x", name: "G7X", cat: "edgy", tint: [90,110,130] },
+    { id: "flash", name: "Flash", cat: "edgy", tint: [200,200,210] },
+    { id: "vhs", name: "VHS", cat: "edgy", tint: [80,160,120] },
+    { id: "autumn", name: "Autumn", cat: "light", tint: [190,120,70] },
+    { id: "sunlit", name: "Sunlit", cat: "light", tint: [230,190,120] },
+    { id: "haze", name: "Haze", cat: "light", tint: [170,175,180] },
+  ];
+
+  const els = {
+    dropzone: document.getElementById("dropzone"),
+    canvasWrap: document.getElementById("canvasWrap"),
+    preview: document.getElementById("preview"),
+    busy: document.getElementById("busy"),
+    cats: document.getElementById("cats"),
+    filters: document.getElementById("filters"),
+    intensity: document.getElementById("intensity"),
+    intensityVal: document.getElementById("intensityVal"),
+    grain: document.getElementById("grain"),
+    grainVal: document.getElementById("grainVal"),
+    btnOpen: document.getElementById("btnOpen"),
+    btnSave: document.getElementById("btnSave"),
+    fileInput: document.getElementById("fileInput"),
+    toast: document.getElementById("toast"),
+    stage: document.getElementById("stage"),
+  };
+
+  const state = {
+    category: "classic",
+    filterId: "none",
+    intensity: 100,
+    grain: 25,
+    source: null,       // ImageBitmap | HTMLImageElement
+    sourceData: null,   // ImageData of downscaled working copy
+    workW: 0,
+    workH: 0,
+    thumbs: new Map(),
+    renderToken: 0,
+  };
+
+  const work = document.createElement("canvas");
+  const workCtx = work.getContext("2d", { willReadFrequently: true });
+  const thumbCanvas = document.createElement("canvas");
+  const thumbCtx = thumbCanvas.getContext("2d", { willReadFrequently: true });
+
+  function clamp(v, a = 0, b = 255) {
+    return v < a ? a : v > b ? b : v;
+  }
+
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+
+  function toast(msg) {
+    els.toast.textContent = msg;
+    els.toast.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => els.toast.classList.remove("show"), 1800);
+  }
+
+  function setBusy(on) {
+    els.busy.classList.toggle("show", on);
+  }
+
+  // ——— Filter kernels (original recipes) ———
+  function applyFilter(data, w, h, id, amount, grainAmt) {
+    const out = new Uint8ClampedArray(data);
+    const t = amount / 100;
+    const g = grainAmt / 100;
+
+    for (let i = 0; i < out.length; i += 4) {
+      let r = data[i], g0 = data[i + 1], b = data[i + 2];
+      let nr = r, ng = g0, nb = b;
+
+      const lum = 0.2126 * r + 0.7152 * g0 + 0.0722 * b;
+      const x = (i / 4) % w;
+      const y = Math.floor((i / 4) / w);
+
+      switch (id) {
+        case "velvet": {
+          // Soft contrast, lifted blacks, cool magenta shadows
+          const c = (lum - 128) * 0.72 + 128;
+          nr = c * 0.95 + r * 0.05 + 8;
+          ng = c * 0.92 + g0 * 0.08 + 4;
+          nb = c * 1.05 + b * 0.1 + 18;
+          break;
+        }
+        case "golden": {
+          nr = r * 1.12 + 18;
+          ng = g0 * 1.02 + 8;
+          nb = b * 0.78 - 6;
+          // soft highlight roll-off
+          if (lum > 180) {
+            const k = (lum - 180) / 75;
+            nr = lerp(nr, 245, k * 0.35);
+            ng = lerp(ng, 220, k * 0.3);
+          }
+          break;
+        }
+        case "brownie": {
+          nr = r * 0.95 + g0 * 0.15 + 20;
+          ng = r * 0.2 + g0 * 0.7 + 8;
+          nb = r * 0.08 + b * 0.55;
+          break;
+        }
+        case "pola": {
+          // Instant film: faded blacks, warm midtones, teal-ish shadow
+          nr = lerp(42, r, 0.88) + 12;
+          ng = lerp(38, g0, 0.85) + 6;
+          nb = lerp(48, b, 0.78);
+          nr = nr * 1.05 + 8;
+          ng = ng * 0.98;
+          nb = nb * 0.9 - 4;
+          break;
+        }
+        case "muse": {
+          nr = lerp(r, (r + 40 + g0 * 0.1), 0.55);
+          ng = lerp(g0, (g0 + 20 + b * 0.05), 0.5);
+          nb = lerp(b, (b + 35 + r * 0.08), 0.55);
+          // slight desat
+          const m = (nr + ng + nb) / 3;
+          nr = lerp(nr, m, 0.18);
+          ng = lerp(ng, m, 0.18);
+          nb = lerp(nb, m, 0.12);
+          break;
+        }
+        case "field": {
+          nr = r * 0.92 + 6;
+          ng = g0 * 1.08 + 10;
+          nb = b * 0.82 - 4;
+          // muted greens push
+          if (g0 > r && g0 > b) {
+            ng = ng * 1.06;
+            nr = nr * 0.96;
+          }
+          break;
+        }
+        case "softglow": {
+          // brighter soft look (glow approximated via lift + desat)
+          nr = lerp(r, 255, 0.12) + 10;
+          ng = lerp(g0, 255, 0.1) + 8;
+          nb = lerp(b, 255, 0.08) + 6;
+          const m2 = (nr + ng + nb) / 3;
+          nr = lerp(nr, m2, 0.22);
+          ng = lerp(ng, m2, 0.22);
+          nb = lerp(nb, m2, 0.18);
+          break;
+        }
+        case "g7x": {
+          // Cool compact-camera look, punchy midtones
+          nr = (r - 128) * 1.18 + 128 - 6;
+          ng = (g0 - 128) * 1.12 + 128;
+          nb = (b - 128) * 1.22 + 128 + 14;
+          break;
+        }
+        case "flash": {
+          // Harsh flash: lifted exposure, cool skin, clipped highlights
+          nr = r * 1.25 + 20;
+          ng = g0 * 1.18 + 14;
+          nb = b * 1.28 + 28;
+          break;
+        }
+        case "vhs": {
+          // Chromatic-ish shift via neighbor sample + green cast
+          const ox = Math.min(w - 1, x + 2);
+          const oi = (y * w + ox) * 4;
+          nr = data[oi] * 0.85 + r * 0.2;
+          ng = g0 * 1.15 + 10;
+          nb = b * 0.9 + data[Math.max(0, i - 8) + 2] * 0.2;
+          // scanline darken
+          if (y % 3 === 0) {
+            nr *= 0.82; ng *= 0.82; nb *= 0.82;
+          }
+          break;
+        }
+        case "autumn": {
+          nr = r * 1.1 + 22;
+          ng = g0 * 0.9 + 4;
+          nb = b * 0.65 - 10;
+          break;
+        }
+        case "sunlit": {
+          nr = r * 1.15 + 28;
+          ng = g0 * 1.08 + 18;
+          nb = b * 0.85 + 4;
+          // warm veil
+          nr = lerp(nr, 255, 0.08);
+          ng = lerp(ng, 230, 0.06);
+          break;
+        }
+        case "haze": {
+          nr = lerp(r, 200, 0.28) + 8;
+          ng = lerp(g0, 205, 0.28) + 8;
+          nb = lerp(b, 210, 0.3) + 10;
+          break;
+        }
+        default:
+          nr = r; ng = g0; nb = b;
+      }
+
+      // Mix with original by intensity
+      nr = lerp(r, nr, t);
+      ng = lerp(g0, ng, t);
+      nb = lerp(b, nb, t);
+
+      // Soft vignette for film look (except original)
+      if (id !== "none" && t > 0) {
+        const cx = (x / w) * 2 - 1;
+        const cy = (y / h) * 2 - 1;
+        const vig = Math.min(1, Math.sqrt(cx * cx + cy * cy) * 0.92);
+        const dark = 1 - vig * vig * 0.28 * t;
+        nr *= dark; ng *= dark; nb *= dark;
+      }
+
+      // Film grain
+      if (g > 0 && id !== "none") {
+        const noise = (Math.random() - 0.5) * 48 * g * t;
+        nr += noise; ng += noise; nb += noise;
+      }
+
+      out[i] = clamp(nr);
+      out[i + 1] = clamp(ng);
+      out[i + 2] = clamp(nb);
+    }
+
+    // Soft blur pass for blurry category filters (cheap box blur mix)
+    if ((id === "muse" || id === "softglow" || id === "haze") && t > 0.2) {
+      softBlurMix(out, data, w, h, 0.35 * t);
+    }
+
+    return out;
+  }
+
+  function softBlurMix(out, src, w, h, mix) {
+    const tmp = new Uint8ClampedArray(out);
+    for (let y = 1; y < h - 1; y++) {
+      for (let x = 1; x < w - 1; x++) {
+        const i = (y * w + x) * 4;
+        for (let c = 0; c < 3; c++) {
+          let s = 0;
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              s += tmp[((y + dy) * w + (x + dx)) * 4 + c];
+            }
+          }
+          out[i + c] = clamp(lerp(tmp[i + c], s / 9, mix));
+        }
+      }
+    }
+  }
+
+  function maxWorkSize(sw, sh, maxSide = 1400) {
+    const scale = Math.min(1, maxSide / Math.max(sw, sh));
+    return {
+      w: Math.max(1, Math.round(sw * scale)),
+      h: Math.max(1, Math.round(sh * scale)),
+    };
+  }
+
+  function loadImageElement(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.decoding = "async";
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        if (!img.naturalWidth) {
+          reject(new Error("empty image"));
+          return;
+        }
+        resolve(img);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error("decode failed"));
+      };
+      img.src = url;
+    });
+  }
+
+  async function loadImageFile(file) {
+    if (!file) return;
+    const type = file.type || "";
+    const name = (file.name || "").toLowerCase();
+    const looksImage = type.startsWith("image/") || /\.(jpe?g|png|webp|gif|bmp)$/.test(name);
+    if (!looksImage) {
+      toast("Нужен файл изображения");
+      return;
+    }
+    setBusy(true);
+    try {
+      const img = await loadImageElement(file);
+      state.source = img;
+      const { w, h } = maxWorkSize(img.naturalWidth, img.naturalHeight);
+      state.workW = w;
+      state.workH = h;
+      work.width = w;
+      work.height = h;
+      workCtx.clearRect(0, 0, w, h);
+      workCtx.drawImage(img, 0, 0, w, h);
+      state.sourceData = workCtx.getImageData(0, 0, w, h);
+
+      els.dropzone.classList.add("hidden");
+      els.canvasWrap.classList.remove("hidden");
+      els.btnSave.disabled = false;
+      els.intensity.disabled = false;
+      els.grain.disabled = false;
+
+      buildThumbs();
+      await renderMain();
+      toast("Фото загружено");
+    } catch (e) {
+      console.error(e);
+      toast("Не удалось открыть фото");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function buildThumbs() {
+    if (!state.sourceData) return;
+    const tw = 72;
+    const th = 72;
+
+    // Crop center square from source into thumb base
+    const sw = state.workW;
+    const sh = state.workH;
+    const side = Math.min(sw, sh);
+    const sx = Math.floor((sw - side) / 2);
+    const sy = Math.floor((sh - side) / 2);
+
+    const base = document.createElement("canvas");
+    base.width = tw;
+    base.height = th;
+    const bctx = base.getContext("2d", { willReadFrequently: true });
+    bctx.drawImage(work, sx, sy, side, side, 0, 0, tw, th);
+    const baseData = bctx.getImageData(0, 0, tw, th);
+
+    state.thumbs.clear();
+    for (const f of FILTERS) {
+      const filtered = applyFilter(baseData.data, tw, th, f.id, 100, 18);
+      const img = new ImageData(filtered, tw, th);
+      const c = document.createElement("canvas");
+      c.width = tw;
+      c.height = th;
+      c.getContext("2d").putImageData(img, 0, 0);
+      // Store as data URL — cloneNode does not copy canvas pixels
+      state.thumbs.set(f.id, c.toDataURL("image/jpeg", 0.7));
+    }
+    renderFilterBar();
+  }
+
+  async function renderMain() {
+    if (!state.sourceData) return;
+    const token = ++state.renderToken;
+    setBusy(true);
+    // Yield so UI can paint spinner / active state
+    await new Promise((r) => requestAnimationFrame(r));
+    if (token !== state.renderToken) return;
+
+    const { workW: w, workH: h } = state;
+    const filtered = applyFilter(
+      state.sourceData.data,
+      w,
+      h,
+      state.filterId,
+      state.intensity,
+      state.grain
+    );
+    if (token !== state.renderToken) return;
+
+    const img = new ImageData(filtered, w, h);
+    workCtx.putImageData(img, 0, 0);
+
+    const preview = els.preview;
+    preview.width = w;
+    preview.height = h;
+    const pctx = preview.getContext("2d");
+    pctx.clearRect(0, 0, w, h);
+    pctx.drawImage(work, 0, 0);
+    setBusy(false);
+  }
+
+  function renderCats() {
+    els.cats.innerHTML = "";
+    for (const c of CATEGORIES) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "cat" + (c.id === state.category ? " active" : "");
+      b.textContent = c.label;
+      b.addEventListener("click", () => {
+        state.category = c.id;
+        renderCats();
+        renderFilterBar();
+      });
+      els.cats.appendChild(b);
+    }
+  }
+
+  function renderFilterBar() {
+    els.filters.innerHTML = "";
+    const shown = state.category === "classic"
+      ? FILTERS.filter((f) => f.cat === "classic")
+      : FILTERS.filter((f) => f.cat === state.category);
+
+    for (const f of shown) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "filter" + (f.id === state.filterId ? " active" : "");
+      b.disabled = !state.sourceData;
+      const thumb = document.createElement("div");
+      thumb.className = "thumb";
+      if (state.thumbs.has(f.id)) {
+        const im = document.createElement("img");
+        im.src = state.thumbs.get(f.id);
+        im.alt = f.name;
+        im.draggable = false;
+        thumb.appendChild(im);
+      } else {
+        thumb.style.background = `rgb(${f.tint.join(",")})`;
+      }
+      const name = document.createElement("div");
+      name.className = "filter-name";
+      name.textContent = f.name;
+      b.appendChild(thumb);
+      b.appendChild(name);
+      b.addEventListener("click", () => {
+        if (!state.sourceData) return;
+        state.filterId = f.id;
+        renderFilterBar();
+        renderMain();
+      });
+      els.filters.appendChild(b);
+    }
+  }
+
+  function saveImage() {
+    if (!state.sourceData) return;
+    const a = document.createElement("a");
+    a.download = `plenka-${state.filterId}-${Date.now()}.jpg`;
+    a.href = els.preview.toDataURL("image/jpeg", 0.92);
+    a.click();
+    toast("Сохранено");
+  }
+
+  // Events
+  els.btnOpen.addEventListener("click", () => els.fileInput.click());
+  els.dropzone.addEventListener("click", () => els.fileInput.click());
+  els.btnSave.addEventListener("click", saveImage);
+  els.fileInput.addEventListener("change", (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) loadImageFile(file);
+    els.fileInput.value = "";
+  });
+
+  ["dragenter", "dragover"].forEach((ev) => {
+    els.stage.addEventListener(ev, (e) => {
+      e.preventDefault();
+      els.dropzone.classList.add("drag");
+    });
+  });
+  ["dragleave", "drop"].forEach((ev) => {
+    els.stage.addEventListener(ev, (e) => {
+      e.preventDefault();
+      els.dropzone.classList.remove("drag");
+    });
+  });
+  els.stage.addEventListener("drop", (e) => {
+    const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file) loadImageFile(file);
+  });
+
+  let intensityTimer = null;
+  els.intensity.addEventListener("input", () => {
+    state.intensity = Number(els.intensity.value);
+    els.intensityVal.textContent = String(state.intensity);
+    clearTimeout(intensityTimer);
+    intensityTimer = setTimeout(renderMain, 40);
+  });
+  els.grain.addEventListener("input", () => {
+    state.grain = Number(els.grain.value);
+    els.grainVal.textContent = String(state.grain);
+    clearTimeout(intensityTimer);
+    intensityTimer = setTimeout(renderMain, 40);
+  });
+
+  renderCats();
+  renderFilterBar();
+})();
+</script>
+</body>
+</html>
