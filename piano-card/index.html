@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Красный Октябрь — бесплатно до 15:00 08.11.26</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Spectral:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #120c09;
+    --panel: #1e140f;
+    --ink: #f3e6d0;
+    --muted: #b89a72;
+    --accent: #c0392b;
+    --line: rgba(180, 140, 90, 0.35);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(120, 70, 30, 0.28), transparent 55%),
+      var(--bg);
+    color: var(--ink);
+    font-family: Manrope, system-ui, sans-serif;
+    padding: 28px 16px 48px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 {
+    font-family: Spectral, Georgia, serif;
+    font-size: clamp(28px, 6vw, 42px);
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+  }
+  .lead { color: var(--muted); margin-bottom: 22px; font-size: 15px; }
+  .badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff8f0;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    padding: 8px 14px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+  }
+  .card-img {
+    width: 100%;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    display: block;
+    margin-bottom: 18px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+  }
+  .text-block {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+    margin-bottom: 22px;
+    line-height: 1.55;
+    font-size: 16px;
+  }
+  .text-block strong { color: #f2d7a4; }
+  .gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .gallery figure {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .gallery img { width: 100%; display: block; aspect-ratio: 4/3; object-fit: cover; }
+  .gallery figcaption {
+    padding: 8px 10px 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .gallery figure:first-child { grid-column: 1 / -1; }
+  .gallery figure:first-child img { aspect-ratio: 16/10; }
+  .dl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .dl a {
+    text-decoration: none;
+    color: var(--ink);
+    background: #2a1c14;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .dl a.primary { background: var(--accent); border-color: transparent; }
+  .credit {
+    margin-top: 28px;
+    font-size: 12px;
+    color: #7a6450;
+    line-height: 1.5;
+  }
+  .credit a { color: var(--muted); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="badge">БЕСПЛАТНО · до 15:00 · 08.11.26</div>
+    <h1>Красный Октябрь</h1>
+    <p class="lead">Пианино · Центральный р-н СПб · 2-й этаж · широкая лестница</p>
+
+    <img class="card-img" src="krasny-oktyabr-card.jpg" alt="Карточка пианино Красный Октябрь — бесплатно"/>
+
+    <div class="text-block">
+      <strong>Спасите инструмент!</strong><br/><br/>
+      08.11.26 до 15:00 можно совершенно бесплатно забрать, исправно, центральный р-н СПб, 2й этаж, широкая лестница. После будет уничтожено. Кто готов спасти инструмент?!
+    </div>
+
+    <div class="gallery">
+      <figure>
+        <img src="photos/01-photo.jpg" alt="Пианино Красный Октябрь — основной кадр"/>
+        <figcaption>Ваш инструмент · основной кадр</figcaption>
+      </figure>
+      <figure>
+        <img src="photos/02-wiki-mahogany.jpg" alt="Пианино Красный Октябрь, Wikimedia"/>
+        <figcaption>Та же марка · полированное дерево (Wikimedia)</figcaption>
+      </figure>
+      <figure>
+        <img src="photos/03-wiki-street.jpg" alt="Уличное пианино Красный Октябрь"/>
+        <figcaption>Бренд-референс · уличное пианино (Wikimedia)</figcaption>
+      </figure>
+    </div>
+
+    <div class="dl">
+      <a class="primary" href="krasny-oktyabr-card.jpg" download>Скачать карточку JPG</a>
+      <a href="krasny-oktyabr-card.png" download>PNG</a>
+      <a href="krasny-oktyabr-collage-square.jpg" download>Квадрат 1:1</a>
+    </div>
+
+    <p class="credit">
+      Доп. фото: Wikimedia Commons —
+      <a href="https://commons.wikimedia.org/wiki/Category:Upright_pianos_by_Krasny_Oktyabr_Pianos">Upright pianos by Krasny Oktyabr</a>
+      (CC). Карточка собрана скриптом <code>make_card.py</code>.
+    </p>
+  </div>
+</body>
+</html>
