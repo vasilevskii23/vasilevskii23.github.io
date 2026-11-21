@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1080"/>
+<title>Кино России — слайд</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #050505;
+    --ink: #f4f1ea;
+    --muted: rgba(244,241,234,0.72);
+    --dim: rgba(244,241,234,0.45);
+    --line: rgba(244,241,234,0.18);
+    --amber: #c47a3a;
+    --teal: #6a9aa8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background: #000;
+    color: var(--ink);
+    font-family: "Manrope", sans-serif;
+  }
+  .slide {
+    display: none !important;
+    position: relative;
+    width: 1080px;
+    height: 1350px;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .slide.on { display: block !important; }
+  .slide.on.s4,
+  .slide.on.s7,
+  .slide.on.s9,
+  .slide.on.s12,
+  .slide.on.s14,
+  .slide.on.s15 { display: flex !important; }
+
+  .title-font {
+    font-family: "Bebas Neue", sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .full-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.82) 100%);
+  }
+  .veil-soft {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.42);
+  }
+  .center-stack {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px;
+    z-index: 2;
+  }
+  .mega {
+    font-size: 118px;
+    line-height: 0.92;
+  }
+  .mega-sm { font-size: 92px; line-height: 0.95; }
+  .sub {
+    margin-top: 28px;
+    font-size: 18px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .body {
+    font-size: 20px;
+    line-height: 1.55;
+    color: var(--muted);
+    font-weight: 300;
+  }
+  .body strong { color: var(--ink); font-weight: 500; }
+  .cols-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+  .label {
+    font-size: 13px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 18px;
+  }
+
+  /* Slide 2 */
+  .s2-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    padding: 90px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .s2-title { font-size: 96px; }
+  .s2-text { max-width: 920px; }
+
+  /* Slide 3 */
+  .s3-card {
+    max-width: 720px;
+    text-align: center;
+  }
+  .s3-card h1 { font-size: 84px; margin-bottom: 36px; }
+  .s3-card p { font-size: 22px; line-height: 1.65; color: var(--ink); }
+
+  /* Slide 4 */
+  .s4 {
+    padding: 120px 70px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 48px;
+  }
+  .s4-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .s4-item img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+  }
+  .s4-item p {
+    margin-top: 16px;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--dim);
+    text-align: center;
+  }
+
+  /* Slide 5 */
+  .s5-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    padding: 80px 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .s5-mid {
+    position: relative;
+    height: 420px;
+    overflow: hidden;
+  }
+  .s5-mid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .s5-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 28px;
+  }
+  .s5-cols p { font-size: 16px; line-height: 1.55; color: var(--muted); }
+
+  /* Slide 7 */
+  .s7 {
+    padding: 70px;
+    display: none;
+    grid-template-rows: auto 1fr auto;
+    gap: 28px;
+    height: 100%;
+  }
+  .slide.on.s7 { display: grid !important; }
+  .s7-top img {
+    width: 100%;
+    height: 460px;
+    object-fit: cover;
+    display: block;
+  }
+  .s7-bottom {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .s7-bottom img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    display: block;
+  }
+  .s7-copy h2 { font-size: 42px; margin-bottom: 16px; }
+  .s7-copy p { font-size: 17px; line-height: 1.5; color: var(--muted); }
+
+  /* Slide 9 */
+  .s9 {
+    padding: 80px 60px;
+    flex-direction: column;
+    height: 100%;
+  }
+  .s9-head { margin-bottom: 40px; }
+  .s9-head h1 { font-size: 64px; margin-bottom: 18px; }
+  .s9-head p { max-width: 780px; font-size: 18px; line-height: 1.55; color: var(--muted); }
+  .s9-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+  .s9-card img {
+    width: 100%;
+    height: 720px;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+  }
+  .s9-card span {
+    display: block;
+    margin-top: 14px;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--dim);
+    text-align: center;
+  }
+
+  /* Slide 10 */
+  .s10-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    padding: 100px 80px;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: center;
+  }
+  .s10-wrap h1 { font-size: 78px; margin-bottom: 28px; }
+  .s10-wrap .cols-2 { gap: 24px; }
+  .s10-wrap p { font-size: 18px; line-height: 1.55; color: var(--muted); }
+
+  /* Slide 11 */
+  .s11-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .s11-frame {
+    width: 920px;
+    height: 520px;
+    position: relative;
+    overflow: hidden;
+  }
+  .s11-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .s11-frame .title-font {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 96px;
+    background: rgba(0,0,0,0.28);
+  }
+
+  /* Slide 12 */
+  .s12 {
+    padding: 90px 70px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 36px;
+  }
+  .s12 h1 { font-size: 56px; }
+  .s12-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 280px);
+    gap: 18px;
+  }
+  .s12-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Slide 14 */
+  .s14 {
+    padding: 100px 80px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 28px;
+  }
+  .s14-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  .s14-grid img {
+    width: 100%;
+    height: 760px;
+    object-fit: cover;
+    display: block;
+  }
+  .s14-grid p {
+    margin-top: 18px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .s14-grid strong {
+    display: block;
+    color: var(--ink);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 14px;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  /* Slide 15 */
+  .s15 {
+    padding: 70px;
+    height: 100%;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .s15 h1 { font-size: 64px; }
+  .s15 > p { font-size: 18px; color: var(--muted); max-width: 820px; line-height: 1.5; }
+  .s15-layout {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1.35fr 0.8fr 0.8fr;
+    gap: 18px;
+    min-height: 0;
+  }
+  .s15-layout img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Slide 16 */
+  .s16-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    padding: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .s16-wrap h1 { font-size: 72px; max-width: 700px; }
+  .s16-wrap p {
+    max-width: 560px;
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+
+  /* Slide 17 */
+  .s17-frame {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 620px;
+    height: 780px;
+    overflow: hidden;
+  }
+  .s17-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>
+</head>
+<body>
+<!-- 1 TITLE -->
+<section class="slide" data-n="1">
+  <img class="full-bg" src="assets/bg-01-title.jpg" alt=""/>
+  <div class="veil"></div>
+  <div class="center-stack">
+    <div class="label">1896 — 2020s</div>
+    <h1 class="title-font mega">Кино<br/>России</h1>
+    <p class="sub">создание · язык · наследие</p>
+  </div>
+</section>
+
+<!-- 2 VISUALS -->
+<section class="slide" data-n="2">
+  <img class="full-bg" src="assets/bg-02-visuals.jpg" alt=""/>
+  <div class="veil"></div>
+  <div class="s2-wrap">
+    <div>
+      <div class="label">глава 01</div>
+      <h1 class="title-font s2-title">Визуалы</h1>
+    </div>
+    <div class="s2-text cols-2">
+      <p class="body">Русское кино рождается не как развлечение, а как способ видеть историю: кадр становится аргументом, монтаж — дыханием, свет — характером эпохи.</p>
+      <p class="body">От ярмарочных сеансов 1896 года до современного блокбастера тянется одна линия — поиск образа, в котором частная судьба говорит за целое.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 HELLO -->
+<section class="slide" data-n="3">
+  <img class="full-bg" src="assets/bg-03-hello.jpg" alt=""/>
+  <div class="veil-soft"></div>
+  <div class="center-stack">
+    <div class="s3-card">
+      <h1 class="title-font">Привет</h1>
+      <p>Это путь русского экрана: от первых публичных сеансов Люмьер в Петербурге и Москве — через немое чудо, авангард, соцреализм, оттепель, перестройку — к кино сегодняшнего дня. Восемнадцать кадров. Одна страна. Более века света и тени.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4 GALLERY PIONEERS -->
+<section class="slide s4" data-n="4">
+  <div>
+    <div class="label">начала</div>
+    <h1 class="title-font" style="font-size:64px;">Первые огни</h1>
+  </div>
+  <div class="s4-grid">
+    <div class="s4-item">
+      <img src="assets/gal-01-camera.jpg" alt=""/>
+      <p>1896 · аппарат</p>
+    </div>
+    <div class="s4-item">
+      <img src="assets/gal-02-actor.jpg" alt=""/>
+      <p>немое лицо</p>
+    </div>
+    <div class="s4-item">
+      <img src="assets/gal-03-theater.jpg" alt=""/>
+      <p>дворец экрана</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5 THE STORY -->
+<section class="slide" data-n="5">
+  <div class="s5-wrap">
+    <div>
+      <div class="label">глава 02</div>
+      <h1 class="title-font" style="font-size:78px;">История</h1>
+    </div>
+    <div class="s5-mid">
+      <img src="assets/bg-05-story.jpg" alt=""/>
+    </div>
+    <div class="s5-cols">
+      <p>В 1896 году публичные сеансы Люмьер открывают России движущуюся картину. Скоро появляются собственные студии и первые сюжеты.</p>
+      <p>Александр Ханжонков строит индустрию. «Оборона Севастополя» (1911) становится эпическим жестом дореволюционного экрана.</p>
+      <p>К 1917-му русское кино уже умеет мелодраму, сказку и хронику — и стоит на пороге нового языка.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6 PORTRAIT -->
+<section class="slide" data-n="6">
+  <img class="full-bg" src="assets/bg-06-portrait.jpg" alt=""/>
+  <div style="position:absolute;left:70px;bottom:70px;z-index:2;">
+    <div class="label">1920s</div>
+    <h1 class="title-font" style="font-size:64px;">Монтаж<br/>как удар</h1>
+  </div>
+</section>
+
+<!-- 7 COMPOSITE -->
+<section class="slide s7" data-n="7">
+  <div class="s7-top">
+    <img src="assets/gal-07-top.jpg" alt=""/>
+  </div>
+  <div class="s7-bottom">
+    <img src="assets/gal-07-bottom.jpg" alt="" style="object-position:left center;"/>
+    <div class="s7-copy">
+      <h2 class="title-font">Эксперимент</h2>
+      <p>Эйзенштейн, Вертов, Кулешов, Пудовкин и Довженко превращают монтаж в философию: столкновение кадров рождает смысл сильнее любого титра.</p>
+    </div>
+    <img src="assets/gal-07-bottom.jpg" alt="" style="object-position:right center;"/>
+  </div>
+</section>
+
+<!-- 8 CASTING HEADER -->
+<section class="slide" data-n="8">
+  <img class="full-bg" src="assets/bg-08-casting.jpg" alt=""/>
+  <div class="veil"></div>
+  <div class="center-stack">
+    <div class="label">глава 03</div>
+    <h1 class="title-font mega-sm">Авангард</h1>
+  </div>
+</section>
+
+<!-- 9 FOUR MASTERS -->
+<section class="slide s9" data-n="9">
+  <div class="s9-head">
+    <h1 class="title-font">Мастера</h1>
+    <p class="body">Четыре фигуры, через которых русский экран учится мыслить: пафос массы, правда документа, актёрский психологизм и поэтический пейзаж.</p>
+  </div>
+  <div class="s9-grid">
+    <div class="s9-card">
+      <img src="assets/cast-01.jpg" alt=""/>
+      <span>Эйзенштейн</span>
+    </div>
+    <div class="s9-card">
+      <img src="assets/cast-02.jpg" alt=""/>
+      <span>Вертов</span>
+    </div>
+    <div class="s9-card">
+      <img src="assets/cast-03.jpg" alt=""/>
+      <span>Пудовкин</span>
+    </div>
+    <div class="s9-card">
+      <img src="assets/cast-04.jpg" alt=""/>
+      <span>Довженко</span>
+    </div>
+  </div>
+</section>
+
+<!-- 10 MESSAGE -->
+<section class="slide" data-n="10">
+  <img class="full-bg" src="assets/bg-10-message.jpg" alt=""/>
+  <div class="veil-soft"></div>
+  <div class="s10-wrap">
+    <div>
+      <h1 class="title-font">Послание</h1>
+      <div class="cols-2">
+        <p>«Броненосец Потёмкин» делает лестницу Одессы мировым символом. Кадр больше не иллюстрирует — он действует.</p>
+        <p>«Человек с киноаппаратом» Вертова утверждает: жизнь сама может быть сценарием, если глаз камеры достаточно смел.</p>
+      </div>
+    </div>
+    <div></div>
+  </div>
+</section>
+
+<!-- 11 STORYBOARD -->
+<section class="slide" data-n="11">
+  <div style="position:absolute;inset:0;background:#050505;"></div>
+  <div class="s11-wrap">
+    <div class="s11-frame">
+      <img src="assets/bg-11-storyboard.jpg" alt=""/>
+      <div class="title-font">Раскадровка</div>
+    </div>
+  </div>
+  <p style="position:absolute;bottom:70px;left:0;right:0;text-align:center;letter-spacing:0.28em;text-transform:uppercase;font-size:14px;color:var(--dim);">соцреализм · канон · форма</p>
+</section>
+
+<!-- 12 GRID -->
+<section class="slide s12" data-n="12">
+  <div>
+    <div class="label">эпохи в кадрах</div>
+    <h1 class="title-font">Хроника форм</h1>
+  </div>
+  <div class="s12-grid">
+    <img src="assets/gal-07-top.jpg" alt=""/>
+    <img src="assets/bg-05-story.jpg" alt=""/>
+    <img src="assets/bg-14-dual.jpg" style="object-position:left center;" alt=""/>
+    <img src="assets/bg-13-location.jpg" alt=""/>
+    <img src="assets/gal-03-theater.jpg" alt=""/>
+    <img src="assets/bg-17-focus.jpg" alt=""/>
+  </div>
+</section>
+
+<!-- 13 LOCATION / THAW -->
+<section class="slide" data-n="13">
+  <img class="full-bg" src="assets/bg-13-location.jpg" alt=""/>
+  <div class="veil"></div>
+  <div class="center-stack">
+    <div class="label">глава 04</div>
+    <h1 class="title-font mega-sm">Локация</h1>
+    <p class="sub">оттепель · пространство · свобода кадра</p>
+  </div>
+</section>
+
+<!-- 14 DUAL -->
+<section class="slide s14" data-n="14">
+  <div class="s14-grid">
+    <div>
+      <img src="assets/dual-01-forest.jpg" alt=""/>
+      <p><strong>Оттепель</strong>Калатозов, Чухрай, Хуциев открывают воздух: камера дышит рядом с человеком, а не над ним.</p>
+    </div>
+    <div>
+      <img src="assets/dual-02-village.jpg" alt=""/>
+      <p><strong>Тарковский</strong>«Иваново детство», «Андрей Рублёв», «Сталкер» — время как вещество, пейзаж как душа.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 15 WARDROBE / ERAS -->
+<section class="slide s15" data-n="15">
+  <h1 class="title-font">Эпоха на теле</h1>
+  <p>От парадного мундира соцреализма к кожаной куртке перестройки и чёрному силуэту нового века — костюм экрана всегда был политикой и настроением сразу.</p>
+  <div class="s15-layout">
+    <img src="assets/ward-01.jpg" alt=""/>
+    <img src="assets/ward-02.jpg" alt=""/>
+    <img src="assets/ward-03.jpg" alt=""/>
+  </div>
+</section>
+
+<!-- 16 SOUND -->
+<section class="slide" data-n="16">
+  <img class="full-bg" src="assets/bg-16-sound.jpg" alt=""/>
+  <div class="veil"></div>
+  <div class="s16-wrap">
+    <h1 class="title-font">Музыка<br/>и звук</h1>
+    <p>От первых оркестров при немом сеансе — к партитурам Прокофьева у Эйзенштейна, к тишине Тарковского и плотному саунд-дизайну современного российского кино.</p>
+  </div>
+</section>
+
+<!-- 17 FOCUS -->
+<section class="slide" data-n="17">
+  <div class="s17-frame">
+    <img src="assets/bg-17-focus.jpg" alt=""/>
+  </div>
+  <div style="position:absolute;left:70px;right:70px;bottom:64px;text-align:center;z-index:2;">
+    <p style="letter-spacing:0.24em;text-transform:uppercase;font-size:13px;color:var(--dim);margin-bottom:14px;">сегодня · авторское · большое</p>
+    <p class="body" style="max-width:720px;margin:0 auto;font-size:17px;">От Балабанова и Звягинцева до большого зрелищного кино 2010–2020-х: русский экран снова ищет форму, которая выдержит и зал, и ленту.</p>
+  </div>
+</section>
+
+<!-- 18 THANKS -->
+<section class="slide" data-n="18">
+  <img class="full-bg" src="assets/bg-18-thanks.jpg" alt=""/>
+  <div class="veil"></div>
+  <div class="center-stack">
+    <h1 class="title-font mega">Спасибо!</h1>
+    <p class="sub">кино россии · 1896 — наши дни</p>
+  </div>
+</section>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const n = Math.max(1, Math.min(18, parseInt(params.get("n") || "1", 10)));
+  document.querySelectorAll(".slide").forEach((el) => {
+    if (Number(el.dataset.n) === n) el.classList.add("on");
+  });
+  document.title = `Кино России — слайд ${String(n).padStart(2, "0")}`;
+</script>
+</body>
+</html>
