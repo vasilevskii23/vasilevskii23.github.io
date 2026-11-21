@@ -1,0 +1,17 @@
+---
+description: Use Content Machine (Reels Machine) for short-form video work
+globs:
+alwaysApply: true
+---
+
+# Content Machine (Reels Machine)
+
+When the user asks for Reels, TikToks, Shorts, or short-form video generation,
+use the installed Content Machine pack in `.content-machine/`.
+
+1. Read `.content-machine/AGENTS.md` and pick a skill or flow first.
+2. Skills live in `.content-machine/skills/` (also linked from `.cursor/skills/`).
+3. Flows live in `.content-machine/flows/`.
+4. Execute runtime tools with `npx --no-install cm-agent <tool>`.
+5. Write artifacts under `runs/<run-id>/`.
+6. Do not call an MP4 ready until publish-prep passes.

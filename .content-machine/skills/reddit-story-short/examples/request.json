@@ -1,0 +1,26 @@
+{
+  "archetype": "reddit-post-over-gameplay",
+  "target": {
+    "durationSeconds": 35,
+    "orientation": "portrait",
+    "platform": "tiktok"
+  },
+  "story": {
+    "title": "I cancelled my sister's free wedding photos two days before the event",
+    "hook": "My sister told the whole family I owed her free wedding photos because I shoot part-time, so I cancelled two days before the wedding.",
+    "tone": "dramatic",
+    "subreddit": "AmItheAsshole"
+  },
+  "visualShape": {
+    "background": "full-screen subway-surfers gameplay from frame one",
+    "opener": "3-5s Reddit screenshot-style post card overlay with upvotes and awards",
+    "afterOpener": "remove card and continue narration captions directly over gameplay",
+    "captions": "bold two-line active-word captions in the center-lower safe zone",
+    "forbiddenLayers": "no stock clips, no random B-roll, no split-screen top lane"
+  },
+  "reviewRules": {
+    "rejectStaticBackgrounds": true,
+    "rejectSilentAudio": true,
+    "rejectBuggyRedditMockups": true
+  }
+}
