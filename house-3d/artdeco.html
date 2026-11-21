@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Арт-деко 2026 — визуализации ремонта</title>
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --white: #f7f4ef;
+      --beige: #d9cbb8;
+      --beige-deep: #b9a48a;
+      --olive: #55634a;
+      --olive-deep: #3d4736;
+      --black: #121410;
+      --ink: #1c1b17;
+      --muted: #6e685c;
+      --line: rgba(18, 20, 16, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Outfit, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 500px at 0% 0%, rgba(85, 99, 74, 0.12), transparent 60%),
+        radial-gradient(800px 480px at 100% 20%, rgba(217, 203, 184, 0.55), transparent 55%),
+        linear-gradient(180deg, #f3efe8 0%, #ebe4d8 45%, #e2d8c8 100%);
+      min-height: 100%;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.35;
+      background-image:
+        linear-gradient(rgba(18, 20, 16, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(18, 20, 16, 0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
+    }
+
+    .wrap {
+      position: relative;
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 28px 0 80px;
+    }
+
+    header.hero {
+      display: grid;
+      gap: 18px;
+      padding: 28px 0 36px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 36px;
+      animation: rise 0.8s ease both;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav a {
+      color: var(--olive-deep);
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .nav a:hover { border-color: var(--olive); color: var(--black); }
+
+    .palette {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .swatch {
+      width: 22px;
+      height: 22px;
+      border: 1px solid rgba(18, 20, 16, 0.2);
+    }
+
+    .swatch.white { background: #f7f4ef; }
+    .swatch.beige { background: #d9cbb8; }
+    .swatch.olive { background: #55634a; }
+    .swatch.black { background: #121410; }
+
+    h1 {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(2.4rem, 5vw, 4.2rem);
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      max-width: 12ch;
+      color: var(--black);
+    }
+
+    .lede {
+      max-width: 42ch;
+      font-size: 1.05rem;
+      line-height: 1.55;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--olive-deep);
+    }
+
+    .gallery {
+      display: grid;
+      gap: 42px;
+    }
+
+    figure.shot {
+      display: grid;
+      gap: 14px;
+      animation: rise 0.9s ease both;
+    }
+
+    figure.shot:nth-child(2) { animation-delay: 0.05s; }
+    figure.shot:nth-child(3) { animation-delay: 0.1s; }
+    figure.shot:nth-child(4) { animation-delay: 0.15s; }
+    figure.shot:nth-child(5) { animation-delay: 0.2s; }
+    figure.shot:nth-child(6) { animation-delay: 0.25s; }
+    figure.shot:nth-child(7) { animation-delay: 0.3s; }
+
+    figure.shot img {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #ddd5c8;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.5) inset,
+        0 24px 60px rgba(18, 20, 16, 0.14);
+      transition: transform 0.45s ease, box-shadow 0.45s ease;
+    }
+
+    figure.shot:hover img {
+      transform: translateY(-4px);
+      box-shadow: 0 30px 70px rgba(18, 20, 16, 0.18);
+    }
+
+    figcaption {
+      display: grid;
+      gap: 6px;
+      padding: 0 2px;
+    }
+
+    figcaption .room {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    figcaption .dims {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--olive);
+      font-weight: 500;
+    }
+
+    figcaption .note {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.45;
+      max-width: 62ch;
+    }
+
+    .tall img { max-height: 920px; object-fit: cover; object-position: center; }
+
+    footer {
+      margin-top: 56px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    footer a { color: var(--olive-deep); }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (max-width: 720px) {
+      .wrap { width: calc(100% - 28px); padding-top: 18px; }
+      h1 { max-width: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="nav">
+        <a href="index.html">← 3D план</a>
+        <a href="apartment-artdeco.html" style="margin-left:auto;margin-right:12px">Квартира · арт-деко</a>
+        <div class="palette" aria-label="Палитра">
+          <span class="swatch white" title="Белый"></span>
+          <span class="swatch beige" title="Бежевый"></span>
+          <span class="swatch olive" title="Оливковый"></span>
+          <span class="swatch black" title="Чёрный"></span>
+        </div>
+      </div>
+      <h1>Арт-деко 2026</h1>
+      <p class="lede">Серия премиальных визуализаций ремонта по обмерной планировке: белый, бежевый, оливковый и чёрные акценты.</p>
+      <div class="meta">
+        <span>Загородный дом</span>
+        <span>Premium interior</span>
+        <span>7 кадров</span>
+      </div>
+    </header>
+
+    <section class="gallery">
+      <figure class="shot">
+        <img src="visuals/artdeco-komnata-3-living.png" alt="Гостиная — арт-деко 2026" loading="eager" />
+        <figcaption>
+          <div class="room">Гостиная · Комната 3</div>
+          <div class="dims">5,05 × 3,0 м</div>
+          <p class="note">Оливковый бархат, чёрный камин с каннелюрами, геометрический мраморный пол, sunburst-зеркало.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="visuals/artdeco-kuhnya.png" alt="Кухня — арт-деко 2026" loading="lazy" />
+        <figcaption>
+          <div class="room">Кухня</div>
+          <div class="dims">4,0 × 3,05 м</div>
+          <p class="note">Флейтированные фасады, оливковый остров, чёрный камень, обеденная группа на кремовом мраморе.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="visuals/artdeco-vista-living-kitchen.png" alt="Видовая ось гостиная — кухня" loading="lazy" />
+        <figcaption>
+          <div class="room">Видовая ось</div>
+          <div class="dims">Гостиная → кухня</div>
+          <p class="note">Сквозной взгляд через проём: единая палитра и геометрический пол связывают зоны.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="visuals/artdeco-komnata-1-bedroom.png" alt="Спальня — арт-деко 2026" loading="lazy" />
+        <figcaption>
+          <div class="room">Спальня · Комната 1</div>
+          <div class="dims">5,15 × 2,60 м</div>
+          <p class="note">Канальное изголовье, оливковый текстиль, чёрные тумбы и бра, ступенчатый потолок с подсветкой.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="visuals/artdeco-komnata-2-cabinet.png" alt="Кабинет / гостевая" loading="lazy" />
+        <figcaption>
+          <div class="room">Кабинет / гостевая · Комната 2</div>
+          <div class="dims">2,50 × 3,0 м</div>
+          <p class="note">Компактный премиум: оливковый шкаф с каннелюрами, кушетка, чёрный торшер Deco.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="shot tall">
+        <img src="visuals/artdeco-koridor.png" alt="Коридор — арт-деко 2026" loading="lazy" />
+        <figcaption>
+          <div class="room">Коридор</div>
+          <div class="dims">0,92 × 2,60 м</div>
+          <p class="note">Узкая галерея: флейтированная олива, мрамор с чёрной обводкой, зеркало в торце.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="visuals/artdeco-santeuzel.png" alt="Санузел — арт-деко 2026" loading="lazy" />
+        <figcaption>
+          <div class="room">Санузел</div>
+          <div class="dims">Премиум-решение</div>
+          <p class="note">Белый мрамор, оливковая тумба, матовый чёрный смеситель, геометрическая мозаика пола.</p>
+        </figcaption>
+      </figure>
+    </section>
+
+    <footer>
+      <span>Палитра: белый · бежевый · оливковый · чёрный</span>
+      <a href="floor-plan.jpg" target="_blank" rel="noopener">Исходный чертёж</a>
+    </footer>
+  </div>
+</body>
+</html>
